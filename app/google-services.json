@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "627473876854",
+    "firebase_url": "https://loco-7772c.firebaseio.com",
+    "project_id": "loco-7772c",
+    "storage_bucket": "loco-7772c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627473876854:android:da61e70383fec582",
+        "android_client_info": {
+          "package_name": "android.duke290.com.loco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627473876854-gsmlk9jennubug5uekf16iqdh5ash6i0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "android.duke290.com.loco",
+            "certificate_hash": "bfc7625ac463048a332078af0db709db15f0514f"
+          }
+        },
+        {
+          "client_id": "627473876854-j6olpi1028u9smf48rgeqtu2e13kt4tv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6v2aI6N4gf21OhyEJd8Y9cuZGLBzG81U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627473876854-j6olpi1028u9smf48rgeqtu2e13kt4tv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
