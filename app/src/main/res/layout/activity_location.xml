@@ -10,4 +10,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="android.duke290.com.loco.LocationActivity">
 
+    <TextView
+        android:id="@+id/location_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="129dp"
+        android:layout_marginTop="70dp"
+        android:text="location_msg" />
+
+    <TextView
+        android:id="@+id/address_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location_msg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:text="getting geocode address..." />
 </RelativeLayout>
