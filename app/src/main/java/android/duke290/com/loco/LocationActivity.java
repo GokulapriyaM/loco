@@ -108,6 +108,11 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     System.out.println("permission granted");
 
+                    if (mGoogleApiClient.isConnected()) {
+                        System.out.println("starting location updates after permissions");
+                        startLocationUpdates();
+                    }
+
                 } else {
 
                     System.out.println("permission not granted");
@@ -120,25 +125,30 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     @Override
     protected void onStart() {
+        System.out.println("onStart called");
         super.onStart();
         mGoogleApiClient.connect();
     }
 
     @Override
     protected void onStop() {
+        System.out.println("onStop called");
         super.onStop();
         mGoogleApiClient.disconnect();
     }
 
     @Override
     protected void onPause() {
+        System.out.println("onPause called");
         super.onPause();
         stopLocationUpdates();
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+        }
     }
 
     @Override
@@ -175,6 +185,7 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
     }
 
     protected void startLocationUpdates() {
+        System.out.println("startLocationUpdates called");
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(
@@ -186,6 +197,7 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
      * Actions for when a new location is received
      */
     public void onLocationChanged(Location location) {
+        System.out.println("onLocationChanged called");
         mCurrentLocation = location;
         getAddress();
         displayLocation();
