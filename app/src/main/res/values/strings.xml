@@ -30,5 +30,7 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
+    <string name="welcome">Welcome to Loco!</string>
+    <string name="description">Loco is a location-driven app that allows you to check the happiness level, the pictures taken, the messages posted, and the events happening at YOUR location! \n \n Have fun using Loco!</string>
     <string name="title_activity_main">MainActivity</string>
 </resources>

@@ -1,14 +1,21 @@
 package android.duke290.com.loco;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -24,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Button signUpButton, loginButton, resetButton;
 
+    private PopupWindow mPopup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, LocationActivity.class));
             finish();
         }
-
-        // set the view now
+        //set the view now
         setContentView(R.layout.activity_login);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -49,8 +57,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = (Button) findViewById(R.id.btn_login);
         resetButton = (Button) findViewById(R.id.btn_reset_password);
 
-        //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,5 +115,36 @@ public class LoginActivity extends AppCompatActivity {
                         });
             }
         });
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        popupwindow();
+    }
+
+    private void popupwindow() {
+        LayoutInflater inflater = (LayoutInflater) LoginActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View window = inflater.from(LoginActivity.this).inflate(R.layout.popup_window, null);
+
+        mPopup = new PopupWindow(window, Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT, true);
+        //mPopup.showAtLocation(inputEmail, Gravity.CENTER, 0,0);
+        new Handler().postDelayed(new Runnable(){
+
+            public void run() {
+                mPopup.showAtLocation(findViewById(R.id.login), Gravity.CENTER, 0, 0);
+            }
+
+        }, 100L);
+
+        window.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mPopup.dismiss();
+                return true;
+            }
+        });
+
     }
 }
