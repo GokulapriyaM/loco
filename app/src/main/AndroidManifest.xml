@@ -29,7 +29,11 @@
             android:name=".FetchAddressIntentService"
             android:exported="false" />
 
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+
+        <service
+            android:name=".CloudStorageService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

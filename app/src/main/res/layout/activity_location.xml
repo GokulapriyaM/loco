@@ -14,18 +14,66 @@
         android:id="@+id/location_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:text="location_msg"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="129dp"
-        android:layout_marginTop="70dp"
-        android:text="location_msg" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/address_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="getting geocode address..."
         android:layout_below="@+id/location_msg"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/upload_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:onClick="uploadClick"
+        android:text="Upload"
+        android:layout_below="@+id/address_msg"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="52dp" />
+
+    <Button
+        android:id="@+id/download_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="downloadClick"
+        android:text="Download"
+        android:layout_alignBaseline="@+id/upload_button"
+        android:layout_alignBottom="@+id/upload_button"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="49dp" />
+
+    <TextView
+        android:id="@+id/process_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="process message"
+        android:layout_below="@+id/download_button"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/downloaded_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="downloaded message"
+        android:layout_below="@+id/process_msg"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/downloaded_msg"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:text="getting geocode address..." />
+        android:layout_marginTop="15dp"
+        android:text="Note: Right now, upload/download deals with a hardcoded file for testing.
+        This is basically just a proof of concept" />
 </RelativeLayout>

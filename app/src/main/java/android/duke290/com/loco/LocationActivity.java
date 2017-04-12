@@ -10,6 +10,8 @@ import android.os.ResultReceiver;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +37,17 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private boolean mAddressRequested = true;
 
     private LocationRequest mLocationRequest;
-    private AddressResultReceiver mResultReceiver;
+    private AddressResultReceiver mAddressResultReceiver;
 
     private Location mCurrentLocation;
     private String mAddressOutput;
+
+    private String mCloudProcessMsg;
+    private String mCloudDownloadedMsg;
+
+    private CloudResultReceiver mCloudResultReceiver;
+
+    private String TAG = "LocationActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,7 +188,7 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
             }
 
             if (mAddressRequested) {
-                startIntentService();
+                startAddressIntentService();
             }
         }
     }
@@ -227,10 +236,10 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     }
 
-    protected void startIntentService() {
-        mResultReceiver = new AddressResultReceiver(new Handler());
+    protected void startAddressIntentService() {
+        mAddressResultReceiver = new AddressResultReceiver(new Handler());
         Intent intent = new Intent(this, FetchAddressIntentService.class);
-        intent.putExtra(Constants.RECEIVER, mResultReceiver);
+        intent.putExtra(Constants.RECEIVER, mAddressResultReceiver);
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, mCurrentLocation);
         startService(intent);
     }
@@ -253,8 +262,56 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
         }
     }
 
+    protected void startCloudIntentService(String action, String local_file_path,
+                                           String storage_path) {
+        Log.d(TAG, "starting cloud intent service");
+        mCloudResultReceiver = new CloudResultReceiver(new Handler());
+        Intent intent = new Intent(this, CloudStorageService.class);
+        intent.putExtra("CLOUD_STORAGE_OPTION", action);
+        intent.putExtra("CLOUD_STORAGE_RECEIVER", mCloudResultReceiver);
+        intent.putExtra("CLOUD_STORAGE_LOCAL_FILE_PATH", local_file_path);
+        intent.putExtra("CLOUD_STORAGE_STORAGE_PATH", storage_path);
+
+        startService(intent);
+    }
+
+    class CloudResultReceiver extends ResultReceiver {
+        public CloudResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            // Display the address string
+            // or an error message sent from the intent service.
+            mCloudProcessMsg = resultData.getString("CLOUD_PROCESS_MSG_KEY");
+            mCloudDownloadedMsg = resultData.getString("CLOUD_DOWNLOADED_MSG_KEY");
+            displayCloudOutput();
+
+            Log.d(TAG, "Cloud process finished");
+
+        }
+    }
+
     protected void displayAddressOutput() {
         TextView address_msg = (TextView) findViewById(R.id.address_msg);
         address_msg.setText(mAddressOutput);
+    }
+
+    protected void displayCloudOutput() {
+        TextView process_msg = (TextView) findViewById(R.id.process_msg);
+        TextView downloaded_msg = (TextView) findViewById(R.id.downloaded_msg);
+
+        process_msg.setText(mCloudProcessMsg);
+        downloaded_msg.setText(mCloudDownloadedMsg);
+    }
+
+    protected void uploadClick(View button) {
+        startCloudIntentService("upload", "Text/message.txt", "Coordinates/123/message.txt");
+    }
+
+    protected void downloadClick(View button) {
+        startCloudIntentService("download", "Text/message.txt", "Coordinates/123/message.txt");
     }
 }

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "627473876854-ekcsp1gqkibdo2p4qmb985epe0f3dgde.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "android.duke290.com.loco",
+            "certificate_hash": "567203bf49db67c3015b3528f2e922aa471d731c"
+          }
+        },
+        {
           "client_id": "627473876854-gsmlk9jennubug5uekf16iqdh5ash6i0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
