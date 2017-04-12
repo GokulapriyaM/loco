@@ -16,9 +16,15 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StreamDownloadTask;
 import com.google.firebase.storage.UploadTask;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,14 +36,16 @@ public class CloudStorageService extends IntentService {
 
     protected String mActionType; // either "upload" or "download"
     protected ResultReceiver mReceiver;
-    protected String mLocalFilePath;
+    protected InputStream mLocalStream;
     protected String mStoragePath;
+    protected String mContentType;
 
     StorageReference mStorageRef;
     StorageReference mDestinationRef;
     String TAG = "CloudStorageService";
 
-    protected String downloaded_msg = "";
+    protected InputStream mDownloadedStream;
+    protected String mDownloadedContentType;
 
     public CloudStorageService() {
         super("CloudStorageService");
@@ -50,8 +58,12 @@ public class CloudStorageService extends IntentService {
 
         mActionType = intent.getStringExtra("CLOUD_STORAGE_OPTION");
         mReceiver = intent.getParcelableExtra("CLOUD_STORAGE_RECEIVER");
-        mLocalFilePath = intent.getStringExtra("CLOUD_STORAGE_LOCAL_FILE_PATH");
+        if (intent.getByteArrayExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY") != null) {
+            mLocalStream = new ByteArrayInputStream(
+                    intent.getByteArrayExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY"));
+        }
         mStoragePath = intent.getStringExtra("CLOUD_STORAGE_STORAGE_PATH");
+        mContentType = intent.getStringExtra("CLOUD_STORAGE_CONTENT_TYPE");
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -72,9 +84,13 @@ public class CloudStorageService extends IntentService {
     }
 
     protected void uploadFile() {
-        InputStream inputStream = getAssetsFile(mLocalFilePath);
 
-        UploadTask uploadTask = mDestinationRef.putStream(inputStream);
+        // add metadata (content type)
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setContentType(mContentType)
+                .build();
+
+        UploadTask uploadTask = mDestinationRef.putStream(mLocalStream, metadata);
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -105,72 +121,80 @@ public class CloudStorageService extends IntentService {
     }
 
     protected void downloadFile() {
-        try {
-            final File localFile = File.createTempFile("message", "txt");
-            mDestinationRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    // Local temp file has been created
-                    Log.d(TAG, "Download successful!");
-                    handleDownloadSuccess(localFile);
-                    deliverResultToReceiver(Constants.SUCCESS_RESULT, "Download successful!");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                    Log.d(TAG, "Download failed");
-                    deliverResultToReceiver(Constants.FAILURE_RESULT, "Download failed.");
-                }
-            });
-        } catch (IOException e) {
-            Log.d(TAG, "Cannot create temp file");
-        }
+        mDestinationRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
+            @Override @SuppressWarnings("VisibleForTests")
+            public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
+                // Local temp file has been created
+                Log.d(TAG, "Download of file successful!");
+                mDownloadedStream = taskSnapshot.getStream();
+
+                Log.d(TAG, "Downloading file metadata");
+                downloadFileContentType();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d(TAG, "Download failed");
+                deliverResultToReceiver(Constants.FAILURE_RESULT, "Download failed.");
+            }
+        });
     }
 
+    protected void downloadFileContentType() {
+        mDestinationRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                mDownloadedContentType = storageMetadata.getContentType();
 
+                Log.d(TAG, "Download file and metadata successful");
+                deliverResultToReceiver(Constants.SUCCESS_RESULT,
+                        "Download completely successful!");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d(TAG, "Download metadata failed");
 
-    protected void handleDownloadSuccess(File file) {
-
-        // read file, save to downloaded_msg
-
-        try {
-            InputStream inputStream = new FileInputStream(file);
-            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
-            downloaded_msg = s.hasNext() ? s.next() : "";
-            Log.d(TAG, "Downloaded message:" + downloaded_msg);
-
-            inputStream.close();
-
-        } catch (IOException e) {
-            Log.d(TAG, "InputStream creation from downloaded file failed");
-        }
+                deliverResultToReceiver(Constants.FAILURE_RESULT,
+                        "Download of file successful but download of metadata failed");
+            }
+        });
     }
 
-    protected InputStream getAssetsFile(String file_path) {
-        AssetManager assetManager = getAssets();
+    private void deliverResultToReceiver(int resultCode,
+                                         String process_message) {
+        byte[] dwnld_b_ar = null;
 
-        InputStream inputStream = null;
-
-        try {
-            inputStream = assetManager.open("Text/message.txt");
-        } catch (IOException e) {
-            Log.d(TAG, "Assets file not found");
+        if (mDownloadedStream != null) {
+            try {
+                dwnld_b_ar = inputStreamToByteArray(mDownloadedStream);
+                mDownloadedStream.close();
+            } catch (IOException e) {
+                Log.d(TAG, "IOException when converting downloaded input stream to byte array");
+            }
         }
 
-        if (inputStream != null) {
-            Log.d(TAG, "Assets file found!");
-        }
-
-        return inputStream;
-
-    }
-
-    private void deliverResultToReceiver(int resultCode, String process_message) {
         Bundle bundle = new Bundle();
         bundle.putString("CLOUD_PROCESS_MSG_KEY", process_message);
-        bundle.putString("CLOUD_DOWNLOADED_MSG_KEY", downloaded_msg);
+        bundle.putByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY", dwnld_b_ar);
+        bundle.putString("CLOUD_DOWNLOADED_CONTENT_TYPE", mDownloadedContentType);
         mReceiver.send(resultCode, bundle);
+    }
+
+    private byte[] inputStreamToByteArray(InputStream is) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        buffer.flush();
+
+        return buffer.toByteArray();
     }
 
 }

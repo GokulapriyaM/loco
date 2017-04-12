@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_location"
     android:layout_width="match_parent"
@@ -31,49 +32,68 @@
         android:id="@+id/upload_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:onClick="uploadClick"
-        android:text="Upload"
+        android:layout_marginTop="14dp"
+        android:onClick="uploadTextClick"
+        android:text="Upload Text"
         android:layout_below="@+id/address_msg"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="52dp" />
+        android:layout_alignEnd="@+id/button2" />
 
     <Button
         android:id="@+id/download_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="downloadClick"
-        android:text="Download"
+        android:onClick="downloadTextClick"
+        android:text="Download Text"
         android:layout_alignBaseline="@+id/upload_button"
         android:layout_alignBottom="@+id/upload_button"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="49dp" />
+        android:layout_alignStart="@+id/button3" />
 
     <TextView
         android:id="@+id/process_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:text="process message"
-        android:layout_below="@+id/download_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/button2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp" />
 
     <TextView
         android:id="@+id/downloaded_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:text="downloaded message"
         android:layout_below="@+id/process_msg"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <ImageView
+        android:id="@+id/downloaded_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:srcCompat="@drawable/cast_album_art_placeholder"
+        android:layout_marginTop="17dp"
         android:layout_below="@+id/downloaded_msg"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:text="Note: Right now, upload/download deals with a hardcoded file for testing.
-        This is basically just a proof of concept" />
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="uploadImageClick"
+        android:text="Upload Image"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="45dp"
+        android:layout_below="@+id/upload_button"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="downloadImageClick"
+        android:text="Download Image"
+        android:layout_above="@+id/process_msg"
+        android:layout_toEndOf="@+id/button2"
+        android:layout_marginStart="24dp" />
+
 </RelativeLayout>

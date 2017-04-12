@@ -3,6 +3,8 @@ package android.duke290.com.loco;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Handler;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +23,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -43,7 +53,8 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private String mAddressOutput;
 
     private String mCloudProcessMsg;
-    private String mCloudDownloadedMsg;
+    private InputStream mCloudDownloadedStream;
+    private String mCloudDownloadedContentType;
 
     private CloudResultReceiver mCloudResultReceiver;
 
@@ -262,15 +273,31 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
         }
     }
 
-    protected void startCloudIntentService(String action, String local_file_path,
-                                           String storage_path) {
+    protected void startCloudIntentService(String action,
+                                           InputStream local_stream,
+                                           String storage_path,
+                                           String content_type) {
         Log.d(TAG, "starting cloud intent service");
         mCloudResultReceiver = new CloudResultReceiver(new Handler());
         Intent intent = new Intent(this, CloudStorageService.class);
         intent.putExtra("CLOUD_STORAGE_OPTION", action);
         intent.putExtra("CLOUD_STORAGE_RECEIVER", mCloudResultReceiver);
-        intent.putExtra("CLOUD_STORAGE_LOCAL_FILE_PATH", local_file_path);
+
+        byte[] uplded_b_ar = null;
+
+        if (local_stream != null) {
+            try {
+                uplded_b_ar = IOUtils.toByteArray(local_stream);
+            } catch (IOException e) {
+                Log.d(TAG, "IOException when converting downloaded input stream to byte array");
+            }
+        } else {
+            Log.d(TAG, "local_stream to upload is missing (ok if downloading something)");
+        }
+
+        intent.putExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY", uplded_b_ar);
         intent.putExtra("CLOUD_STORAGE_STORAGE_PATH", storage_path);
+        intent.putExtra("CLOUD_STORAGE_CONTENT_TYPE", content_type);
 
         startService(intent);
     }
@@ -282,11 +309,21 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
+            Log.d(TAG, "Cloud result received");
 
             // Display the address string
             // or an error message sent from the intent service.
             mCloudProcessMsg = resultData.getString("CLOUD_PROCESS_MSG_KEY");
-            mCloudDownloadedMsg = resultData.getString("CLOUD_DOWNLOADED_MSG_KEY");
+
+            if (resultData.getByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY") != null) {
+                Log.d(TAG, "Cloud downloaded stream not null");
+                mCloudDownloadedStream = new ByteArrayInputStream(
+                        resultData.getByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY"));
+            }
+
+            mCloudDownloadedContentType = resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE");
+            Log.d(TAG, "Downloaded content type: " + mCloudDownloadedContentType);
+
             displayCloudOutput();
 
             Log.d(TAG, "Cloud process finished");
@@ -302,16 +339,116 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
     protected void displayCloudOutput() {
         TextView process_msg = (TextView) findViewById(R.id.process_msg);
         TextView downloaded_msg = (TextView) findViewById(R.id.downloaded_msg);
+        ImageView downloaded_img = (ImageView) findViewById(R.id.downloaded_image);
 
         process_msg.setText(mCloudProcessMsg);
-        downloaded_msg.setText(mCloudDownloadedMsg);
+
+        // read file, save to downloaded_msg
+        if (mCloudDownloadedStream != null) {
+
+            if (mCloudDownloadedContentType.equals("text")) {
+                Log.d(TAG, "Displaying cloud downloaded text");
+                String msg = "";
+                try {
+                    Scanner s = new Scanner(mCloudDownloadedStream).useDelimiter("\\A");
+                    msg = s.hasNext() ? s.next() : "";
+                    Log.d(TAG, "Downloaded message:" + msg);
+
+                    mCloudDownloadedStream.close();
+
+                    downloaded_msg.setText(msg);
+
+                } catch (IOException e) {
+                    Log.d(TAG, "InputStream creation from downloaded file failed");
+                }
+            } else if (mCloudDownloadedContentType.equals("image")) {
+                Log.d(TAG, "Displaying cloud downloaded image");
+                downloaded_img.setImageBitmap(
+                        BitmapFactory.decodeStream(mCloudDownloadedStream));
+            }
+        }
+
     }
 
-    protected void uploadClick(View button) {
-        startCloudIntentService("upload", "Text/message.txt", "Coordinates/123/message.txt");
+    protected void resetReceivedCloudItems() {
+        mCloudProcessMsg = "";
+        mCloudDownloadedStream = null;
+        mCloudDownloadedContentType = "";
     }
 
-    protected void downloadClick(View button) {
-        startCloudIntentService("download", "Text/message.txt", "Coordinates/123/message.txt");
+    protected void uploadTextClick(View button) {
+        resetReceivedCloudItems();
+        AssetManager assetManager = getAssets();
+        InputStream textStream = null;
+
+        try {
+            textStream = assetManager.open("Text/message.txt");
+        } catch (IOException e) {
+            Log.d(TAG, "IOException opening local file");
+        }
+
+        uploadStreamToFirebaseStorage(textStream,
+                "Coordinates/123/message.txt",
+                "text");
+    }
+
+    protected void downloadTextClick(View button) {
+        resetReceivedCloudItems();
+        downloadStreamFromFirebaseStorage("Coordinates/123/message.txt");
+    }
+
+    protected void uploadImageClick(View button) {
+        resetReceivedCloudItems();
+        AssetManager assetManager = getAssets();
+        InputStream imageStream = null;
+
+        try {
+            imageStream = assetManager.open("Images/testimage.png");
+        } catch (IOException e) {
+            Log.d(TAG, "IOException opening local file");
+        }
+
+        uploadStreamToFirebaseStorage(imageStream,
+                "Coordinates/123/image.gif",
+                "image");
+    }
+
+    protected void downloadImageClick(View button) {
+        resetReceivedCloudItems();
+        downloadStreamFromFirebaseStorage("Coordinates/123/image.gif");
+    }
+
+    protected void uploadStreamToFirebaseStorage(InputStream inputStream,
+                                                 String storage_path,
+                                                 String content_type) {
+        Log.d(TAG, "uploading stream to firebase storage (" + content_type + ")");
+        startCloudIntentService("upload", inputStream, storage_path, content_type);
+    }
+
+    /*
+     * downloaded stream is put in mCloudDownloadedStream
+     */
+    protected void downloadStreamFromFirebaseStorage(String storage_path) {
+        Log.d(TAG, "downloading stream from firebase storage");
+        startCloudIntentService("download", null, storage_path, "");
+    }
+
+    protected InputStream getAssetsFile(String file_path) {
+        AssetManager assetManager = getAssets();
+
+        InputStream inputStream = null;
+
+        try {
+            inputStream = assetManager.open("Text/message.txt");
+        } catch (IOException e) {
+            Log.d(TAG, "Assets file not found");
+        }
+
+        if (inputStream != null) {
+            Log.d(TAG, "Assets file found!");
+        }
+
+        return inputStream;
+
     }
 }
