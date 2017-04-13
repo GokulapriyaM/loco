@@ -1,7 +1,5 @@
 package android.duke290.com.loco;
 
-import android.*;
-import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,8 +15,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {

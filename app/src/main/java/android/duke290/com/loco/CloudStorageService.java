@@ -2,9 +2,6 @@ package android.duke290.com.loco;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.ResultReceiver;
@@ -13,7 +10,6 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -25,13 +21,8 @@ import com.google.firebase.storage.UploadTask;
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Scanner;
 
 public class CloudStorageService extends IntentService {
 

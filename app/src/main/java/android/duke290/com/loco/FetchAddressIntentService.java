@@ -2,7 +2,6 @@ package android.duke290.com.loco;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;

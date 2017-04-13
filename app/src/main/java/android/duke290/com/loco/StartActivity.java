@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
