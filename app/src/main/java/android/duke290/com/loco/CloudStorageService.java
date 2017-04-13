@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
@@ -46,6 +47,9 @@ public class CloudStorageService extends IntentService {
 
     protected InputStream mDownloadedStream;
     protected String mDownloadedContentType;
+
+    byte[] dwnld_b_ar;
+    int byte_array_conversion_complete = 0;
 
     public CloudStorageService() {
         super("CloudStorageService");
@@ -164,14 +168,24 @@ public class CloudStorageService extends IntentService {
 
     private void deliverResultToReceiver(int resultCode,
                                          String process_message) {
-        byte[] dwnld_b_ar = null;
+        if (mDownloadedStream != null && mActionType.equals("download")) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        dwnld_b_ar = IOUtils.toByteArray(mDownloadedStream);
+                        Log.d(TAG, "size of dwnld_b_ar = " + dwnld_b_ar.length);
+                        byte_array_conversion_complete = 1;
+                    } catch (IOException e) {
+                        Log.d(TAG, "IOException when converting downloaded input stream to byte array");
+                    }
+                }
+            });
 
-        if (mDownloadedStream != null) {
-            try {
-                dwnld_b_ar = inputStreamToByteArray(mDownloadedStream);
-                mDownloadedStream.close();
-            } catch (IOException e) {
-                Log.d(TAG, "IOException when converting downloaded input stream to byte array");
+            while (byte_array_conversion_complete == 0) {
+                // for some reason, putting a statement here fixed a problem where the app
+                // would hang up and seem to get stuck even after completing byte array conversion
+                Log.d(TAG, "converting");
             }
         }
 
@@ -180,21 +194,6 @@ public class CloudStorageService extends IntentService {
         bundle.putByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY", dwnld_b_ar);
         bundle.putString("CLOUD_DOWNLOADED_CONTENT_TYPE", mDownloadedContentType);
         mReceiver.send(resultCode, bundle);
-    }
-
-    private byte[] inputStreamToByteArray(InputStream is) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        int nRead;
-        byte[] data = new byte[16384];
-
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-        }
-
-        buffer.flush();
-
-        return buffer.toByteArray();
     }
 
 }
