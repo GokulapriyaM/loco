@@ -1,6 +1,5 @@
 package android.duke290.com.loco;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +11,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
@@ -41,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, LocationActivity.class));
+            startActivity(new Intent(LoginActivity.this, StartActivity.class));
             finish();
         }
         //set the view now
@@ -107,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    Intent intent = new Intent(LoginActivity.this, LocationActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, StartActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }

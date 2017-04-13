@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="android.duke290.com.loco.LocationActivity">
+    tools:context="android.duke290.com.loco.StartActivity">
 
     <TextView
         android:id="@+id/location_msg"

@@ -9,7 +9,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,11 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationListener;
 
 import org.apache.commons.io.IOUtils;
 
@@ -36,17 +31,13 @@ import java.util.Scanner;
  * Connect to internet -> Gets coordinates -> Gets address -> Displays coordinates/address
  */
 
-public class LocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class StartActivity extends AppCompatActivity {
 
-    GoogleApiClient mGoogleApiClient = null;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
-    // for now, these are always true, but we can change them if needed
-    private boolean mRequestingLocationUpdates = true;
+    // for now, this is always true, but we can change it if needed
     private boolean mAddressRequested = true;
 
-    private LocationRequest mLocationRequest;
     private AddressResultReceiver mAddressResultReceiver;
 
     private Location mCurrentLocation;
@@ -58,25 +49,18 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private CloudResultReceiver mCloudResultReceiver;
 
-    private String TAG = "LocationActivity";
+    private LocationResultReceiver mLocationResultReceiver;
+
+    private String TAG = "StartActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("onCreate called");
+        Log.d(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
 
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
-
-        // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                    .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
 
         // request location permissions if necessary
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -90,30 +74,21 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
     }
 
     public void updateValuesFromBundle(Bundle savedInstanceState) {
-        System.out.println("updating location values");
+        Log.d(TAG, "updating location values");
         if (savedInstanceState != null) {
-            if (savedInstanceState.keySet().contains("REQUESTING_LOCATION_UPDATES_KEY")) {
-                mRequestingLocationUpdates = savedInstanceState.getBoolean(
-                        "REQUESTING_LOCATION_UPDATES_KEY");
-            }
-
             if (savedInstanceState.keySet().contains("LOCATION_KEY")) {
                 // Since LOCATION_KEY was found in the Bundle, we can be sure that
-                // mCurrentLocationis not null.
+                // mCurrentLocation is not null.
                 mCurrentLocation = savedInstanceState.getParcelable("LOCATION_KEY");
             }
         }
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        System.out.println("saving location values");
-        savedInstanceState.putBoolean("REQUESTING_LOCATION_UPDATES_KEY",
-                mRequestingLocationUpdates);
+        Log.d(TAG, "saving location values");
         savedInstanceState.putParcelable("LOCATION_KEY", mCurrentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
-
-
 
     /*
      * Just indicates whether or not user granted permissions (can change implementation if necesssary)
@@ -126,16 +101,12 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    System.out.println("permission granted");
+                    Log.d(TAG, "permission granted");
 
-                    if (mGoogleApiClient.isConnected()) {
-                        System.out.println("starting location updates after permissions");
-                        startLocationUpdates();
-                    }
+                    startLocationService();
 
                 } else {
-
-                    System.out.println("permission not granted");
+                    Log.d(TAG, "permission not granted");
                 }
                 return;
             }
@@ -145,48 +116,30 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     @Override
     protected void onStart() {
-        System.out.println("onStart called");
+        Log.d(TAG, "onStart called");
         super.onStart();
-        mGoogleApiClient.connect();
     }
 
     @Override
     protected void onStop() {
-        System.out.println("onStop called");
+        Log.d(TAG, "onStop called");
         super.onStop();
-        mGoogleApiClient.disconnect();
+
+        this.stopService(new Intent(this, LocationService.class));
     }
 
     @Override
     protected void onPause() {
-        System.out.println("onPause called");
+        Log.d(TAG, "onPause called");
         super.onPause();
-        stopLocationUpdates();
-    }
 
-    protected void stopLocationUpdates() {
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(
-                    mGoogleApiClient, this);
-        }
+        this.stopService(new Intent(this, LocationService.class));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-    }
-
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        if (mRequestingLocationUpdates) {
-            mLocationRequest = new LocationRequest();
-            startLocationUpdates();
-        }
-
+        startLocationService();
     }
 
     protected void getAddress() {
@@ -204,49 +157,6 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
         }
     }
 
-    protected void startLocationUpdates() {
-        System.out.println("startLocationUpdates called");
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
-        }
-    }
-
-    /*
-     * Actions for when a new location is received
-     */
-    public void onLocationChanged(Location location) {
-        System.out.println("onLocationChanged called");
-        mCurrentLocation = location;
-        getAddress();
-        displayLocation();
-    }
-
-    public void displayLocation() {
-        String latitude = String.valueOf(mCurrentLocation.getLatitude());
-        String longitude = String.valueOf(mCurrentLocation.getLongitude());
-        System.out.println("Latitude: " + latitude);
-        System.out.println("Longitude: " + longitude);
-        TextView location_msg = (TextView) findViewById(R.id.location_msg);
-        location_msg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
-
-    }
-
-
-
-    public void onDisconnected() {
-
-    }
-
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    public void onConnectionSuspended(int cause) {
-
-    }
-
     protected void startAddressIntentService() {
         mAddressResultReceiver = new AddressResultReceiver(new Handler());
         Intent intent = new Intent(this, FetchAddressIntentService.class);
@@ -255,22 +165,11 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
         startService(intent);
     }
 
-    class AddressResultReceiver extends ResultReceiver {
-        public AddressResultReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-
-            // Display the address string
-            // or an error message sent from the intent service.
-            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            displayAddressOutput();
-
-            System.out.println("address found");
-
-        }
+    protected void startLocationService() {
+        mLocationResultReceiver = new LocationResultReceiver(new Handler());
+        Intent intent = new Intent(this, LocationService.class);
+        intent.putExtra("LOCATION_RECEIVER", mLocationResultReceiver);
+        startService(intent);
     }
 
     protected void startCloudIntentService(String action,
@@ -302,6 +201,36 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
         startService(intent);
     }
 
+    class LocationResultReceiver extends ResultReceiver {
+        public LocationResultReceiver(Handler handler) { super(handler); }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            mCurrentLocation = resultData.getParcelable("LOCATION_KEY");
+            getAddress();
+            displayLocation();
+        }
+
+    }
+
+    class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            // Display the address string
+            // or an error message sent from the intent service.
+            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+            displayAddressOutput();
+
+            Log.d(TAG, "address found");
+
+        }
+    }
+
     class CloudResultReceiver extends ResultReceiver {
         public CloudResultReceiver(Handler handler) {
             super(handler);
@@ -329,6 +258,15 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
             Log.d(TAG, "Cloud process finished");
 
         }
+    }
+
+    public void displayLocation() {
+        String latitude = String.valueOf(mCurrentLocation.getLatitude());
+        String longitude = String.valueOf(mCurrentLocation.getLongitude());
+        Log.d(TAG, "Latitude: " + latitude + ", " + "Longitude: " + longitude);
+        TextView location_msg = (TextView) findViewById(R.id.location_msg);
+        location_msg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
+
     }
 
     protected void displayAddressOutput() {
@@ -433,22 +371,4 @@ GoogleApiClient.OnConnectionFailedListener, LocationListener {
         startCloudIntentService("download", null, storage_path, "");
     }
 
-    protected InputStream getAssetsFile(String file_path) {
-        AssetManager assetManager = getAssets();
-
-        InputStream inputStream = null;
-
-        try {
-            inputStream = assetManager.open("Text/message.txt");
-        } catch (IOException e) {
-            Log.d(TAG, "Assets file not found");
-        }
-
-        if (inputStream != null) {
-            Log.d(TAG, "Assets file found!");
-        }
-
-        return inputStream;
-
-    }
 }
