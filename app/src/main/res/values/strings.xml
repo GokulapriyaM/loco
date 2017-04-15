@@ -3,6 +3,7 @@
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>
     <string name="enter_email">Enter email address!</string>
+    <string name="enter_name">Enter name!</string>
     <string name="enter_password">Enter password!</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
     <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
@@ -15,7 +16,7 @@
     <string name="title_activity_login">Sign in</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_name">Fullname</string>
+    <string name="hint_name">Name</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Get registered in Loco now!</string>
     <string name="btn_link_to_login">Already registered. Login Here!</string>
@@ -29,8 +30,9 @@
     <string name="btn_remove">Remove</string>
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
-    <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
+    <string name="forgot_password_msg">We just need your registered email to send you password reset instructions.</string>
     <string name="welcome">Welcome to Loco!</string>
     <string name="description">Loco is a location-driven app that allows you to check the happiness level, the pictures taken, the messages posted, and the events happening at YOUR location! \n \n Have fun using Loco!</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="signed_in_as">You are signed in as: </string>
 </resources>

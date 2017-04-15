@@ -24,12 +24,13 @@
         <activity android:name=".StartActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".ProfileActivity" />
 
         <service
             android:name=".FetchAddressIntentService"
             android:exported="false" />
 
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".FacebookActivity" />
 
         <service
             android:name=".CloudStorageService"
