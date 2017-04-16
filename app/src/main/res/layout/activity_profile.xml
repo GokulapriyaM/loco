@@ -60,6 +60,22 @@
             android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
 
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="pictureClick"/>
+
+        <TextView
+            android:id="@+id/addpicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="pictureClick"
+            android:gravity="center_horizontal"
+            android:text="@string/takepicture"
+            android:layout_gravity="center_horizontal"/>
+
         <Button
             android:id="@+id/sign_out"
             style="?android:textAppearanceSmall"

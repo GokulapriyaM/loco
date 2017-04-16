@@ -1,13 +1,16 @@
 package android.duke290.com.loco;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,12 +32,16 @@ public class ProfileActivity extends AppCompatActivity{
     private FirebaseAuth mAuth;
 
     public User currentUser;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    public ImageView mPicture;
+    public TextView mAddPicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        mAddPicture = (TextView) findViewById(R.id.addpicture);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
@@ -102,6 +109,28 @@ public class ProfileActivity extends AppCompatActivity{
         });
     }
 
+    public void pictureClick(View myview){
+        mAddPicture.setVisibility(View.GONE);
+        mPicture = (ImageView) findViewById(R.id.picture);
+        dispatchTakePictureIntent();
+    }
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mPicture.setImageBitmap(imageBitmap);
+        }
+    }
 
     private void setNameText(){
         nameText.setText(currentUser.name);
