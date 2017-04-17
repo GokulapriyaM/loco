@@ -81,15 +81,17 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.d(TAG, "connection achieved");
         mLocationRequest = new LocationRequest();
         startLocationUpdates();
 
     }
 
     protected void startLocationUpdates() {
-        System.out.println("startLocationUpdates called");
+        Log.d(TAG, "startLocationUpdates called");
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "permissions check success");
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
         }

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     private PopupWindow mPopup;
+
+    private String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +126,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void onAuthSuccess(FirebaseUser user) {
-        startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+        Log.d(TAG, "user autheticated");
+        startActivity(new Intent(LoginActivity.this, DatabaseTestingActivity.class));
         finish();
     }
 

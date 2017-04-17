@@ -53,7 +53,7 @@ public class ProfileActivity extends AppCompatActivity{
         mAuth = FirebaseAuth.getInstance();
 
         //get current user
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
