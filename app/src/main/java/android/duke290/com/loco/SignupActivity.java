@@ -26,6 +26,10 @@ public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity";
 
+    private static final String USERS = "users";
+    private static final String USERINFO = "userinfo";
+
+
     private EditText inputEmail, inputName, inputPassword;
     private Button signinButton, signupButton, resetButton;
     private ProgressBar progressBar;
@@ -133,7 +137,7 @@ public class SignupActivity extends AppCompatActivity {
     // [START basic_write]
     private void writeNewUser(String userId, String name, String email) {
         User user = new User(name, email);
-        mDatabase.child("users").child(userId).setValue(user);
+        mDatabase.child(USERS).child(userId).child(USERINFO).setValue(user);
     }
     // [END basic_write]
 

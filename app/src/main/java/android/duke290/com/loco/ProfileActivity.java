@@ -30,6 +30,9 @@ public class ProfileActivity extends AppCompatActivity{
 
     public User currentUser;
 
+    private static final String USERS = "users";
+    private static final String USERINFO = "userinfo";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +82,14 @@ public class ProfileActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * Retrieve user information from Firebase database and set current user of this activity
+     * @param user
+     */
     private void setCurrentUser(FirebaseUser user){
         String uid = user.getUid();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("users").child(uid);
+        DatabaseReference ref = database.getReference(USERS).child(uid).child(USERINFO);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -103,11 +110,14 @@ public class ProfileActivity extends AppCompatActivity{
     }
 
 
+    /**
+     * set name TextView with username
+     */
     private void setNameText(){
         nameText.setText(currentUser.name);
     }
 
-    //sign out method
+
     public void signOut() {
         mAuth.signOut();
     }
@@ -136,10 +146,7 @@ public class ProfileActivity extends AppCompatActivity{
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void hideProgressBar(){
-        progressBar.setVisibility(View.GONE);
-
-    }
+    private void hideProgressBar(){ progressBar.setVisibility(View.GONE); }
 }
 
 
