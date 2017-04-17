@@ -35,4 +35,5 @@
     <string name="description">Loco is a location-driven app that allows you to check the happiness level, the pictures taken, the messages posted, and the events happening at YOUR location! \n \n Have fun using Loco!</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="signed_in_as">You are signed in as: </string>
+    <string name="takepicture">Add your picture here!</string>
 </resources>
