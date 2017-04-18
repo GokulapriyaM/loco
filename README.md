@@ -1,6 +1,7 @@
 Loco
 ======
 ![Loco logo](documentation/loco_logo.png)
+
 Loco is a neat location-driven app that allows users to check or share their pictures, messages, or even happiness level at a specific location.
 
 ## Current Progress
