@@ -129,7 +129,7 @@ public class DatabaseTestingActivity extends AppCompatActivity {
                 mCurrentLocation.getLongitude(), "420 Chapel Drive",
                 "image", "cool beans 3", image_storage_path);
 
-        // upload file
+        // upload test file
 
         resetReceivedCloudItems();
         AssetManager assetManager = getAssets();

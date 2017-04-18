@@ -19,12 +19,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.commons.io.IOUtils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Map;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -43,9 +47,9 @@ public class StartActivity extends AppCompatActivity {
     private Location mCurrentLocation;
     private String mAddressOutput;
 
-    private String mCloudProcessMsg;
-    private InputStream mCloudDownloadedStream;
-    private String mCloudDownloadedContentType;
+    private ArrayList<String> mCloudProcessMsgs;
+    private ArrayList<InputStream> mCloudDownloadedStreams;
+    private ArrayList<String> mCloudDownloadedContentTypes;
 
     private CloudResultReceiver mCloudResultReceiver;
 
@@ -57,7 +61,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location);
+        setContentView(R.layout.activity_start);
 
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
@@ -175,50 +179,6 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
-//    protected void startAddressIntentService() {
-//        mAddressResultReceiver = new AddressResultReceiver(new Handler());
-//        Intent intent = new Intent(this, FetchAddressIntentService.class);
-//        intent.putExtra(Constants.RECEIVER, mAddressResultReceiver);
-//        intent.putExtra(Constants.LOCATION_DATA_EXTRA, mCurrentLocation);
-//        startService(intent);
-//    }
-//
-//    protected void startLocationService() {
-//        mLocationResultReceiver = new LocationResultReceiver(new Handler());
-//        Intent intent = new Intent(this, LocationService.class);
-//        intent.putExtra("LOCATION_RECEIVER", mLocationResultReceiver);
-//        startService(intent);
-//    }
-//
-//    protected void startCloudIntentService(String action,
-//                                           InputStream local_stream,
-//                                           String storage_path,
-//                                           String content_type) {
-//        Log.d(TAG, "starting cloud intent service");
-//        mCloudResultReceiver = new CloudResultReceiver(new Handler());
-//        Intent intent = new Intent(this, CloudStorageService.class);
-//        intent.putExtra("CLOUD_STORAGE_OPTION", action);
-//        intent.putExtra("CLOUD_STORAGE_RECEIVER", mCloudResultReceiver);
-//
-//        byte[] uplded_b_ar = null;
-//
-//        if (local_stream != null) {
-//            try {
-//                uplded_b_ar = IOUtils.toByteArray(local_stream);
-//            } catch (IOException e) {
-//                Log.d(TAG, "IOException when converting downloaded input stream to byte array");
-//            }
-//        } else {
-//            Log.d(TAG, "local_stream to upload is missing (ok if downloading something)");
-//        }
-//
-//        intent.putExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY", uplded_b_ar);
-//        intent.putExtra("CLOUD_STORAGE_STORAGE_PATH", storage_path);
-//        intent.putExtra("CLOUD_STORAGE_CONTENT_TYPE", content_type);
-//
-//        startService(intent);
-//    }
-
     class LocationResultReceiver extends ResultReceiver {
         public LocationResultReceiver(Handler handler) { super(handler); }
 
@@ -260,16 +220,16 @@ public class StartActivity extends AppCompatActivity {
 
             // Display the address string
             // or an error message sent from the intent service.
-            mCloudProcessMsg = resultData.getString("CLOUD_PROCESS_MSG_KEY");
+            mCloudProcessMsgs.add(resultData.getString("CLOUD_PROCESS_MSG_KEY"));
 
             if (resultData.getByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY") != null) {
                 Log.d(TAG, "Cloud downloaded stream not null");
-                mCloudDownloadedStream = new ByteArrayInputStream(
-                        resultData.getByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY"));
+                mCloudDownloadedStreams.add(new ByteArrayInputStream(
+                        resultData.getByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY")));
             }
 
-            mCloudDownloadedContentType = resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE");
-            Log.d(TAG, "Downloaded content type: " + mCloudDownloadedContentType);
+            mCloudDownloadedContentTypes.add(resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
+            Log.d(TAG, "Downloaded content type: " + resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
 
             displayCloudOutput();
 
@@ -292,93 +252,60 @@ public class StartActivity extends AppCompatActivity {
         address_msg.setText(mAddressOutput);
     }
 
+    /*
+     * must be called once stuff is received, i.e. stuff inside this method cannot be put in
+     * another separate method unless it is called by onReceiveResult
+     */
     protected void displayCloudOutput() {
+        Log.d(TAG, "displayCloudOutput called");
         TextView process_msg = (TextView) findViewById(R.id.process_msg);
-        TextView downloaded_msg = (TextView) findViewById(R.id.downloaded_msg);
-        ImageView downloaded_img = (ImageView) findViewById(R.id.downloaded_image);
 
-        process_msg.setText(mCloudProcessMsg);
+        ImageView downloaded_img_1 = (ImageView) findViewById(R.id.photo1);
+        ImageView downloaded_img_2 = (ImageView) findViewById(R.id.photo2);
 
-        // read file, save to downloaded_msg
-        if (mCloudDownloadedStream != null) {
+        // ***Important*** reset inputstreams (inputstreams need to be reset after use)
 
-            if (mCloudDownloadedContentType.equals("text")) {
-                Log.d(TAG, "Displaying cloud downloaded text");
-                String msg = "";
-                try {
-                    Scanner s = new Scanner(mCloudDownloadedStream).useDelimiter("\\A");
-                    msg = s.hasNext() ? s.next() : "";
-                    Log.d(TAG, "Downloaded message:" + msg);
-
-                    mCloudDownloadedStream.close();
-
-                    downloaded_msg.setText(msg);
-
-                } catch (IOException e) {
-                    Log.d(TAG, "InputStream creation from downloaded file failed");
-                }
-            } else if (mCloudDownloadedContentType.equals("image")) {
-                Log.d(TAG, "Displaying cloud downloaded image");
-                downloaded_img.setImageBitmap(
-                        BitmapFactory.decodeStream(mCloudDownloadedStream));
+        for (InputStream is : mCloudDownloadedStreams) {
+            try {
+                is.reset();
+            } catch (IOException e) {
+                Log.d(TAG, "IOException while reseting inputstreams");
             }
         }
 
+        process_msg.setText(mCloudProcessMsgs.get(mCloudProcessMsgs.size() - 1));
+
+        Log.d(TAG, "mCloudDownloadedStreams size: " +
+                (mCloudDownloadedStreams.size()));
+
+        // read file, save to downloaded_msg
+        if (mCloudDownloadedStreams.size() >= 1) {
+            if (mCloudDownloadedContentTypes.get(0).equals("image")) {
+                Log.d(TAG, "Displaying cloud downloaded image (1)");
+                downloaded_img_1.setImageBitmap(
+                        BitmapFactory .decodeStream(mCloudDownloadedStreams.get(0)));
+            }
+
+            if (mCloudDownloadedStreams.size() >= 2) {
+                if (mCloudDownloadedContentTypes.get(1).equals("image")) {
+                    Log.d(TAG, "Displaying cloud downloaded image (2)");
+                    downloaded_img_2.setImageBitmap(
+                            BitmapFactory .decodeStream(mCloudDownloadedStreams.get(1)));
+                }
+            }
+        }
     }
 
     protected void resetReceivedCloudItems() {
-        mCloudProcessMsg = "";
-        mCloudDownloadedStream = null;
-        mCloudDownloadedContentType = "";
-    }
-
-    protected void uploadTextClick(View button) {
-        resetReceivedCloudItems();
-        AssetManager assetManager = getAssets();
-        InputStream textStream = null;
-
-        try {
-            textStream = assetManager.open("Text/message.txt");
-        } catch (IOException e) {
-            Log.d(TAG, "IOException opening local file");
-        }
-
-        uploadStreamToFirebaseStorage(textStream,
-                "Coordinates/123/message.txt",
-                "text");
-    }
-
-    protected void downloadTextClick(View button) {
-        resetReceivedCloudItems();
-        downloadStreamFromFirebaseStorage("Coordinates/123/message.txt");
-    }
-
-    protected void uploadImageClick(View button) {
-        resetReceivedCloudItems();
-        AssetManager assetManager = getAssets();
-        InputStream imageStream = null;
-
-        try {
-            imageStream = assetManager.open("Images/testimage.png");
-        } catch (IOException e) {
-            Log.d(TAG, "IOException opening local file");
-        }
-
-        uploadStreamToFirebaseStorage(imageStream,
-                "Coordinates/123/image.gif",
-                "image");
-    }
-
-    protected void downloadImageClick(View button) {
-        resetReceivedCloudItems();
-        downloadStreamFromFirebaseStorage("Coordinates/123/image.gif");
+        mCloudProcessMsgs = new ArrayList<String>();
+        mCloudDownloadedStreams = new ArrayList<InputStream>();
+        mCloudDownloadedContentTypes = new ArrayList<String>();
     }
 
     protected void uploadStreamToFirebaseStorage(InputStream inputStream,
                                                  String storage_path,
                                                  String content_type) {
         Log.d(TAG, "uploading stream to firebase storage (" + content_type + ")");
-//        startCloudIntentService("upload", inputStream, storage_path, content_type);
         ServiceStarter.startCloudIntentService("upload",
                 inputStream,
                 storage_path,
@@ -392,7 +319,6 @@ public class StartActivity extends AppCompatActivity {
      */
     protected void downloadStreamFromFirebaseStorage(String storage_path) {
         Log.d(TAG, "downloading stream from firebase storage");
-//        startCloudIntentService("download", null, storage_path, "");
         ServiceStarter.startCloudIntentService("download",
                 null,
                 storage_path,
@@ -400,5 +326,109 @@ public class StartActivity extends AppCompatActivity {
                 getApplicationContext(),
                 mCloudResultReceiver);
     }
+
+    protected void uploadClick(View button) {
+        Log.d(TAG, "upload button clicked");
+        resetReceivedCloudItems();
+
+        String image_storage_path = DatabaseAction.createImageStoragePath();
+
+        Creation new_reference = new Creation(mCurrentLocation.getLatitude(),
+                mCurrentLocation.getLongitude(), "420 Chapel Drive",
+                "image", "cool beans 3", image_storage_path);
+
+        // upload test file
+        AssetManager assetManager = getAssets();
+        InputStream imageStream = null;
+
+        try {
+            imageStream = assetManager.open("Images/ola_pic.gif");
+        } catch (IOException e) {
+            Log.d(TAG, "IOException opening local file");
+        }
+
+        uploadStreamToFirebaseStorage(imageStream,
+                image_storage_path,
+                "image");
+
+        ///
+
+        DatabaseAction.putCreationInFirebaseDatabase(new_reference, mCurrentLocation);
+
+    }
+
+    protected void getClick(View button) {
+        Log.d(TAG, "get button clicked");
+        resetReceivedCloudItems();
+
+        DatabaseReference ref = DatabaseAction.getDatabaseReferenceForGet(mCurrentLocation);
+
+        ref.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Get map of users in datasnapshot
+                        collectCreations((Map<String,Object>) dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //handle databaseError
+                    }
+                });
+
+    }
+
+    private void collectCreations(Map<String,Object> creations) {
+
+        ArrayList<String> outputMessageList = new ArrayList<String>();
+
+        ArrayList<String> storage_path_list = new ArrayList<String>();
+
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : creations.entrySet()){
+
+            //Get user map
+            Map singleCreation = (Map) entry.getValue();
+
+            Log.d(TAG, "received creation");
+            //Get phone field and append to list
+            Log.d(TAG, "adding message: " + singleCreation.get("message").toString());
+            outputMessageList.add(singleCreation.get("message").toString());
+
+            if (singleCreation.get("type").equals("image")) {
+                storage_path_list.add(singleCreation.get("extra_storage_path").toString());
+            }
+        }
+
+        Log.d(TAG, "storage paths found");
+
+        downloadStreamFromFirebaseStorage(storage_path_list.get(0));
+        downloadStreamFromFirebaseStorage(storage_path_list.get(1));
+
+        displayOutputMessages(outputMessageList);
+
+    }
+
+    /*
+     * As messages were never stored in the cloud, they are already available once collectCreations
+     * finishes collecting Creations
+     */
+    private void displayOutputMessages(ArrayList<String> list) {
+        TextView out_msgs = (TextView) findViewById(R.id.user1post);
+
+        String concat_output_messages = "";
+        for (int k1 = 0; k1 < list.size(); k1++) {
+            if (k1 > 0) {
+                concat_output_messages += ", ";
+            }
+            concat_output_messages += list.get(k1);
+        }
+
+        out_msgs.setText(concat_output_messages);
+
+    }
+
+
 
 }
