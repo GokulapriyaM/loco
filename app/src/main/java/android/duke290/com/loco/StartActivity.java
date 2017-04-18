@@ -71,6 +71,10 @@ public class StartActivity extends AppCompatActivity {
             return;
         }
 
+        mAddressResultReceiver = new AddressResultReceiver(new Handler());
+        mLocationResultReceiver = new LocationResultReceiver(new Handler());
+        mCloudResultReceiver = new CloudResultReceiver(new Handler());
+
     }
 
     public void updateValuesFromBundle(Bundle savedInstanceState) {
@@ -103,7 +107,9 @@ public class StartActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "permission granted");
 
-                    startLocationService();
+//                    startLocationService();
+                    ServiceStarter.startLocationService(getApplicationContext(),
+                            mLocationResultReceiver);
 
                 } else {
                     Log.d(TAG, "permission not granted");
@@ -146,7 +152,10 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        startLocationService();
+//        startLocationService();
+        ServiceStarter.startLocationService(getApplicationContext(),
+                mLocationResultReceiver);
+
     }
 
     protected void getAddress() {
@@ -159,54 +168,56 @@ public class StartActivity extends AppCompatActivity {
             }
 
             if (mAddressRequested) {
-                startAddressIntentService();
+//                startAddressIntentService();
+                ServiceStarter.startAddressIntentService(getApplicationContext(),
+                        mAddressResultReceiver, mCurrentLocation);
             }
         }
     }
 
-    protected void startAddressIntentService() {
-        mAddressResultReceiver = new AddressResultReceiver(new Handler());
-        Intent intent = new Intent(this, FetchAddressIntentService.class);
-        intent.putExtra(Constants.RECEIVER, mAddressResultReceiver);
-        intent.putExtra(Constants.LOCATION_DATA_EXTRA, mCurrentLocation);
-        startService(intent);
-    }
-
-    protected void startLocationService() {
-        mLocationResultReceiver = new LocationResultReceiver(new Handler());
-        Intent intent = new Intent(this, LocationService.class);
-        intent.putExtra("LOCATION_RECEIVER", mLocationResultReceiver);
-        startService(intent);
-    }
-
-    protected void startCloudIntentService(String action,
-                                           InputStream local_stream,
-                                           String storage_path,
-                                           String content_type) {
-        Log.d(TAG, "starting cloud intent service");
-        mCloudResultReceiver = new CloudResultReceiver(new Handler());
-        Intent intent = new Intent(this, CloudStorageService.class);
-        intent.putExtra("CLOUD_STORAGE_OPTION", action);
-        intent.putExtra("CLOUD_STORAGE_RECEIVER", mCloudResultReceiver);
-
-        byte[] uplded_b_ar = null;
-
-        if (local_stream != null) {
-            try {
-                uplded_b_ar = IOUtils.toByteArray(local_stream);
-            } catch (IOException e) {
-                Log.d(TAG, "IOException when converting downloaded input stream to byte array");
-            }
-        } else {
-            Log.d(TAG, "local_stream to upload is missing (ok if downloading something)");
-        }
-
-        intent.putExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY", uplded_b_ar);
-        intent.putExtra("CLOUD_STORAGE_STORAGE_PATH", storage_path);
-        intent.putExtra("CLOUD_STORAGE_CONTENT_TYPE", content_type);
-
-        startService(intent);
-    }
+//    protected void startAddressIntentService() {
+//        mAddressResultReceiver = new AddressResultReceiver(new Handler());
+//        Intent intent = new Intent(this, FetchAddressIntentService.class);
+//        intent.putExtra(Constants.RECEIVER, mAddressResultReceiver);
+//        intent.putExtra(Constants.LOCATION_DATA_EXTRA, mCurrentLocation);
+//        startService(intent);
+//    }
+//
+//    protected void startLocationService() {
+//        mLocationResultReceiver = new LocationResultReceiver(new Handler());
+//        Intent intent = new Intent(this, LocationService.class);
+//        intent.putExtra("LOCATION_RECEIVER", mLocationResultReceiver);
+//        startService(intent);
+//    }
+//
+//    protected void startCloudIntentService(String action,
+//                                           InputStream local_stream,
+//                                           String storage_path,
+//                                           String content_type) {
+//        Log.d(TAG, "starting cloud intent service");
+//        mCloudResultReceiver = new CloudResultReceiver(new Handler());
+//        Intent intent = new Intent(this, CloudStorageService.class);
+//        intent.putExtra("CLOUD_STORAGE_OPTION", action);
+//        intent.putExtra("CLOUD_STORAGE_RECEIVER", mCloudResultReceiver);
+//
+//        byte[] uplded_b_ar = null;
+//
+//        if (local_stream != null) {
+//            try {
+//                uplded_b_ar = IOUtils.toByteArray(local_stream);
+//            } catch (IOException e) {
+//                Log.d(TAG, "IOException when converting downloaded input stream to byte array");
+//            }
+//        } else {
+//            Log.d(TAG, "local_stream to upload is missing (ok if downloading something)");
+//        }
+//
+//        intent.putExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY", uplded_b_ar);
+//        intent.putExtra("CLOUD_STORAGE_STORAGE_PATH", storage_path);
+//        intent.putExtra("CLOUD_STORAGE_CONTENT_TYPE", content_type);
+//
+//        startService(intent);
+//    }
 
     class LocationResultReceiver extends ResultReceiver {
         public LocationResultReceiver(Handler handler) { super(handler); }
@@ -367,7 +378,13 @@ public class StartActivity extends AppCompatActivity {
                                                  String storage_path,
                                                  String content_type) {
         Log.d(TAG, "uploading stream to firebase storage (" + content_type + ")");
-        startCloudIntentService("upload", inputStream, storage_path, content_type);
+//        startCloudIntentService("upload", inputStream, storage_path, content_type);
+        ServiceStarter.startCloudIntentService("upload",
+                inputStream,
+                storage_path,
+                content_type,
+                getApplicationContext(),
+                mCloudResultReceiver);
     }
 
     /*
@@ -375,7 +392,13 @@ public class StartActivity extends AppCompatActivity {
      */
     protected void downloadStreamFromFirebaseStorage(String storage_path) {
         Log.d(TAG, "downloading stream from firebase storage");
-        startCloudIntentService("download", null, storage_path, "");
+//        startCloudIntentService("download", null, storage_path, "");
+        ServiceStarter.startCloudIntentService("download",
+                null,
+                storage_path,
+                "",
+                getApplicationContext(),
+                mCloudResultReceiver);
     }
 
 }
