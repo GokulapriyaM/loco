@@ -383,22 +383,23 @@ public class StartActivity extends AppCompatActivity {
         ArrayList<String> storage_path_list = new ArrayList<String>();
 
         //iterate through each user, ignoring their UID
-        for (Map.Entry<String, Object> entry : creations.entrySet()){
+        if (creations != null) {
+            for (Map.Entry<String, Object> entry : creations.entrySet()) {
 
-            //Get user map
-            Map singleCreation = (Map) entry.getValue();
+                //Get user map
+                Map singleCreation = (Map) entry.getValue();
 
-            Log.d(TAG, "received creation");
-            //Get phone field and append to list
-            Log.d(TAG, "adding message: " + singleCreation.get("message").toString());
-            outputMessageList.add(singleCreation.get("message").toString());
+                Log.d(TAG, "received creation");
+                //Get phone field and append to list
+                Log.d(TAG, "adding message: " + singleCreation.get("message").toString());
+                outputMessageList.add(singleCreation.get("message").toString());
 
-            if (singleCreation.get("type").equals("image")) {
-                storage_path_list.add(singleCreation.get("extra_storage_path").toString());
+                if (singleCreation.get("type").equals("image")) {
+                    Log.d(TAG, "storage paths found");
+                    storage_path_list.add(singleCreation.get("extra_storage_path").toString());
+                }
             }
         }
-
-        Log.d(TAG, "storage paths found");
 
         if (storage_path_list.size() >= 1) {
             downloadStreamFromFirebaseStorage(storage_path_list.get(0));
