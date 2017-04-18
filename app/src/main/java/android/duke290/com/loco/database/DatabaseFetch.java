@@ -1,4 +1,4 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.database;
 
 import android.util.Log;
 

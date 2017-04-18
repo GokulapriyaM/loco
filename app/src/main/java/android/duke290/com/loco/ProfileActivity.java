@@ -1,16 +1,10 @@
 package android.duke290.com.loco;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,7 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,11 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class ProfileActivity extends AppCompatActivity{
     private static final String TAG = "ProfileActivity";
@@ -64,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        mAddPicture = (TextView) findViewById(R.id.addpicture);
+        //mAddPicture = (TextView) findViewById(R.id.addpicture);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
@@ -110,6 +98,31 @@ public class ProfileActivity extends AppCompatActivity{
     }
 
     /**
+     * set name TextView with username
+     */
+    private void setNameText(){
+        nameText.setText(currentUser.name);
+    }
+
+
+    public void signOut() {
+        mAuth.signOut();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(authListener);
+    }
+
+
+    /**
      * Retrieve user information from Firebase database and set current user of this activity
      * @param user
      */
@@ -136,7 +149,7 @@ public class ProfileActivity extends AppCompatActivity{
         });
     }
 
-    public void pictureClick(View myview){
+/*    public void pictureClick(View myview){
         mAddPicture.setVisibility(View.GONE);
         mPicture = (ImageView) findViewById(R.id.picture);
         dispatchTakePictureIntent();
@@ -172,9 +185,9 @@ public class ProfileActivity extends AppCompatActivity{
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,  *//* prefix *//*
+                ".jpg",         *//* suffix *//*
+                storageDir      *//* directory *//*
         );
 
         // Save a file: path for use with ACTION_VIEW intents
@@ -201,9 +214,10 @@ public class ProfileActivity extends AppCompatActivity{
                 // TODO Auto-generated method stub
                 Log.d(TAG, "done scanning");
 
-            }
+   //         }
         });
     }
+
 
 
 
@@ -272,33 +286,8 @@ public class ProfileActivity extends AppCompatActivity{
             // other 'case' lines to check for other
             // permissions this app might request
         }
-    }
+    }*/
 
-
-
-    /**
-     * set name TextView with username
-     */
-    private void setNameText(){
-        nameText.setText(currentUser.name);
-    }
-
-
-    public void signOut() {
-        mAuth.signOut();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(authListener);
-    }
 
     @Override
     public void onStop() {

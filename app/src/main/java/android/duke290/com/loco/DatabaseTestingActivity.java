@@ -29,9 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Map;
-import java.util.Scanner;
 
 
 public class DatabaseTestingActivity extends AppCompatActivity {
@@ -39,6 +37,7 @@ public class DatabaseTestingActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
     private String mCloudProcessMsg;
+
     private InputStream mCloudDownloadedStream;
     private String mCloudDownloadedContentType;
     private CloudResultReceiver mCloudResultReceiver;

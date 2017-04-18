@@ -44,4 +44,5 @@
     <string name="signout">Sign-Out</string>
     <string name="latest">Latest Activity!</string>
     <string name="more">Check more!</string>
+    <string name="thingsshared">Things you shared!</string>
 </resources>

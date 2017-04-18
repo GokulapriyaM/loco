@@ -45,50 +45,49 @@
         android:layout_below="@+id/latestactivity"
         card_view:cardUseCompatPadding="true"
         android:id="@+id/cvphotos">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            >
+            android:padding="16dp">
+
             <TextView
                 android:id="@+id/photoscv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:textSize="15sp"
                 android:text="@string/photos"
-                />
+                android:textSize="15sp" />
+
             <ImageView
                 android:id="@+id/photo1"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/photoscv"
                 android:layout_marginTop="10dp"
-                android:scaleType="fitXY"
                 android:adjustViewBounds="true"
-                android:src="@drawable/testimage"
-                />
+                android:scaleType="fitXY"
+                android:src="@drawable/testimage" />
+
             <ImageView
                 android:id="@+id/photo2"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/photoscv"
-                android:layout_toEndOf="@+id/photo1"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="30dp"
-                android:scaleType="fitXY"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/photo1"
                 android:adjustViewBounds="true"
-                android:src="@drawable/testimage"
-                />
+                android:scaleType="fitXY"
+                android:src="@drawable/testimage" />
 
             <TextView
                 android:id="@+id/checkpics"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textSize="10sp"
                 android:text="@string/more"
-                />
+                android:textSize="10sp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
@@ -100,42 +99,42 @@
         android:layout_below="@+id/cvphotos"
         card_view:cardUseCompatPadding="true"
         android:id="@+id/cvposts">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            >
+            android:padding="16dp">
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/postscv"
-                android:layout_alignParentTop="true"
-                android:textSize="15sp"
-                android:text="@string/posts"
-                />
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="@string/posts"
+                android:textSize="15sp" />
+
+            <TextView
                 android:id="@+id/user1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/postscv"
                 android:layout_marginTop="15dp"
-                android:text="username1"
-                />
+                android:text="username1" />
+
             <TextView
+                android:id="@+id/user1post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/user1post"
                 android:layout_below="@+id/user1"
-                android:text="This is Test 1 user!"
-                />
+                android:text="This is Test 1 user!" />
+
             <TextView
                 android:id="@+id/checkposts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textSize="10sp"
                 android:text="@string/more"
-                />
+                android:textSize="10sp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
