@@ -1,10 +1,16 @@
 package android.duke290.com.loco;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +28,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class ProfileActivity extends AppCompatActivity{
     private static final String TAG = "ProfileActivity";
@@ -33,7 +47,13 @@ public class ProfileActivity extends AppCompatActivity{
 
     public User currentUser;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-
+    static final int REQUEST_STORAGE = 1;
+    static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
+    // variables used for Camera
+    private Bitmap mBitmap;
+    private Uri mUri;
+    public String mCurrentPhotoPath;
+    private File mFile;
     public ImageView mPicture;
     public TextView mAddPicture;
 
@@ -134,10 +154,127 @@ public class ProfileActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mPicture.setImageBitmap(imageBitmap);
+            mBitmap = (Bitmap) extras.get("data");
+            mPicture.setImageBitmap(mBitmap);
+            try {
+                checkPermission();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
+
+    // Saving the full-size image in Gallery so that it could be used by other apps
+    // Creating a unique filename with timestamp
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        Log.d(TAG, "image path " + mCurrentPhotoPath);
+        return image;
+    }
+
+    // Add picture to gallery
+    private void galleryAddPic() throws IOException {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = createImageFile();
+        Uri contentUri = Uri.fromFile(f);
+        Log.d(TAG, "content uri: " + contentUri);
+        Log.d(TAG, "photo uri before gallery: " + mCurrentPhotoPath);
+        MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "", "");
+        mediaScanIntent.setData(contentUri);
+        Log.d(TAG, "here going to gallery");
+        this.sendBroadcast(mediaScanIntent);
+        MediaScannerConnection.scanFile(getApplicationContext(), new String[] { mCurrentPhotoPath }, null, new MediaScannerConnection.OnScanCompletedListener() {
+
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+                // TODO Auto-generated method stub
+                Log.d(TAG, "done scanning");
+
+            }
+        });
+    }
+
+
+
+    // Checking for permissions
+    private void checkPermission() throws IOException {
+        if (ContextCompat.checkSelfPermission(ProfileActivity.this,
+                WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(ProfileActivity.this,
+                    WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                Toast.makeText(getApplicationContext(), "Storing the image in Gallery",Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{WRITE_EXTERNAL_STORAGE},
+                        REQUEST_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            //MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "" , "");
+            galleryAddPic();
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    //MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "" , "");
+                    try {
+                        galleryAddPic();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(getApplicationContext(), "Couldn't store image in Gallery",Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
 
     /**
      * set name TextView with username
