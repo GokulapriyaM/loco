@@ -275,9 +275,6 @@ public class StartActivity extends AppCompatActivity {
 
         process_msg.setText(mCloudProcessMsgs.get(mCloudProcessMsgs.size() - 1));
 
-        Log.d(TAG, "mCloudDownloadedStreams size: " +
-                (mCloudDownloadedStreams.size()));
-
         // read file, save to downloaded_msg
         if (mCloudDownloadedStreams.size() >= 1) {
             if (mCloudDownloadedContentTypes.get(0).equals("image")) {
@@ -403,8 +400,12 @@ public class StartActivity extends AppCompatActivity {
 
         Log.d(TAG, "storage paths found");
 
-        downloadStreamFromFirebaseStorage(storage_path_list.get(0));
-        downloadStreamFromFirebaseStorage(storage_path_list.get(1));
+        if (storage_path_list.size() >= 1) {
+            downloadStreamFromFirebaseStorage(storage_path_list.get(0));
+            if (storage_path_list.size() >= 2) {
+                downloadStreamFromFirebaseStorage(storage_path_list.get(1));
+            }
+        }
 
         displayOutputMessages(outputMessageList);
 
