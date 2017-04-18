@@ -36,4 +36,12 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="signed_in_as">You are signed in as: </string>
     <string name="takepicture">Add your picture here!</string>
+    <string name="home">Home</string>
+    <string name="photos">Photos</string>
+    <string name="posts">Posts</string>
+    <string name="event">Events</string>
+    <string name="facts">Facts</string>
+    <string name="signout">Sign-Out</string>
+    <string name="latest">Latest Activity!</string>
+    <string name="more">Check more!</string>
 </resources>

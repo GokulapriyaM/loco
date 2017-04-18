@@ -16,17 +16,128 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="location_msg"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/address_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="60dp"
         android:text="getting geocode address..."
         android:layout_below="@+id/location_msg"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/latestactivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/latest"
+        android:layout_below="@+id/location_msg"
+        />
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="2dip"
+        android:layout_below="@+id/latestactivity"
+        card_view:cardUseCompatPadding="true"
+        android:id="@+id/cvphotos">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            >
+            <TextView
+                android:id="@+id/photoscv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textSize="15sp"
+                android:text="@string/photos"
+                />
+            <ImageView
+                android:id="@+id/photo1"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/photoscv"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:src="@drawable/testimage"
+                />
+            <ImageView
+                android:id="@+id/photo2"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/photoscv"
+                android:layout_toEndOf="@+id/photo1"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="30dp"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:src="@drawable/testimage"
+                />
+
+            <TextView
+                android:id="@+id/checkpics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textSize="10sp"
+                android:text="@string/more"
+                />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="2dip"
+        android:layout_below="@+id/cvphotos"
+        card_view:cardUseCompatPadding="true"
+        android:id="@+id/cvposts">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/postscv"
+                android:layout_alignParentTop="true"
+                android:textSize="15sp"
+                android:text="@string/posts"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user1"
+                android:layout_below="@+id/postscv"
+                android:layout_marginTop="15dp"
+                android:text="username1"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user1post"
+                android:layout_below="@+id/user1"
+                android:text="This is Test 1 user!"
+                />
+            <TextView
+                android:id="@+id/checkposts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textSize="10sp"
+                android:text="@string/more"
+                />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
     <Button
         android:id="@+id/upload_button"
@@ -35,7 +146,7 @@
         android:layout_marginTop="14dp"
         android:onClick="uploadTextClick"
         android:text="Upload Text"
-        android:layout_below="@+id/address_msg"
+        android:layout_below="@+id/cvposts"
         android:layout_alignEnd="@+id/button2" />
 
     <Button
@@ -55,7 +166,7 @@
         android:text="process message"
         android:layout_below="@+id/button2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp" />
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/downloaded_msg"
@@ -64,16 +175,7 @@
         android:text="downloaded message"
         android:layout_below="@+id/process_msg"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp" />
-
-    <ImageView
-        android:id="@+id/downloaded_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/cast_album_art_placeholder"
-        android:layout_marginTop="17dp"
-        android:layout_below="@+id/downloaded_msg"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginTop="10dp" />
 
     <Button
         android:id="@+id/button2"
@@ -95,5 +197,14 @@
         android:layout_above="@+id/process_msg"
         android:layout_toEndOf="@+id/button2"
         android:layout_marginStart="24dp" />
+
+    <ImageView
+        android:id="@+id/downloaded_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/cast_album_art_placeholder"
+        android:layout_marginTop="17dp"
+        android:layout_below="@+id/downloaded_msg"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

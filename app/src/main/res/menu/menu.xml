@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/home"
+            android:title="@string/home"
+            android:onClick="onquiz1click"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    <item android:id="@+id/photos"
+            android:title="@string/photos"
+            android:onClick="onquiz2click"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    <item android:id="@+id/posts"
+        android:title="@string/posts"
+        android:onClick="onquiz2click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <item android:id="@+id/events"
+        android:title="@string/event"
+        android:onClick="onquiz2click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <item android:id="@+id/facts"
+        android:title="@string/photos"
+        android:onClick="onquiz2click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <item android:id="@+id/signout"
+        android:title="@string/signout"
+        android:onClick="onquiz2click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</menu>

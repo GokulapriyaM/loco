@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onAuthSuccess(FirebaseUser user) {
         Log.d(TAG, "user autheticated");
-        startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+        startActivity(new Intent(LoginActivity.this, StartActivity.class));
         finish();
     }
 
