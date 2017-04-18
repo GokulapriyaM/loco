@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.duke290.com.loco.database.DatabaseAction;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
@@ -430,6 +431,9 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-
+    protected void profileClick(View view){
+        startActivity(new Intent(StartActivity.this, ProfileActivity.class));
+        finish();
+    }
 
 }

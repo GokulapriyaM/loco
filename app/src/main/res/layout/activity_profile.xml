@@ -95,8 +95,7 @@
                     android:layout_below="@+id/photoscv"
                     android:layout_marginTop="10dp"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/testimage" />
+                    android:scaleType="fitXY" />
 
                 <ImageView
                     android:id="@+id/photo2"
@@ -107,8 +106,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/photo1"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/testimage" />
+                    android:scaleType="fitXY" />
 
                 <ImageView
                     android:id="@+id/photo3"
@@ -119,8 +117,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/photo2"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/testimage" />
+                    android:scaleType="fitXY" />
 
                 <TextView
                     android:id="@+id/checkpics"
@@ -158,29 +155,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/postscv"
-                    android:layout_marginTop="15dp"
-                    android:text="username1" />
+                    android:layout_marginTop="15dp" />
 
                 <TextView
                     android:id="@+id/post2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/post1"
-                    android:text="This is Test 1 user!" />
+                    android:layout_below="@+id/post1" />
 
                 <TextView
                     android:id="@+id/post3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/post2"
-                    android:text="This is Test 1 user!" />
+                    android:layout_below="@+id/post2" />
 
                 <TextView
                     android:id="@+id/post4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/post3"
-                    android:text="This is Test 1 user!" />
+                    android:layout_below="@+id/post3" />
 
                 <TextView
                     android:id="@+id/checkposts"

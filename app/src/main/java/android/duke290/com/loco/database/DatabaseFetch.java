@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class DatabaseFetch {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
+    private FirebaseStorage mStorage;
 
     final String USERS = "users";
     final String CONTENT = "content";
@@ -22,15 +25,15 @@ public class DatabaseFetch {
 
     final String decimalRoundTo = "3";
 
-    final String TAG = "DatabaseTestingActivity";
+    final String TAG = "DatabaseFetch";
 
-    private ArrayList<String> messages;
-    private ArrayList<String> storagepaths;
+    private DatabaseFetchCallback mActivityClass;
 
-
-    public DatabaseFetch() {
+    public DatabaseFetch(DatabaseFetchCallback activityClass) {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
+        mStorage = FirebaseStorage.getInstance();
+        mActivityClass = activityClass;
     }
 
     public void fetchByCoordinate(String coordNameLookup) {
@@ -53,7 +56,7 @@ public class DatabaseFetch {
     }
 
     public void fetchByUser(String uid) {
-        DatabaseReference ref = mDatabase.getReference(USERS).child(CONTENT).child(uid);
+        DatabaseReference ref = mDatabase.getReference(USERS).child(uid).child(CONTENT);
         ref.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -70,8 +73,8 @@ public class DatabaseFetch {
     }
 
     private void collectCreations(Map<String, Object> creations) {
-        messages = new ArrayList<>();
-        storagepaths = new ArrayList<>();
+        ArrayList<String> messages = new ArrayList<>();
+        ArrayList<StorageReference> storagepaths = new ArrayList<>();
 
         //iterate through each user, ignoring their reference id
         for (Map.Entry<String, Object> entry : creations.entrySet()) {
@@ -85,17 +88,14 @@ public class DatabaseFetch {
 
             if (singleCreation.get("type").equals("image")) {
                 String storage_path = singleCreation.get("extra_storage_path").toString();
-                storagepaths.add(storage_path);
+                StorageReference storageRef = mStorage.getReference().child(storage_path);
+                storagepaths.add(storageRef);
             }
         }
+        Log.d(TAG, "Messages: " + messages.toString());
+        Log.d(TAG, "Storagepaths: " + storagepaths.toString());
+        mActivityClass.onDatabaseResultReceived(messages, storagepaths);
     }
 
-    public ArrayList<String> getMessages(){
-        return messages;
-    }
-
-    public ArrayList<String> getStoragepaths(){
-        return storagepaths;
-    }
 
 }

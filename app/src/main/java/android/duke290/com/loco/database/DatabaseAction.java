@@ -1,19 +1,12 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.database;
 
+import android.duke290.com.loco.Creation;
 import android.location.Location;
-import android.util.Log;
-import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by kevinkuo on 4/18/17.

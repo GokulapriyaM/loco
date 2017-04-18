@@ -1,6 +1,8 @@
 package android.duke290.com.loco;
 
 import android.content.Intent;
+import android.duke290.com.loco.database.DatabaseFetch;
+import android.duke290.com.loco.database.DatabaseFetchCallback;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,19 +25,32 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.util.ArrayList;
 
-public class ProfileActivity extends AppCompatActivity{
+public class ProfileActivity extends AppCompatActivity implements DatabaseFetchCallback{
     private static final String TAG = "ProfileActivity";
 
     private Button signOut;
     private TextView nameText;
     private ProgressBar progressBar;
+    private ImageView photo1;
+    private ImageView photo2;
+    private ImageView photo3;
+    private TextView post1;
+    private TextView post2;
+    private TextView post3;
+    private TextView post4;
+
+
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth mAuth;
 
     public User currentUser;
+    public String uid;
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_STORAGE = 1;
     static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
@@ -80,10 +97,17 @@ public class ProfileActivity extends AppCompatActivity{
         signOut = (Button) findViewById(R.id.sign_out);
         nameText = (TextView) findViewById(R.id.name_text);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        photo1 = (ImageView) findViewById(R.id.photo1);
+        photo2 = (ImageView) findViewById(R.id.photo2);
+        photo3 = (ImageView) findViewById(R.id.photo3);
+        post1 = (TextView) findViewById(R.id.post1);
+        post2 = (TextView) findViewById(R.id.post2);
+        post3 = (TextView) findViewById(R.id.post3);
+        post4 = (TextView) findViewById(R.id.post4);
 
         showProgressBar();
         setCurrentUser(user);
-
+        setUserCreation(user);
         if (progressBar != null) {
             hideProgressBar();
         }
@@ -121,13 +145,18 @@ public class ProfileActivity extends AppCompatActivity{
         mAuth.addAuthStateListener(authListener);
     }
 
+    private void setUserCreation(FirebaseUser user){
+        uid = user.getUid();
+        DatabaseFetch databasefetch = new DatabaseFetch(this);
+        databasefetch.fetchByUser(uid);
+    }
 
     /**
      * Retrieve user information from Firebase database and set current user of this activity
      * @param user
      */
     private void setCurrentUser(FirebaseUser user){
-        String uid = user.getUid();
+        uid = user.getUid();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(USERS).child(uid).child(USERINFO);
 
@@ -147,6 +176,53 @@ public class ProfileActivity extends AppCompatActivity{
                 Log.d(TAG, "The read failed: " + databaseError.getCode());
             }
         });
+    }
+
+    @Override
+    public void onDatabaseResultReceived(ArrayList<String> messages, ArrayList<StorageReference> storagerefs) {
+        Log.d(TAG, "Messages: " + messages.toString());
+        Log.d(TAG, "Storagepaths: " + storagerefs.toString());
+        populateView(messages, storagerefs);
+    }
+
+    private void populateView(ArrayList<String> messages, ArrayList<StorageReference> storagerefs){
+        int messages_size = messages.size();
+        int storagerefs_size = storagerefs.size();
+
+        if(messages_size>=1){
+            post1.setText(messages.get(0));
+        }
+        if(messages_size>=2){
+            post2.setText(messages.get(1));
+        }
+        if(messages_size>=3){
+            post3.setText(messages.get(2));
+        }
+        if(messages_size>=4){
+            post3.setText(messages.get(3));
+        }
+
+        if(storagerefs_size>=1){
+            Glide.with(this)
+                    .using(new FirebaseImageLoader())
+                    .load(storagerefs.get(0))
+                    .override(75, 75)
+                    .into(photo1);
+        }
+        if(storagerefs_size>=2){
+            Glide.with(this)
+                    .using(new FirebaseImageLoader())
+                    .load(storagerefs.get(1))
+                    .override(75, 75)
+                    .into(photo2);
+        }
+        if(storagerefs_size>=3){
+            Glide.with(this)
+                    .using(new FirebaseImageLoader())
+                    .load(storagerefs.get(2))
+                    .override(75, 75)
+                    .into(photo3);
+        }
     }
 
 /*    public void pictureClick(View myview){
