@@ -67,7 +67,7 @@
                 android:layout_marginTop="10dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
-                android:src="@drawable/testimage" />
+                android:src="@drawable/cast_abc_scrubber_control_off_mtrl_alpha" />
 
             <ImageView
                 android:id="@+id/photo2"
@@ -79,7 +79,7 @@
                 android:layout_toEndOf="@+id/photo1"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
-                android:src="@drawable/testimage" />
+                android:src="@drawable/cast_abc_scrubber_control_off_mtrl_alpha" />
 
             <TextView
                 android:id="@+id/checkpics"

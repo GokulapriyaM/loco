@@ -78,11 +78,11 @@ public class DatabaseFetch {
 
         //iterate through each user, ignoring their reference id
         for (Map.Entry<String, Object> entry : creations.entrySet()) {
-            //Get creatioin map
+            //Get creation map
             Map singleCreation = (Map) entry.getValue();
             Log.d(TAG, "received creation");
-            if (singleCreation.get("type").equals("text")) {
-                String message = singleCreation.get("message").toString();
+            String message = singleCreation.get("message").toString();
+            if (!message.equals("")) {
                 messages.add(message);
             }
 

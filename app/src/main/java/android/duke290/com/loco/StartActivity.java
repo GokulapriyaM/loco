@@ -281,14 +281,14 @@ public class StartActivity extends AppCompatActivity {
             if (mCloudDownloadedContentTypes.get(0).equals("image")) {
                 Log.d(TAG, "Displaying cloud downloaded image (1)");
                 downloaded_img_1.setImageBitmap(
-                        BitmapFactory .decodeStream(mCloudDownloadedStreams.get(0)));
+                        BitmapFactory.decodeStream(mCloudDownloadedStreams.get(0)));
             }
 
             if (mCloudDownloadedStreams.size() >= 2) {
                 if (mCloudDownloadedContentTypes.get(1).equals("image")) {
                     Log.d(TAG, "Displaying cloud downloaded image (2)");
                     downloaded_img_2.setImageBitmap(
-                            BitmapFactory .decodeStream(mCloudDownloadedStreams.get(1)));
+                            BitmapFactory.decodeStream(mCloudDownloadedStreams.get(1)));
                 }
             }
         }
@@ -434,7 +434,8 @@ public class StartActivity extends AppCompatActivity {
 
     protected void profileClick(View view){
         startActivity(new Intent(StartActivity.this, ProfileActivity.class));
-        finish();
+//        finish(); // commented out so that user can hit back button in ProfileActivity to go
+        // back here
     }
 
 }
