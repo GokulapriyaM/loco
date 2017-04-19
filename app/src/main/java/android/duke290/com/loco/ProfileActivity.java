@@ -199,7 +199,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
             post3.setText(messages.get(2));
         }
         if(messages_size>=4){
-            post3.setText(messages.get(3));
+            post4.setText(messages.get(3));
         }
 
         if(storagerefs_size>=1){
