@@ -12,14 +12,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,6 +63,7 @@ public class StartActivity extends AppCompatActivity {
     private LocationResultReceiver mLocationResultReceiver;
 
     private String TAG = "StartActivity";
+    private FirebaseAuth mAuth;
 
     final String LATITUDE = "latitude";
     final String LONGITUDE = "longitude";
@@ -71,6 +75,13 @@ public class StartActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        
+        //get firebase mAuth instance
+        mAuth = FirebaseAuth.getInstance();
+
+        //Setting the toolbar for the activity
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.start_toolbar);
+        setSupportActionBar(myToolbar);
 
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
@@ -138,6 +149,38 @@ public class StartActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    /*
+    Handling menu options clicks
+     */
+
+    public boolean photosclick(MenuItem item){
+        Intent intentphotos = new Intent(this, PhotosActivity.class);
+        this.startActivity(intentphotos);
+        return true;
+    }
+
+    public boolean postsclick(MenuItem item){
+        Intent intentposts = new Intent(this, PostsActivity.class);
+        this.startActivity(intentposts);
+        return true;
+    }
+
+    public boolean signoutclick(MenuItem item){
+        signOut();
+        return true;
+    }
+
+    public boolean homeclick(MenuItem item){
+        Intent intenthome = new Intent(this, StartActivity.class);
+        this.startActivity(intenthome);
+        return true;
+    }
+
+
+    public void signOut() {
+        mAuth.signOut();
     }
 
     @Override
