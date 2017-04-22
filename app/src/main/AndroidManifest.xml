@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-feature
         android:name="android.hardware.camera2"
         android:required="false" />
@@ -28,8 +29,9 @@
         <activity android:name=".StartActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".ProfileActivity"
-                  android:parentActivityName=".StartActivity"/>
+        <activity
+            android:name=".ProfileActivity"
+            android:parentActivityName=".StartActivity" />
 
         <service
             android:name=".FetchAddressIntentService"
@@ -45,7 +47,9 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".DatabaseTestingActivity"></activity>
+        <activity android:name=".DatabaseTestingActivity" />
+        <activity android:name=".PhotosActivity" />
+        <activity android:name=".PostsActivity"></activity>
     </application>
 
 </manifest>
