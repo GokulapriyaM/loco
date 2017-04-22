@@ -47,5 +47,6 @@
     <string name="thingsshared">Things you shared!</string>
     <string name="sharebtn">Share!</string>
     <string name="sharetext">Jot down what\'s on your mind</string>
-    <string name="photostitle">Photos taken at yourlocation!</string>
+    <string name="photostitle">Photos taken at your location!</string>
+    <string name="poststitle">Posts shared at your location!</string>
 </resources>
