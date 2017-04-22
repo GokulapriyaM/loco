@@ -45,4 +45,7 @@
     <string name="latest">Latest Activity!</string>
     <string name="more">Check more!</string>
     <string name="thingsshared">Things you shared!</string>
+    <string name="sharebtn">Share!</string>
+    <string name="sharetext">Jot down what\'s on your mind</string>
+
 </resources>

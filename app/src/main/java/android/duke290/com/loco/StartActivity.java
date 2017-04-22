@@ -8,10 +8,10 @@ import android.duke290.com.loco.database.DatabaseAction;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +47,9 @@ public class StartActivity extends AppCompatActivity {
 
     private Location mCurrentLocation;
     private String mAddressOutput;
+    private double latitude;
+    private double longitude;
+
 
     private ArrayList<String> mCloudProcessMsgs;
     private ArrayList<InputStream> mCloudDownloadedStreams;
@@ -57,6 +60,11 @@ public class StartActivity extends AppCompatActivity {
     private LocationResultReceiver mLocationResultReceiver;
 
     private String TAG = "StartActivity";
+
+    final String LATITUDE = "latitude";
+    final String LONGITUDE = "longitude";
+    final String ADDRESS = "address";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,8 +248,8 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void displayLocation() {
-        String latitude = String.valueOf(mCurrentLocation.getLatitude());
-        String longitude = String.valueOf(mCurrentLocation.getLongitude());
+        latitude = mCurrentLocation.getLatitude();
+        longitude = mCurrentLocation.getLongitude();
         Log.d(TAG, "Latitude: " + latitude + ", " + "Longitude: " + longitude);
         TextView location_msg = (TextView) findViewById(R.id.location_msg);
         location_msg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
@@ -436,6 +444,14 @@ public class StartActivity extends AppCompatActivity {
         startActivity(new Intent(StartActivity.this, ProfileActivity.class));
 //        finish(); // commented out so that user can hit back button in ProfileActivity to go
         // back here
+    }
+
+    protected void shareTextClick(View view) {
+        Intent intent = new Intent(StartActivity.this, ShareTextActivity.class);
+        intent.putExtra(LATITUDE, latitude);
+        intent.putExtra(LONGITUDE, longitude);
+        intent.putExtra(ADDRESS, mAddressOutput);
+        startActivity(intent);
     }
 
 }

@@ -190,36 +190,36 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         int storagerefs_size = storagerefs.size();
 
         if(messages_size>=1){
-            post1.setText(messages.get(0));
+            post1.setText(messages.get(messages_size - 1));
         }
         if(messages_size>=2){
-            post2.setText(messages.get(1));
+            post2.setText(messages.get(messages_size - 2));
         }
         if(messages_size>=3){
-            post3.setText(messages.get(2));
+            post3.setText(messages.get(messages_size - 3));
         }
         if(messages_size>=4){
-            post4.setText(messages.get(3));
+            post4.setText(messages.get(messages_size - 4));
         }
 
         if(storagerefs_size>=1){
             Glide.with(this)
                     .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(0))
+                    .load(storagerefs.get(storagerefs_size - 1))
                     .override(75, 75)
                     .into(photo1);
         }
         if(storagerefs_size>=2){
             Glide.with(this)
                     .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(1))
+                    .load(storagerefs.get(storagerefs_size - 2))
                     .override(75, 75)
                     .into(photo2);
         }
         if(storagerefs_size>=3){
             Glide.with(this)
                     .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(2))
+                    .load(storagerefs.get(storagerefs_size - 3))
                     .override(75, 75)
                     .into(photo3);
         }

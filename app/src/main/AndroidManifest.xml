@@ -30,6 +30,9 @@
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".ProfileActivity"
                   android:parentActivityName=".StartActivity"/>
+        <activity
+            android:name=".ShareTextActivity"
+            android:parentActivityName=".StartActivity" />
 
         <service
             android:name=".FetchAddressIntentService"
@@ -46,6 +49,7 @@
             android:exported="true" />
 
         <activity android:name=".DatabaseTestingActivity"></activity>
+
     </application>
 
 </manifest>

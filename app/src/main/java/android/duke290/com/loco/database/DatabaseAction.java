@@ -29,21 +29,24 @@ public class DatabaseAction {
 
     public static void putCreationInFirebaseDatabase(Creation reference, Location location) {
         final FirebaseUser this_user = mAuth.getCurrentUser();
-
         uid = this_user.getUid();
-
         DatabaseReference ref = mDatabase.getReference(USERS).child(uid).child(CONTENT);
-
         ref.child("ref" + System.currentTimeMillis()).setValue(reference);
-
         String coordName = createCoordName(location);
-
         DatabaseReference refCreationList = mDatabase.getReference(CREATIONS).child(coordName);
-
         refCreationList.child("cre" + uid + "" + System.currentTimeMillis()).setValue(reference);
-
-
     }
+
+    public static void putCreationInFirebaseDatabase(Creation reference, double latitute, double longitude) {
+        final FirebaseUser this_user = mAuth.getCurrentUser();
+        uid = this_user.getUid();
+        DatabaseReference ref = mDatabase.getReference(USERS).child(uid).child(CONTENT);
+        ref.child("ref" + System.currentTimeMillis()).setValue(reference);
+        String coordName = createCoordName(latitute, longitude);
+        DatabaseReference refCreationList = mDatabase.getReference(CREATIONS).child(coordName);
+        refCreationList.child("cre" + uid + "" + System.currentTimeMillis()).setValue(reference);
+    }
+
 
     public static String createImageStoragePath() {
         return "images/" + "img" + uid + System.currentTimeMillis();
@@ -53,6 +56,17 @@ public class DatabaseAction {
         String latitudeStr = String.format("%."+ decimalRoundTo + "f", location.getLatitude());
         latitudeStr = latitudeStr.replace(".", ",");
         String longitudeStr = String.format("%."+ decimalRoundTo + "f", location.getLongitude());
+        longitudeStr = longitudeStr.replace(".", ",");
+        String coordName = "coord" + latitudeStr + ";" +
+                longitudeStr;
+
+        return coordName;
+    }
+
+    public static String createCoordName(double latitute, double longitude) {
+        String latitudeStr = String.format("%." + decimalRoundTo + "f", latitute);
+        latitudeStr = latitudeStr.replace(".", ",");
+        String longitudeStr = String.format("%." + decimalRoundTo + "f", longitude);
         longitudeStr = longitudeStr.replace(".", ",");
         String coordName = "coord" + latitudeStr + ";" +
                 longitudeStr;
