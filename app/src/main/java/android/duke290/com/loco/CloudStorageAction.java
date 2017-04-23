@@ -1,6 +1,5 @@
 package android.duke290.com.loco;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -25,8 +24,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CloudStorageService extends IntentService {
+/**
+ * Created by kevinkuo on 4/22/17.
+ */
 
+public class CloudStorageAction {
+
+    protected Context mContext;
     protected String mActionType; // either "upload" or "download"
     protected ResultReceiver mReceiver;
     protected InputStream mLocalStream;
@@ -35,32 +39,30 @@ public class CloudStorageService extends IntentService {
 
     StorageReference mStorageRef;
     StorageReference mDestinationRef;
-    String TAG = "CloudStorageService";
+    String TAG = "CloudStorageAction";
 
     protected InputStream mDownloadedStream;
     protected String mDownloadedContentType;
 
-    byte[] dwnld_b_ar;
-    int writing_complete = 0;
+    protected int mResultCode;
+    protected String mProcessMsg;
+
     String stg_filename = null;
 
-    public CloudStorageService() {
-        super("CloudStorageService");
+    public CloudStorageAction(Context context, String action_type,
+                              ResultReceiver receiver, InputStream inputstream_to_store,
+                              String storage_path, String content_type) {
+        mContext = context;
+        mActionType = action_type;
+        mReceiver = receiver;
+        mLocalStream = inputstream_to_store;
+        mStoragePath = storage_path;
+        mContentType = content_type;
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void doCloudAction() {
 
-        Log.d(TAG, "onHandleIntent called");
-
-        mActionType = intent.getStringExtra("CLOUD_STORAGE_OPTION");
-        mReceiver = intent.getParcelableExtra("CLOUD_STORAGE_RECEIVER");
-        if (intent.getByteArrayExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY") != null) {
-            mLocalStream = new ByteArrayInputStream(
-                    intent.getByteArrayExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY"));
-        }
-        mStoragePath = intent.getStringExtra("CLOUD_STORAGE_STORAGE_PATH");
-        mContentType = intent.getStringExtra("CLOUD_STORAGE_CONTENT_TYPE");
+        Log.d(TAG, "doCloudAction");
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -73,8 +75,9 @@ public class CloudStorageService extends IntentService {
         } else if (mActionType.equals("download")) {
             downloadFile();
         } else {
-            deliverResultToReceiver(Constants.FAILURE_RESULT,
-                    "No command to upload or download");
+            mResultCode = Constants.FAILURE_RESULT;
+            mProcessMsg = "No command to upload or download";
+            deliverResultToReceiver();
         }
 
 
@@ -94,13 +97,17 @@ public class CloudStorageService extends IntentService {
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
                 Log.d(TAG, "Upload failed");
-                deliverResultToReceiver(Constants.FAILURE_RESULT, "Upload failed.");
+                mResultCode = Constants.FAILURE_RESULT;
+                mProcessMsg = "Upload failed.";
+                deliverResultToReceiver();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "Upload successful!");
-                deliverResultToReceiver(Constants.SUCCESS_RESULT, "Upload successful!");
+                mResultCode = Constants.SUCCESS_RESULT;
+                mProcessMsg = "Upload successful!";
+                deliverResultToReceiver();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -129,123 +136,105 @@ public class CloudStorageService extends IntentService {
                 mDownloadedStream = taskSnapshot.getStream();
 
                 Log.d(TAG, "Downloading file metadata");
-                downloadFileContentType(taskSnapshot.getStream());
+                downloadFileContentType();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
                 Log.d(TAG, "Download failed");
-                deliverResultToReceiver(Constants.FAILURE_RESULT, "Download failed.");
+
+                mResultCode = Constants.FAILURE_RESULT;
+                mProcessMsg = "Download failed";
+
+                deliverResultToReceiver();
             }
         });
     }
 
-    protected void downloadFileContentType(final InputStream downloadedStream) {
+    protected void downloadFileContentType() {
         mDestinationRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
             @Override
             public void onSuccess(StorageMetadata storageMetadata) {
                 mDownloadedContentType = storageMetadata.getContentType();
-//                String downloadedContentType = storageMetadata.getContentType();
 
                 Log.d(TAG, "Download file and metadata successful");
-                deliverResultToReceiver(Constants.SUCCESS_RESULT,
-                        "Download completely successful!");
+
+                mResultCode = Constants.SUCCESS_RESULT;
+                mProcessMsg = "Download completely successful!";
+
+                deliverResultToReceiver();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 Log.d(TAG, "Download metadata failed");
 
-                deliverResultToReceiver(Constants.FAILURE_RESULT,
-                        "Download of file successful but download of metadata failed");
+                mResultCode = Constants.FAILURE_RESULT;
+                mProcessMsg = "Download of file successful but download of metadata failed";
+
+                deliverResultToReceiver();
             }
         });
     }
 
-    private void deliverResultToReceiver(int resultCode,
-                                         String process_message) {
+    private void deliverResultToReceiver() {
         if (mDownloadedStream != null && mActionType.equals("download")) {
             stg_filename = "stg" + System.currentTimeMillis();
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-//                    try {
-//                        dwnld_b_ar = IOUtils.toByteArray(mDownloadedStream);
-//                        Log.d(TAG, "size of dwnld_b_ar = " + dwnld_b_ar.length);
-//                        byte_array_conversion_complete = 1;
-//                    } catch (IOException e) {
-//                        Log.d(TAG, "IOException when converting downloaded input stream to byte array");
-//                    }
-
-//                    try {
-//                        mDownloadedStream.();
-//                    } catch (IOException e) {
-//                        Log.d(TAG, "resetting downloaded stream failed: " + e.getMessage());
-//                    }
-
-                    Context context = getApplicationContext();
-                    File dir = context.getDir("downloaded_storage_items", Context.MODE_PRIVATE);
+                    File dir = mContext.getDir("downloaded_storage_items", Context.MODE_PRIVATE);
 
                     if (!dir.exists()) {
                         dir.mkdirs();
                     }
 
-                    File stg_file = new File(context.getDir("downloaded_storage_items", Context.MODE_PRIVATE),
+                    File stg_file = new File(mContext.getDir("downloaded_storage_items", Context.MODE_PRIVATE),
                             stg_filename);
 
                     Log.d(TAG, "writing to : " + stg_file.getPath());
 
                     try {
-                            FileOutputStream os = new FileOutputStream(stg_file);
+                        FileOutputStream os = new FileOutputStream(stg_file);
 
-                            byte[] buffer = new byte[1024];
-                            int len = mDownloadedStream.read(buffer);
-                            Log.d(TAG, "len = " + len);
-                            while (len >= 0) {
-                                os.write(buffer, 0, len);
-                                Log.d(TAG, "writing");
-                                len = mDownloadedStream.read(buffer);
-                            }
+                        byte[] buffer = new byte[1024];
+                        int len = mDownloadedStream.read(buffer);
+                        Log.d(TAG, "len = " + len);
+                        while (len >= 0) {
+                            os.write(buffer, 0, len);
+                            len = mDownloadedStream.read(buffer);
+                        }
 
-                            os.close();
-                            os.flush();
-                            os.close();
+                        os.close();
+                        os.flush();
+                        os.close();
 
-                            Log.d(TAG, "outputstream written to");
-                            writing_complete = 1;
-                            Log.d(TAG, "Write to internal storage done");
+                        Log.d(TAG, "outputstream written to");
+                        Log.d(TAG, "Write to internal storage done");
                     } catch (IOException e) {
                         Log.d(TAG, "IOException while writing to outputstream: " + e.getMessage());
                     }
 
-//                    try {
-//                        mDownloadedStream.close();
-//                        os.close();
-//                    } catch (IOException e) {
-//                        Log.d(TAG, "2: IOException when writing inputstream to outputstream");
-//                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putString("CLOUD_PROCESS_MSG_KEY", mProcessMsg);
+                    bundle.putString("CLOUD_DOWNLOADED_FILENAME", stg_filename);
+                    bundle.putString("CLOUD_DOWNLOADED_CONTENT_TYPE", mDownloadedContentType);
+                    mReceiver.send(mResultCode, bundle);
+
+                    Log.d(TAG, "receiver sent");
                 }
             });
 
-            while (writing_complete == 0) {
-//                // for some reason, putting a statement here fixed a problem where the app
-//                // would hang up and seem to get stuck even after completing byte array conversion
-                Log.d(TAG, "writing to internal storage");
-            }
+        } else {
 
+            Bundle bundle = new Bundle();
+            bundle.putString("CLOUD_PROCESS_MSG_KEY", mProcessMsg);
+            mReceiver.send(mResultCode, bundle);
+
+            Log.d(TAG, "receiver sent");
         }
 
-        writing_complete = 0;
-        Bundle bundle = new Bundle();
-        bundle.putString("CLOUD_PROCESS_MSG_KEY", process_message);
-//        bundle.putByteArray("CLOUD_DOWNLOADED_BYTE_ARRAY_KEY", dwnld_b_ar);
-        bundle.putString("CLOUD_DOWNLOADED_FILENAME", stg_filename);
-        bundle.putString("CLOUD_DOWNLOADED_CONTENT_TYPE", mDownloadedContentType);
-        mReceiver.send(resultCode, bundle);
-
-        Log.d(TAG, "receiver sent");
 
     }
-
 }
