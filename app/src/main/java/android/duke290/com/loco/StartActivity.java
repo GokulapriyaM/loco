@@ -1,25 +1,30 @@
 package android.duke290.com.loco;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.duke290.com.loco.database.DatabaseAction;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
+
+import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -210,6 +217,12 @@ public class StartActivity extends AppCompatActivity {
     public boolean postsclick(MenuItem item){
         Intent intentposts = new Intent(this, PostsActivity.class);
         this.startActivity(intentposts);
+        return true;
+    }
+
+    public boolean profileclick(MenuItem item){
+        Intent intentprofile = new Intent(this, ProfileActivity.class);
+        this.startActivity(intentprofile);
         return true;
     }
 
@@ -575,6 +588,36 @@ public class StartActivity extends AppCompatActivity {
         intent.putExtra(LONGITUDE, longitude);
         intent.putExtra(ADDRESS, mAddressOutput);
         startActivity(intent);
+    }
+
+    // Code for taking a picture
+    protected void sharePhotoClick(View view) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            // Kevin, this is the thumbnail Bitmap you could use for storage
+            Bitmap mBitmap = (Bitmap) extras.get("data");
+            // After storing the image in the database, we can go back to home
+            // or go to photos activity and shoe user image uploaded ...
+        }
+    }
+
+    //When clicking share
+    public void shareClick(View view){
+        // Show a pop-up dialog
+        final Dialog mBottomSheetDialog = new Dialog(this, R.style.MaterialDialogSheet);
+        mBottomSheetDialog.setContentView(R.layout.item_share); // your custom view.
+        mBottomSheetDialog.setCancelable(true);
+        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mBottomSheetDialog.show();
     }
 
 }
