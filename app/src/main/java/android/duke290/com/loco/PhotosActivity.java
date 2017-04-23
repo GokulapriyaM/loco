@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 public class PhotosActivity extends AppCompatActivity {
 
@@ -19,7 +20,8 @@ public class PhotosActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         GridView gridview = (GridView) findViewById(R.id.grid_view);
-        gridview.setAdapter(new ImageAdapter(this));
+        ImageAdapter image_adp = new ImageAdapter(this, SharedLists.getInstance().getImageCreations());
+        gridview.setAdapter(image_adp);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
