@@ -218,6 +218,7 @@ public class CloudStorageAction {
 
                     Bundle bundle = new Bundle();
                     bundle.putString("CLOUD_PROCESS_MSG_KEY", mProcessMsg);
+                    bundle.putString("CLOUD_ACTION_TYPE", mActionType);
                     bundle.putString("CLOUD_DOWNLOADED_FILENAME", stg_filename);
                     bundle.putString("CLOUD_DOWNLOADED_CONTENT_TYPE", mDownloadedContentType);
                     mReceiver.send(mResultCode, bundle);
@@ -230,6 +231,7 @@ public class CloudStorageAction {
 
             Bundle bundle = new Bundle();
             bundle.putString("CLOUD_PROCESS_MSG_KEY", mProcessMsg);
+            bundle.putString("CLOUD_ACTION_TYPE", mActionType);
             mReceiver.send(mResultCode, bundle);
 
             Log.d(TAG, "receiver sent");

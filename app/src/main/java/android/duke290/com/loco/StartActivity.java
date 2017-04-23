@@ -37,6 +37,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -66,6 +68,9 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     private String mAddressOutput;
     private double latitude;
     private double longitude;
+
+    private Creation mCreation;
+    private ArrayList<Creation> mImageCreations;
 
     private DatabaseFetch databaseFetch;
     private FirebaseStorage mStorage;
@@ -210,7 +215,19 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "permission granted");
 
-//                    startLocationService();
+                    mAddressResultReceiver = new AddressResultReceiver(new Handler());
+                    mLocationResultReceiver = new LocationResultReceiver(new Handler());
+                    mCloudResultReceiver = new CloudResultReceiver(new Handler());
+
+                    databaseFetch = new DatabaseFetch(this);
+
+                    photo1 = (ImageView) findViewById(R.id.photo1);
+                    photo2 = (ImageView) findViewById(R.id.photo2);
+                    photo3 = (ImageView) findViewById(R.id.photo3);
+                    post1 = (TextView) findViewById(R.id.post1);
+                    post2 = (TextView) findViewById(R.id.post2);
+                    post3 = (TextView) findViewById(R.id.post3);
+
                     ServiceStarter.startLocationService(getApplicationContext(),
                             mLocationResultReceiver);
 
@@ -360,16 +377,26 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
             // or an error message sent from the intent service.
             mCloudProcessMsgs.add(resultData.getString("CLOUD_PROCESS_MSG_KEY"));
 
-            if (resultData.getString("CLOUD_DOWNLOADED_FILENAME") != null) {
-                downloaded_items_exist = true;
-                Log.d(TAG, "Cloud downloaded something");
-                String stg_filename = resultData.getString("CLOUD_DOWNLOADED_FILENAME");
-                mCloudDownloadedFilenames.add(stg_filename);
-                addFilesToDownloadedStreams(stg_filename);
-            }
+            if (resultData.getString("CLOUD_ACTION_TYPE").equals("download")) {
+                Log.d(TAG, "Cloud download complete");
 
-            mCloudDownloadedContentTypes.add(resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
-            Log.d(TAG, "Downloaded content type: " + resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
+                if (resultData.getString("CLOUD_DOWNLOADED_FILENAME") != null) {
+                    downloaded_items_exist = true;
+                    Log.d(TAG, "Cloud downloaded something");
+                    String stg_filename = resultData.getString("CLOUD_DOWNLOADED_FILENAME");
+                    mCloudDownloadedFilenames.add(stg_filename);
+                    addFilesToDownloadedStreams(stg_filename);
+                }
+
+                mCloudDownloadedContentTypes.add(resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
+                Log.d(TAG, "Downloaded content type: " + resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
+            } else if (resultData.getString("CLOUD_ACTION_TYPE").equals("upload")) {
+                Log.d(TAG, "Cloud upload complete");
+                // upload creation to firebase database
+                DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
+                Log.d(TAG, "Creation uploaded");
+
+            }
 
             if (downloaded_items_exist) {
                 displayDownloadedStorageOutput();
@@ -557,6 +584,25 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
             Bitmap mBitmap = (Bitmap) extras.get("data");
             // After storing the image in the database, we can go back to home
             // or go to photos activity and shoe user image uploaded ...
+
+            // creating creation
+            String image_storage_path = DatabaseAction.createImageStoragePath();
+            String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
+
+            mCreation = new Creation(mCurrentLocation.getLatitude(),
+                    mCurrentLocation.getLongitude(), mAddressOutput,
+                    "image", "", image_storage_path, timestamp);
+
+            // upload image to firebase storage
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            mBitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+            ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+
+            uploadStreamToFirebaseStorage(bs, image_storage_path, "image");
+
+            // uploading creation to database is handled by CloudStorageReceiver.onReceiveResult
+
         }
     }
 
@@ -592,8 +638,15 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
 
     @Override
     public void onDatabaseResultReceived(ArrayList<Creation> creations) {
+        Log.d(TAG, "onDatabaseResultReceived called");
+        Log.d(TAG, "creations.size() = " + creations.size());
+
+        clearUI();
+
         messages = new ArrayList<>();
         messages_time = new ArrayList<>();
+        ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
+
         ArrayList<StorageReference> storagerefs = new ArrayList<>();
         for (Creation c : creations) {
             if (c.type.equals("text")) {
@@ -601,12 +654,25 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
                 messages_time.add(c.timestamp);
             }
             if (c.type.equals("image")) {
+                image_creation_list.add(c);
                 String storage_path = c.extra_storage_path;
                 StorageReference storageRef = mStorage.getReference().child(storage_path);
                 storagerefs.add(storageRef);
             }
         }
+
+        SharedLists.getInstance().setImageCreations(image_creation_list);
+
         populateView(messages, storagerefs);
+    }
+
+    public void clearUI() {
+        post1.setText("");
+        post2.setText("");
+        post3.setText("");
+        photo1.setImageResource(0);
+        photo2.setImageResource(0);
+        photo3.setImageResource(0);
     }
 
     private void populateView(ArrayList<String> messages, ArrayList<StorageReference> storagerefs){

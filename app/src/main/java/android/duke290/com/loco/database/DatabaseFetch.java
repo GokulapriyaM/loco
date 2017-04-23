@@ -92,6 +92,7 @@ public class DatabaseFetch {
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onDataChange called");
                         ArrayList<Creation> creations = new ArrayList<>();
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
