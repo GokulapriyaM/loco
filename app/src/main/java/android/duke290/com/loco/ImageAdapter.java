@@ -6,11 +6,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-
-/**
- * Created by Jihane on 4/22/17.
- */
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
