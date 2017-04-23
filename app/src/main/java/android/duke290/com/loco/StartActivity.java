@@ -105,11 +105,6 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
 
     private final int limit = 3;
 
-    private ArrayList<String> messages;
-    private ArrayList<String> messages_time;
-    private final String messagesKey = "messages";
-    private final String messagesTimeKey = "messages_time";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate called");
@@ -303,7 +298,6 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     protected void onPause() {
         Log.d(TAG, "onPause called");
         super.onPause();
-
         this.stopService(new Intent(this, LocationService.class));
     }
 
@@ -468,7 +462,6 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
         downloaded_img.setImageBitmap(
                 BitmapFactory.decodeStream(
                         mCloudDownloadedStreams.get(mCloudDownloadedStreams.size() - 1)));
-
     }
 
     protected void displayAllDownloadedStorageOutput() {
@@ -625,8 +618,6 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     // on learn more click
     public void onMorePostsClick(View view){
         Intent intent = new Intent(StartActivity.this, PostsActivity.class);
-        intent.putStringArrayListExtra(messagesKey, messages);
-        intent.putStringArrayListExtra(messagesTimeKey, messages_time);
         startActivity(intent);
     }
 
@@ -643,15 +634,15 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
 
         clearUI();
 
-        messages = new ArrayList<>();
-        messages_time = new ArrayList<>();
+        ArrayList<Creation> messagecreations = new ArrayList<>();
         ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
 
+        ArrayList<String> messages = new ArrayList<>();
         ArrayList<StorageReference> storagerefs = new ArrayList<>();
         for (Creation c : creations) {
             if (c.type.equals("text")) {
                 messages.add(c.message);
-                messages_time.add(c.timestamp);
+                messagecreations.add(c);
             }
             if (c.type.equals("image")) {
                 image_creation_list.add(c);
@@ -661,6 +652,7 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
             }
         }
 
+        SharedLists.getInstance().setMessageCreations(messagecreations);
         SharedLists.getInstance().setImageCreations(image_creation_list);
 
         populateView(messages, storagerefs);

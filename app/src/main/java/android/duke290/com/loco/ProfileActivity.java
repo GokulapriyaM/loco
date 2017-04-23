@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -160,20 +161,45 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         setNameText();
     }
 
+    public void onMorePostsClick(View view){
+        Intent intent = new Intent(ProfileActivity.this, PostsActivity.class);
+        startActivity(intent);
+    }
+
+    public void onMorePhotosClick(View view){
+        Intent intent = new Intent(ProfileActivity
+                .this, PhotosActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onDatabaseResultReceived(ArrayList<Creation> creations) {
+        Log.d(TAG, "onDatabaseResultReceived called");
+        Log.d(TAG, "creations.size() = " + creations.size());
+
+        clearUI();
+
+        ArrayList<Creation> messagecreations = new ArrayList<>();
+        ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
+
         ArrayList<String> messages = new ArrayList<>();
         ArrayList<StorageReference> storagerefs = new ArrayList<>();
         for (Creation c : creations) {
             if (c.type.equals("text")) {
                 messages.add(c.message);
+                messagecreations.add(c);
             }
             if (c.type.equals("image")) {
+                image_creation_list.add(c);
                 String storage_path = c.extra_storage_path;
                 StorageReference storageRef = mStorage.getReference().child(storage_path);
                 storagerefs.add(storageRef);
             }
         }
+
+        SharedLists.getInstance().setMessageCreations(messagecreations);
+        SharedLists.getInstance().setImageCreations(image_creation_list);
+
         populateView(messages, storagerefs);
     }
 
@@ -214,146 +240,14 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         }
     }
 
-
-/*    public void pictureClick(View myview){
-        mAddPicture.setVisibility(View.GONE);
-        mPicture = (ImageView) findViewById(R.id.picture);
-        dispatchTakePictureIntent();
+    public void clearUI() {
+        post1.setText("");
+        post2.setText("");
+        post3.setText("");
+        photo1.setImageResource(0);
+        photo2.setImageResource(0);
+        photo3.setImageResource(0);
     }
-
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            mBitmap = (Bitmap) extras.get("data");
-            mPicture.setImageBitmap(mBitmap);
-            try {
-                checkPermission();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // Saving the full-size image in Gallery so that it could be used by other apps
-    // Creating a unique filename with timestamp
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  *//* prefix *//*
-                ".jpg",         *//* suffix *//*
-                storageDir      *//* directory *//*
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        Log.d(TAG, "image path " + mCurrentPhotoPath);
-        return image;
-    }
-
-    // Add picture to gallery
-    private void galleryAddPic() throws IOException {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = createImageFile();
-        Uri contentUri = Uri.fromFile(f);
-        Log.d(TAG, "content uri: " + contentUri);
-        Log.d(TAG, "photo uri before gallery: " + mCurrentPhotoPath);
-        MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "", "");
-        mediaScanIntent.setData(contentUri);
-        Log.d(TAG, "here going to gallery");
-        this.sendBroadcast(mediaScanIntent);
-        MediaScannerConnection.scanFile(getApplicationContext(), new String[] { mCurrentPhotoPath }, null, new MediaScannerConnection.OnScanCompletedListener() {
-
-            @Override
-            public void onScanCompleted(String path, Uri uri) {
-                // TODO Auto-generated method stub
-                Log.d(TAG, "done scanning");
-
-   //         }
-        });
-    }
-
-
-
-
-    // Checking for permissions
-    private void checkPermission() throws IOException {
-        if (ContextCompat.checkSelfPermission(ProfileActivity.this,
-                WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(ProfileActivity.this,
-                    WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                Toast.makeText(getApplicationContext(), "Storing the image in Gallery",Toast.LENGTH_SHORT).show();
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{WRITE_EXTERNAL_STORAGE},
-                        REQUEST_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            //MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "" , "");
-            galleryAddPic();
-
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    //MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "" , "");
-                    try {
-                        galleryAddPic();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(getApplicationContext(), "Couldn't store image in Gallery",Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }*/
-
 
     @Override
     public void onStop() {

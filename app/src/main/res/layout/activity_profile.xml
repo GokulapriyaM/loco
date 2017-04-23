@@ -110,6 +110,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="@string/more"
+                    android:clickable="true"
+                    android:onClick="onMorePhotosClick"
                     android:textSize="10sp" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
@@ -161,6 +163,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="@string/more"
+                    android:clickable="true"
+                    android:onClick="onMorePostsClick"
                     android:textSize="10sp" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
