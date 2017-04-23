@@ -1,59 +1,69 @@
 package android.duke290.com.loco;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.content.ContextCompat;
 import android.os.ResultReceiver;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-
-public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
-    String TAG = "LocationService";
+public class LocationService extends Service {
+    private static final String TAG = "LocationService";
+    private LocationManager mLocationManager = null;
+    private static final int LOCATION_INTERVAL = 1000;
+    private static final float LOCATION_DISTANCE = 10f;
 
     ResultReceiver mReceiver;
-    LocationRequest mLocationRequest;
-    GoogleApiClient mGoogleApiClient;
 
-    private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
+    private class LocationListener implements android.location.LocationListener {
 
-    public LocationService() {
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Log.d(TAG, "onCreate called");
-
-        // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                    .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
-                    .addApi(LocationServices.API)
-                    .build();
+        public LocationListener(String provider)
+        {
+            Log.e(TAG, "LocationListener: " + provider);
         }
 
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.d(TAG, "onLocationChanged called");
+            deliverResultToReceiver(Constants.SUCCESS_RESULT, location);
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.d(TAG, "onProviderDisabled: " + provider);
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d(TAG, "onProviderEnabled: " + provider);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d(TAG, "onStatusChanged: " + provider);
+        }
+    }
+
+    LocationListener[] mLocationListeners = new LocationListener[] {
+            new LocationListener(LocationManager.GPS_PROVIDER),
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
+    };
+
+    @Override
+    public IBinder onBind(Intent arg0)
+    {
+        return null;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand called");
-        mGoogleApiClient.connect();
-
+        Log.d(TAG, "onStartCommand");
         mReceiver = intent.getParcelableExtra("LOCATION_RECEIVER");
-
-        return START_STICKY;
+        super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     public void deliverResultToReceiver(int resultCode, Location location) {
@@ -62,46 +72,49 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         mReceiver.send(resultCode, bundle);
     }
 
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged called");
-        deliverResultToReceiver(Constants.SUCCESS_RESULT, location);
+    @Override
+    public void onCreate() {
+        Log.d(TAG, "onCreate");
+        initializeLocationManager();
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[1]);
+        } catch (java.lang.SecurityException ex) {
+            Log.i(TAG, "fail to request location update, ignore", ex);
+        } catch (IllegalArgumentException ex) {
+            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+        }
+        try {
+            mLocationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[0]);
+        } catch (java.lang.SecurityException ex) {
+            Log.i(TAG, "fail to request location update, ignore", ex);
+        } catch (IllegalArgumentException ex) {
+            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+        }
     }
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy");
         super.onDestroy();
-
-        mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "connection achieved");
-        mLocationRequest = new LocationRequest();
-        startLocationUpdates();
-
-    }
-
-    protected void startLocationUpdates() {
-        Log.d(TAG, "startLocationUpdates called");
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "permissions check success");
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
+        if (mLocationManager != null) {
+            for (int i = 0; i < mLocationListeners.length; i++) {
+                try {
+                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                } catch (Exception ex) {
+                    Log.i(TAG, "fail to remove location listeners, ignore", ex);
+                }
+            }
         }
     }
 
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    public void onConnectionSuspended(int cause) {
-
+    private void initializeLocationManager() {
+        Log.d(TAG, "initializeLocationManager");
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
     }
 }

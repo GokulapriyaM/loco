@@ -3,12 +3,7 @@ package android.duke290.com.loco;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Handler;
 import android.os.ResultReceiver;
-import android.util.Log;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by kevinkuo on 4/18/17.

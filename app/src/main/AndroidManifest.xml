@@ -29,8 +29,9 @@
         <activity android:name=".StartActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".ProfileActivity"
-                  android:parentActivityName=".StartActivity"/>
+        <activity
+            android:name=".ProfileActivity"
+            android:parentActivityName=".StartActivity" />
         <activity
             android:name=".ShareTextActivity"
             android:parentActivityName=".StartActivity" />
@@ -44,15 +45,15 @@
         <service
             android:name=".CloudStorageService"
             android:exported="false" />
-        <service
-            android:name=".LocationService"
-            android:enabled="true"
-            android:exported="true" />
-
 
         <activity android:name=".DatabaseTestingActivity" />
         <activity android:name=".PhotosActivity" />
-        <activity android:name=".PostsActivity"></activity>
+        <activity android:name=".PostsActivity" />
+
+        <service
+            android:name=".LocationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
