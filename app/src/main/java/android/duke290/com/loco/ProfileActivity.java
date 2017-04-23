@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -45,6 +45,8 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     public User currentUser;
     public DatabaseFetch databasefetch;
 
+    private FirebaseStorage mStorage;
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_STORAGE = 1;
     static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
@@ -59,6 +61,8 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     private static final String USERS = "users";
     private static final String USERINFO = "userinfo";
 
+    private final int limit = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +71,8 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
+
+        mStorage = FirebaseStorage.getInstance();
 
         //get firebase mAuth instance
         mAuth = FirebaseAuth.getInstance();
@@ -155,9 +161,19 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     }
 
     @Override
-    public void onDatabaseResultReceived(ArrayList<String> messages, ArrayList<StorageReference> storagerefs) {
-        Log.d(TAG, "Messages: " + messages.toString());
-        Log.d(TAG, "Storagepaths: " + storagerefs.toString());
+    public void onDatabaseResultReceived(ArrayList<Creation> creations) {
+        ArrayList<String> messages = new ArrayList<>();
+        ArrayList<StorageReference> storagerefs = new ArrayList<>();
+        for (Creation c : creations) {
+            if (c.type.equals("text")) {
+                messages.add(c.message);
+            }
+            if (c.type.equals("image")) {
+                String storage_path = c.extra_storage_path;
+                StorageReference storageRef = mStorage.getReference().child(storage_path);
+                storagerefs.add(storageRef);
+            }
+        }
         populateView(messages, storagerefs);
     }
 
@@ -176,27 +192,28 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         }
 
         if(storagerefs_size>=1){
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(0))
                     .override(75, 75)
                     .into(photo1);
         }
         if(storagerefs_size>=2){
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(1))
                     .override(75, 75)
                     .into(photo2);
         }
         if(storagerefs_size>=3){
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(2))
                     .override(75, 75)
                     .into(photo3);
         }
     }
+
 
 /*    public void pictureClick(View myview){
         mAddPicture.setVisibility(View.GONE);

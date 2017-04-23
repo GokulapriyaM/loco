@@ -1,28 +1,20 @@
 package android.duke290.com.loco;
 
 
-import java.sql.Time;
-import java.sql.Timestamp;
-
-/**
- * Created by Jihane on 4/22/17.
- */
-
 public class Post {
-    // Defining each post by a username, a text, and a timestamp
-    private String mUsername;
+    // Defining each post by a text and a timestamp
     private String mPost;
-    private Timestamp mTimestamp;
+    private String mTimestamp;
 
-    public Post(String username, String post, long time) {
-        mUsername = username;
+    public Post(String post, String timestamp) {
         mPost = post;
-        mTimestamp = new Timestamp(time);
+        mTimestamp = timestamp;
     }
 
-    public String getUsername() {return mUsername;}
 
     public String getPost() {return mPost;}
 
-    public Timestamp getTimestamp() {return mTimestamp;}
+    public String getTimestamp() {
+        return mTimestamp;
+    }
 }

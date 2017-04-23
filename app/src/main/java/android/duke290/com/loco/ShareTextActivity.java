@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class ShareTextActivity extends AppCompatActivity {
 
@@ -44,7 +48,8 @@ public class ShareTextActivity extends AppCompatActivity {
 
     protected void onShareClick(View view) {
         String message = mEditText.getText().toString();
-        Creation creation = new Creation(latitude, longitude, address, type, message, "");
+        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
+        Creation creation = new Creation(latitude, longitude, address, type, message, "", timestamp);
         DatabaseAction.putCreationInFirebaseDatabase(creation, latitude, longitude);
         Toast.makeText(getApplicationContext(), "Shared successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(ShareTextActivity.this, StartActivity.class));

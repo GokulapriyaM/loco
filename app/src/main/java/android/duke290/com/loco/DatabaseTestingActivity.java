@@ -26,7 +26,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -123,9 +126,11 @@ public class DatabaseTestingActivity extends AppCompatActivity {
 
         String image_storage_path = "images/" + "img" + uid + currentTime;
 
+        String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm", Locale.US).format(new Date());
+
         Creation new_reference = new Creation(mCurrentLocation.getLatitude(),
                 mCurrentLocation.getLongitude(), "420 Chapel Drive",
-                "image", "cool beans 3", image_storage_path);
+                "image", "cool beans 3", image_storage_path, timestamp);
 
         // upload test file
 

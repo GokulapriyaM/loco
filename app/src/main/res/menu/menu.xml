@@ -5,16 +5,7 @@
             android:onClick="homeclick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    <item android:id="@+id/photos"
-            android:title="@string/photos"
-            android:onClick="photosclick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    <item android:id="@+id/posts"
-        android:title="@string/posts"
-        android:onClick="postsclick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
     <item android:id="@+id/profile"
         android:title="@string/profile"
         android:onClick="profileclick"

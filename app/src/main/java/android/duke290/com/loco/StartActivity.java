@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.BufferedInputStream;
@@ -40,7 +41,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
 
@@ -64,7 +68,7 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     private double longitude;
 
     private DatabaseFetch databaseFetch;
-
+    private FirebaseStorage mStorage;
 
     private ArrayList<String> mCloudProcessMsgs;
     private ArrayList<InputStream> mCloudDownloadedStreams;
@@ -94,6 +98,12 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     private TextView post2;
     private TextView post3;
 
+    private final int limit = 3;
+
+    private ArrayList<String> messages;
+    private ArrayList<String> messages_time;
+    private final String messagesKey = "messages";
+    private final String messagesTimeKey = "messages_time";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +116,9 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
         mCloudDownloadedContentTypes = new ArrayList<String>();
         mOutputMessageList = new ArrayList<String>();
         mCloudDownloadedFilenames = new ArrayList<String>();
-        
+
+        mStorage = FirebaseStorage.getInstance();
+
         //get firebase mAuth instance
         mAuth = FirebaseAuth.getInstance();
 
@@ -487,10 +499,11 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
         Log.d(TAG, "upload button clicked");
 
         String image_storage_path = DatabaseAction.createImageStoragePath();
+        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
 
         Creation new_reference = new Creation(mCurrentLocation.getLatitude(),
                 mCurrentLocation.getLongitude(), "420 Chapel Drive",
-                "image", "cool beans 3", image_storage_path);
+                "image", "cool beans 3", image_storage_path, timestamp);
 
         // upload test file
         AssetManager assetManager = getAssets();
@@ -566,6 +579,8 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     // on learn more click
     public void onMorePostsClick(View view){
         Intent intent = new Intent(StartActivity.this, PostsActivity.class);
+        intent.putStringArrayListExtra(messagesKey, messages);
+        intent.putStringArrayListExtra(messagesTimeKey, messages_time);
         startActivity(intent);
     }
 
@@ -576,9 +591,21 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
 
 
     @Override
-    public void onDatabaseResultReceived(ArrayList<String> messages, ArrayList<StorageReference> storagerefs) {
-        Log.d(TAG, "Messages: " + messages.toString());
-        Log.d(TAG, "Storagepaths: " + storagerefs.toString());
+    public void onDatabaseResultReceived(ArrayList<Creation> creations) {
+        messages = new ArrayList<>();
+        messages_time = new ArrayList<>();
+        ArrayList<StorageReference> storagerefs = new ArrayList<>();
+        for (Creation c : creations) {
+            if (c.type.equals("text")) {
+                messages.add(c.message);
+                messages_time.add(c.timestamp);
+            }
+            if (c.type.equals("image")) {
+                String storage_path = c.extra_storage_path;
+                StorageReference storageRef = mStorage.getReference().child(storage_path);
+                storagerefs.add(storageRef);
+            }
+        }
         populateView(messages, storagerefs);
     }
 
@@ -597,21 +624,21 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
         }
 
         if(storagerefs_size>=1){
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(0))
                     .override(75, 75)
                     .into(photo1);
         }
         if(storagerefs_size>=2){
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(1))
                     .override(75, 75)
                     .into(photo2);
         }
         if(storagerefs_size>=3){
-            Glide.with(this)
+            Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(2))
                     .override(75, 75)
@@ -623,6 +650,11 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     @Override
     public void onUserReceived(User user) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
 }

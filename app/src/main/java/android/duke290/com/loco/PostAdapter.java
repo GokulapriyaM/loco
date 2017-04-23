@@ -9,10 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by Jihane on 4/22/17.
- */
-
 public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Post> mDataset;
 
@@ -20,14 +16,14 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         CardView mCVPostView;
-        TextView mUsernameView;
+        //      TextView mUsernameView;
         TextView mTimeView;
         TextView mPostView;
 
         public PostViewHolder(View v) {
             super(v);
             mCVPostView = (CardView) v.findViewById(R.id.cvpostitem);
-            mUsernameView = (TextView) v.findViewById(R.id.username);
+//          mUsernameView = (TextView) v.findViewById(R.id.username);
             mTimeView = (TextView) v.findViewById(R.id.timestamp);
             mPostView =(TextView) v.findViewById(R.id.userpost);
         }
@@ -49,9 +45,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PostViewHolder postholder = (PostViewHolder) holder;
-        postholder.mUsernameView.setText(mDataset.get(position).getUsername());
+//        postholder.mUsernameView.setText(mDataset.get(position).getUsername());
         postholder.mPostView.setText(mDataset.get(position).getPost());
-        postholder.mTimeView.setText(mDataset.get(position).getTimestamp().toString());
+        postholder.mTimeView.setText(mDataset.get(position).getTimestamp());
 
     }
 

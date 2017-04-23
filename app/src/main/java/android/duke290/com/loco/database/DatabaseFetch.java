@@ -1,5 +1,6 @@
 package android.duke290.com.loco.database;
 
+import android.duke290.com.loco.Creation;
 import android.duke290.com.loco.User;
 import android.util.Log;
 
@@ -11,17 +12,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 
 public class DatabaseFetch {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
-    private FirebaseStorage mStorage;
     FirebaseUser mFirebaseuser;
     private String uid;
 
@@ -42,7 +39,6 @@ public class DatabaseFetch {
         mFirebaseuser = mAuth.getCurrentUser();
         uid = mFirebaseuser.getUid();
         mDatabase = FirebaseDatabase.getInstance();
-        mStorage = FirebaseStorage.getInstance();
         mActivityClass = activityClass;
     }
 
@@ -72,8 +68,21 @@ public class DatabaseFetch {
         fetch(ref);
     }
 
+    public void fetchByUser(int limit) {
+        Query ref = mDatabase.getReference(USERS).child(uid).child(CONTENT)
+                .orderByKey().limitToLast(limit);
+        fetch(ref);
+    }
+
+
     public void fetchByCoordinate(String coordNameLookup){
         Query ref = mDatabase.getReference(CREATIONS).child(coordNameLookup).orderByKey();
+        fetch(ref);
+    }
+
+    public void fetchByCoordinate(String coordNameLookup, int limit) {
+        Query ref = mDatabase.getReference(CREATIONS).child(coordNameLookup)
+                .orderByKey().limitToLast(limit);
         fetch(ref);
     }
 
@@ -83,25 +92,13 @@ public class DatabaseFetch {
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<String> messages = new ArrayList<>();
-                        ArrayList<StorageReference> storagepaths = new ArrayList<>();
+                        ArrayList<Creation> creations = new ArrayList<>();
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            Map<String, Object> m = (Map<String, Object>) child.getValue();
-                            Log.d(TAG, m.toString());
-                            String message = (String) m.get("message");
-                            if(!message.isEmpty()){
-                                messages.add(message);
-                            }
-                            if (m.get("type").equals("image")) {
-                                String storage_path = m.get("extra_storage_path").toString();
-                                StorageReference storageRef = mStorage.getReference().child(storage_path);
-                                storagepaths.add(storageRef);
-                            }
+                            creations.add(child.getValue(Creation.class));
                         }
-                        Collections.reverse(messages);
-                        Collections.reverse(storagepaths);
-                        mActivityClass.onDatabaseResultReceived(messages, storagepaths);
+                        Collections.reverse(creations);
+                        mActivityClass.onDatabaseResultReceived(creations);
                     }
 
 

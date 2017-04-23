@@ -8,10 +8,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-/**
- * Created by kevinkuo on 4/18/17.
- */
-
 public class DatabaseAction {
 
     final static String USERS = "users";
