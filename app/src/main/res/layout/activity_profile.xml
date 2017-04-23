@@ -154,11 +154,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/post2" />
 
-                <TextView
-                    android:id="@+id/post4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/post3" />
 
                 <TextView
                     android:id="@+id/checkposts"

@@ -1,25 +1,32 @@
 package android.duke290.com.loco.database;
 
+import android.duke290.com.loco.User;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 public class DatabaseFetch {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
+    FirebaseUser mFirebaseuser;
+    private String uid;
 
     final String USERS = "users";
+    final String USERINFO = "userinfo";
     final String CONTENT = "content";
     final String CREATIONS = "creations";
 
@@ -27,25 +34,76 @@ public class DatabaseFetch {
 
     final String TAG = "DatabaseFetch";
 
+
     private DatabaseFetchCallback mActivityClass;
 
     public DatabaseFetch(DatabaseFetchCallback activityClass) {
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseuser = mAuth.getCurrentUser();
+        uid = mFirebaseuser.getUid();
         mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance();
         mActivityClass = activityClass;
     }
 
-    public void fetchByCoordinate(String coordNameLookup) {
-        DatabaseReference ref = mDatabase.getReference(CREATIONS).child(coordNameLookup);
+    public void getCurrentUser(){
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference(USERS).child(uid).child(USERINFO);
 
-        ref.addListenerForSingleValueEvent(
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.getValue(User.class);
+                mActivityClass.onUserReceived(currentUser);
+                Log.d(TAG, "Got user: "+currentUser + " username: " + currentUser.name);
+                Log.d(TAG, "Got key: "+dataSnapshot.getKey());
+                Log.d(TAG, "Got value: "+dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    public void fetchByUser() {
+        Query ref = mDatabase.getReference(USERS).child(uid).child(CONTENT).orderByKey();
+        fetch(ref);
+    }
+
+    public void fetchByCoordinate(String coordNameLookup){
+        Query ref = mDatabase.getReference(CREATIONS).child(coordNameLookup).orderByKey();
+        fetch(ref);
+    }
+
+    private void fetch(Query ref) {
+        Log.d(TAG, "fetch by coordinates");
+        ref.addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Get map of users in datasnapshot
-                        collectCreations((Map<String, Object>) dataSnapshot.getValue());
+                        ArrayList<String> messages = new ArrayList<>();
+                        ArrayList<StorageReference> storagepaths = new ArrayList<>();
+
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            Map<String, Object> m = (Map<String, Object>) child.getValue();
+                            Log.d(TAG, m.toString());
+                            String message = (String) m.get("message");
+                            if(!message.isEmpty()){
+                                messages.add(message);
+                            }
+                            if (m.get("type").equals("image")) {
+                                String storage_path = m.get("extra_storage_path").toString();
+                                StorageReference storageRef = mStorage.getReference().child(storage_path);
+                                storagepaths.add(storageRef);
+                            }
+                        }
+                        Collections.reverse(messages);
+                        Collections.reverse(storagepaths);
+                        mActivityClass.onDatabaseResultReceived(messages, storagepaths);
                     }
+
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -53,48 +111,6 @@ public class DatabaseFetch {
                     }
                 });
 
-    }
-
-    public void fetchByUser(String uid) {
-        DatabaseReference ref = mDatabase.getReference(USERS).child(uid).child(CONTENT);
-        ref.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Get map of users in datasnapshot
-                        collectCreations((Map<String, Object>) dataSnapshot.getValue());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //handle databaseError
-                    }
-                });
-    }
-
-    private void collectCreations(Map<String, Object> creations) {
-        ArrayList<String> messages = new ArrayList<>();
-        ArrayList<StorageReference> storagepaths = new ArrayList<>();
-
-        //iterate through each user, ignoring their reference id
-        for (Map.Entry<String, Object> entry : creations.entrySet()) {
-            //Get creation map
-            Map singleCreation = (Map) entry.getValue();
-            Log.d(TAG, "received creation");
-            String message = singleCreation.get("message").toString();
-            if (!message.equals("")) {
-                messages.add(message);
-            }
-
-            if (singleCreation.get("type").equals("image")) {
-                String storage_path = singleCreation.get("extra_storage_path").toString();
-                StorageReference storageRef = mStorage.getReference().child(storage_path);
-                storagepaths.add(storageRef);
-            }
-        }
-        Log.d(TAG, "Messages: " + messages.toString());
-        Log.d(TAG, "Storagepaths: " + storagepaths.toString());
-        mActivityClass.onDatabaseResultReceived(messages, storagepaths);
     }
 
 

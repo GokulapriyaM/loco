@@ -34,7 +34,7 @@ public class DatabaseAction {
         ref.child("ref" + System.currentTimeMillis()).setValue(reference);
         String coordName = createCoordName(location);
         DatabaseReference refCreationList = mDatabase.getReference(CREATIONS).child(coordName);
-        refCreationList.child("cre" + uid + "" + System.currentTimeMillis()).setValue(reference);
+        refCreationList.child("cre" + "" + System.currentTimeMillis() + uid).setValue(reference);
     }
 
     public static void putCreationInFirebaseDatabase(Creation reference, double latitute, double longitude) {
@@ -44,7 +44,7 @@ public class DatabaseAction {
         ref.child("ref" + System.currentTimeMillis()).setValue(reference);
         String coordName = createCoordName(latitute, longitude);
         DatabaseReference refCreationList = mDatabase.getReference(CREATIONS).child(coordName);
-        refCreationList.child("cre" + uid + "" + System.currentTimeMillis()).setValue(reference);
+        refCreationList.child("cre" + "" + System.currentTimeMillis() + uid).setValue(reference);
     }
 
 

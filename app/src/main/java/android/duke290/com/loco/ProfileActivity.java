@@ -20,11 +20,6 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -42,14 +37,13 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     private TextView post1;
     private TextView post2;
     private TextView post3;
-    private TextView post4;
 
 
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth mAuth;
 
     public User currentUser;
-    public String uid;
+    public DatabaseFetch databasefetch;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_STORAGE = 1;
@@ -94,6 +88,8 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
             }
         };
 
+        databasefetch = new DatabaseFetch(this);
+
         signOut = (Button) findViewById(R.id.sign_out);
         nameText = (TextView) findViewById(R.id.name_text);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -103,11 +99,10 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         post1 = (TextView) findViewById(R.id.post1);
         post2 = (TextView) findViewById(R.id.post2);
         post3 = (TextView) findViewById(R.id.post3);
-        post4 = (TextView) findViewById(R.id.post4);
 
         showProgressBar();
-        setCurrentUser(user);
-        setUserCreation(user);
+        setCurrentUser();
+        setUserCreation();
         if (progressBar != null) {
             hideProgressBar();
         }
@@ -145,37 +140,18 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         mAuth.addAuthStateListener(authListener);
     }
 
-    private void setUserCreation(FirebaseUser user){
-        uid = user.getUid();
-        DatabaseFetch databasefetch = new DatabaseFetch(this);
-        databasefetch.fetchByUser(uid);
+    private void setCurrentUser(){
+        databasefetch.getCurrentUser();
     }
 
-    /**
-     * Retrieve user information from Firebase database and set current user of this activity
-     * @param user
-     */
-    private void setCurrentUser(FirebaseUser user){
-        uid = user.getUid();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference(USERS).child(uid).child(USERINFO);
+    private void setUserCreation(){
+        databasefetch.fetchByUser();
+    }
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                currentUser = dataSnapshot.getValue(User.class);
-                hideProgressBar();
-                setNameText();
-                Log.d(TAG, "Got user: "+currentUser + " username: " + currentUser.name);
-                Log.d(TAG, "Got key: "+dataSnapshot.getKey());
-                Log.d(TAG, "Got value: "+dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "The read failed: " + databaseError.getCode());
-            }
-        });
+    @Override
+    public void onUserReceived(User user){
+        currentUser = user;
+        setNameText();
     }
 
     @Override
@@ -190,36 +166,33 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         int storagerefs_size = storagerefs.size();
 
         if(messages_size>=1){
-            post1.setText(messages.get(messages_size - 1));
+            post1.setText(messages.get(0));
         }
         if(messages_size>=2){
-            post2.setText(messages.get(messages_size - 2));
+            post2.setText(messages.get(1));
         }
         if(messages_size>=3){
-            post3.setText(messages.get(messages_size - 3));
-        }
-        if(messages_size>=4){
-            post4.setText(messages.get(messages_size - 4));
+            post3.setText(messages.get(2));
         }
 
         if(storagerefs_size>=1){
             Glide.with(this)
                     .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(storagerefs_size - 1))
+                    .load(storagerefs.get(0))
                     .override(75, 75)
                     .into(photo1);
         }
         if(storagerefs_size>=2){
             Glide.with(this)
                     .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(storagerefs_size - 2))
+                    .load(storagerefs.get(1))
                     .override(75, 75)
                     .into(photo2);
         }
         if(storagerefs_size>=3){
             Glide.with(this)
                     .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(storagerefs_size - 3))
+                    .load(storagerefs.get(2))
                     .override(75, 75)
                     .into(photo3);
         }

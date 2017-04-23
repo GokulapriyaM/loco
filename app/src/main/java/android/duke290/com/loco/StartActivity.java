@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.duke290.com.loco.database.DatabaseAction;
+import android.duke290.com.loco.database.DatabaseFetch;
+import android.duke290.com.loco.database.DatabaseFetchCallback;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
@@ -28,21 +30,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Map;
 
 import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
 
@@ -51,7 +49,7 @@ import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
  * Connect to internet -> Gets coordinates -> Gets address -> Displays coordinates/address
  */
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity implements DatabaseFetchCallback{
 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
@@ -64,6 +62,8 @@ public class StartActivity extends AppCompatActivity {
     private String mAddressOutput;
     private double latitude;
     private double longitude;
+
+    private DatabaseFetch databaseFetch;
 
 
     private ArrayList<String> mCloudProcessMsgs;
@@ -86,6 +86,13 @@ public class StartActivity extends AppCompatActivity {
 
     private boolean photo1_occupied;
     private boolean photo2_occupied;
+
+    private ImageView photo1;
+    private ImageView photo2;
+    private ImageView photo3;
+    private TextView post1;
+    private TextView post2;
+    private TextView post3;
 
 
     @Override
@@ -123,6 +130,14 @@ public class StartActivity extends AppCompatActivity {
         mLocationResultReceiver = new LocationResultReceiver(new Handler());
         mCloudResultReceiver = new CloudResultReceiver(new Handler());
 
+        databaseFetch = new DatabaseFetch(this);
+
+        photo1 = (ImageView) findViewById(R.id.photo1);
+        photo2 = (ImageView) findViewById(R.id.photo2);
+        photo3 = (ImageView) findViewById(R.id.photo3);
+        post1 = (TextView) findViewById(R.id.post1);
+        post2 = (TextView) findViewById(R.id.post2);
+        post3 = (TextView) findViewById(R.id.post3);
     }
 
     public void updateValuesFromBundle(Bundle savedInstanceState) {
@@ -168,7 +183,6 @@ public class StartActivity extends AppCompatActivity {
         displayProcessOutput();
         displayAddressOutput();
         displayAllDownloadedStorageOutput();
-        displayOutputMessages();
     }
 
     /*
@@ -296,6 +310,7 @@ public class StartActivity extends AppCompatActivity {
             mCurrentLocation = resultData.getParcelable("LOCATION_KEY");
             getAddress();
             displayLocation();
+            getCreations();
         }
 
     }
@@ -497,84 +512,7 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-    protected void getClick(View button) {
-        Log.d(TAG, "get button clicked");
-        resetReceivedCloudItems();
-        photo1_occupied = false;
-        photo2_occupied = false;
 
-        DatabaseReference ref = DatabaseAction.getDatabaseReferenceForGet(mCurrentLocation);
-
-        ref.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Get map of users in datasnapshot
-                        collectCreations((Map<String,Object>) dataSnapshot.getValue());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //handle databaseError
-                    }
-                });
-
-    }
-
-    private void collectCreations(Map<String,Object> creations) {
-
-        mOutputMessageList = new ArrayList<String>();
-
-        ArrayList<String> storage_path_list = new ArrayList<String>();
-
-        //iterate through each user, ignoring their UID
-        if (creations != null) {
-            for (Map.Entry<String, Object> entry : creations.entrySet()) {
-
-                //Get user map
-                Map singleCreation = (Map) entry.getValue();
-
-                Log.d(TAG, "received creation");
-                //Get phone field and append to list
-                Log.d(TAG, "adding message: " + singleCreation.get("message").toString());
-                mOutputMessageList.add(singleCreation.get("message").toString());
-
-                if (singleCreation.get("type").equals("image")) {
-                    Log.d(TAG, "storage paths found");
-                    storage_path_list.add(singleCreation.get("extra_storage_path").toString());
-                }
-            }
-        }
-
-        if (storage_path_list.size() >= 1) {
-            downloadStreamFromFirebaseStorage(storage_path_list.get(0));
-            if (storage_path_list.size() >= 2) {
-                downloadStreamFromFirebaseStorage(storage_path_list.get(1));
-            }
-        }
-
-        displayOutputMessages();
-
-    }
-
-    /*
-     * As messages were never stored in the cloud, they are already available once collectCreations
-     * finishes collecting Creations
-     */
-    private void displayOutputMessages() {
-        TextView out_msgs = (TextView) findViewById(R.id.user1post);
-
-        String concat_output_messages = "";
-        for (int k1 = 0; k1 < mOutputMessageList.size(); k1++) {
-            if (k1 > 0) {
-                concat_output_messages += ", ";
-            }
-            concat_output_messages += mOutputMessageList.get(k1);
-        }
-
-        out_msgs.setText(concat_output_messages);
-
-    }
 
     protected void profileClick(View view){
         startActivity(new Intent(StartActivity.this, ProfileActivity.class));
@@ -618,6 +556,73 @@ public class StartActivity extends AppCompatActivity {
         mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
         mBottomSheetDialog.show();
+    }
+
+    private void getCreations(){
+        String coordname = DatabaseAction.createCoordName(mCurrentLocation);
+        databaseFetch.fetchByCoordinate(coordname);
+    }
+
+    // on learn more click
+    public void onMorePostsClick(View view){
+        Intent intent = new Intent(StartActivity.this, PostsActivity.class);
+        startActivity(intent);
+    }
+
+    public void onMorePhotosClick(View view){
+        Intent intent = new Intent(StartActivity.this, PhotosActivity.class);
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onDatabaseResultReceived(ArrayList<String> messages, ArrayList<StorageReference> storagerefs) {
+        Log.d(TAG, "Messages: " + messages.toString());
+        Log.d(TAG, "Storagepaths: " + storagerefs.toString());
+        populateView(messages, storagerefs);
+    }
+
+    private void populateView(ArrayList<String> messages, ArrayList<StorageReference> storagerefs){
+        int messages_size = messages.size();
+        int storagerefs_size = storagerefs.size();
+
+        if(messages_size>=1){
+            post1.setText(messages.get(0));
+        }
+        if(messages_size>=2){
+            post2.setText(messages.get(1));
+        }
+        if(messages_size>=3){
+            post3.setText(messages.get(2));
+        }
+
+        if(storagerefs_size>=1){
+            Glide.with(this)
+                    .using(new FirebaseImageLoader())
+                    .load(storagerefs.get(0))
+                    .override(75, 75)
+                    .into(photo1);
+        }
+        if(storagerefs_size>=2){
+            Glide.with(this)
+                    .using(new FirebaseImageLoader())
+                    .load(storagerefs.get(1))
+                    .override(75, 75)
+                    .into(photo2);
+        }
+        if(storagerefs_size>=3){
+            Glide.with(this)
+                    .using(new FirebaseImageLoader())
+                    .load(storagerefs.get(2))
+                    .override(75, 75)
+                    .into(photo3);
+        }
+    }
+
+
+    @Override
+    public void onUserReceived(User user) {
+
     }
 
 }
