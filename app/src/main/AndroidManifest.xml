@@ -40,13 +40,10 @@
             android:name=".FetchAddressIntentService"
             android:exported="false" />
 
-        <activity android:name=".FacebookActivity" />
-
         <service
             android:name=".CloudStorageService"
             android:exported="false" />
 
-        <activity android:name=".DatabaseTestingActivity" />
         <activity android:name=".PhotosActivity" />
         <activity android:name=".PostsActivity" />
 
