@@ -31,8 +31,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/posts_title"
-        android:fillViewport="true" >
+        android:fillViewport="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
         <!-- A RecyclerView with some commonly used attributes -->
         <android.support.v7.widget.RecyclerView
