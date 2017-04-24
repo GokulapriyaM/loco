@@ -2,6 +2,9 @@ package android.duke290.com.loco;
 
 import android.content.Context;
 import android.content.Intent;
+import android.duke290.com.loco.location.Constants;
+import android.duke290.com.loco.location.FetchAddressIntentService;
+import android.duke290.com.loco.location.LocationService;
 import android.location.Location;
 import android.os.ResultReceiver;
 

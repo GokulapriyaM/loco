@@ -1,4 +1,4 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.location;
 
 import android.app.IntentService;
 import android.content.Intent;

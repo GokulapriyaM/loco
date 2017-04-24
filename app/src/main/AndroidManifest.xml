@@ -37,14 +37,14 @@
             android:parentActivityName=".MainActivity" />
 
         <service
-            android:name=".FetchAddressIntentService"
+            android:name=".location.FetchAddressIntentService"
             android:exported="false" />
 
         <activity android:name=".PhotosActivity" />
         <activity android:name=".PostsActivity" />
 
         <service
-            android:name=".LocationService"
+            android:name=".location.LocationService"
             android:enabled="true"
             android:exported="true"></service>
     </application>

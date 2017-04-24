@@ -9,6 +9,8 @@ import android.duke290.com.loco.database.DatabaseAction;
 import android.duke290.com.loco.database.DatabaseFetch;
 import android.duke290.com.loco.database.DatabaseFetchCallback;
 import android.duke290.com.loco.cloud.CloudStorageAction;
+import android.duke290.com.loco.location.Constants;
+import android.duke290.com.loco.location.LocationService;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
