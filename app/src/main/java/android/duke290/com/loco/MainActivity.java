@@ -72,15 +72,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private double longitude;
 
     private Creation mCreation;
-    private ArrayList<Creation> mImageCreations;
 
     private DatabaseFetch databaseFetch;
     private FirebaseStorage mStorage;
 
     private ArrayList<String> mCloudProcessMsgs;
-    private ArrayList<InputStream> mCloudDownloadedStreams;
-    private ArrayList<String> mCloudDownloadedContentTypes;
-    private ArrayList<String> mCloudDownloadedFilenames;
 
     private ArrayList<String> mOutputMessageList;
 
@@ -95,15 +91,14 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     final String LONGITUDE = "longitude";
     final String ADDRESS = "address";
 
-    private boolean photo1_occupied;
-    private boolean photo2_occupied;
-
     private ImageView photo1;
     private ImageView photo2;
     private ImageView photo3;
     private TextView post1;
     private TextView post2;
     private TextView post3;
+
+    private LocationFragment mLocationFragment;
 
     private final int limit = 3;
 
@@ -114,10 +109,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         setContentView(R.layout.activity_start);
 
         mCloudProcessMsgs = new ArrayList<String>();
-        mCloudDownloadedStreams = new ArrayList<InputStream>();
-        mCloudDownloadedContentTypes = new ArrayList<String>();
         mOutputMessageList = new ArrayList<String>();
-        mCloudDownloadedFilenames = new ArrayList<String>();
 
         mStorage = FirebaseStorage.getInstance();
 
@@ -127,6 +119,17 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         //Setting the toolbar for the activity
         Toolbar myToolbar = (Toolbar) findViewById(R.id.start_toolbar);
         setSupportActionBar(myToolbar);
+
+        // get layout variables
+        photo1 = (ImageView) findViewById(R.id.photo1);
+        photo2 = (ImageView) findViewById(R.id.photo2);
+        photo3 = (ImageView) findViewById(R.id.photo3);
+        post1 = (TextView) findViewById(R.id.post1);
+        post2 = (TextView) findViewById(R.id.post2);
+        post3 = (TextView) findViewById(R.id.post3);
+
+        mLocationFragment = (LocationFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.start_location_fragment);
 
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
@@ -146,12 +149,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
         databaseFetch = new DatabaseFetch(this);
 
-        photo1 = (ImageView) findViewById(R.id.photo1);
-        photo2 = (ImageView) findViewById(R.id.photo2);
-        photo3 = (ImageView) findViewById(R.id.photo3);
-        post1 = (TextView) findViewById(R.id.post1);
-        post2 = (TextView) findViewById(R.id.post2);
-        post3 = (TextView) findViewById(R.id.post3);
     }
 
     public void updateValuesFromBundle(Bundle savedInstanceState) {
@@ -161,16 +158,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 // Since LOCATION_KEY was found in the Bundle, we can be sure that
                 // mCurrentLocation is not null.
                 mCurrentLocation = savedInstanceState.getParcelable("LOCATION_KEY");
-            }
-
-            if (savedInstanceState.keySet().contains("DOWNLOADED_FILENAMES")) {
-                mCloudDownloadedFilenames =
-                        savedInstanceState.getStringArrayList("DOWNLOADED_FILENAMES");
-
-                // update mCloudDownloadedStreams
-                for (String filename : mCloudDownloadedFilenames) {
-                    addFilesToDownloadedStreams(filename);
-                }
             }
 
             if (savedInstanceState.keySet().contains("PROCESS_MSGS")) {
@@ -187,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.d(TAG, "saving location values");
         savedInstanceState.putParcelable("LOCATION_KEY", mCurrentLocation);
-        savedInstanceState.putStringArrayList("DOWNLOADED_FILENAMES", mCloudDownloadedFilenames);
         savedInstanceState.putStringArrayList("PROCESS_MSGS", mCloudProcessMsgs);
         savedInstanceState.putStringArrayList("DOWNLOADED_MSGS", mOutputMessageList);
         super.onSaveInstanceState(savedInstanceState);
@@ -196,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private void updateUI() {
         displayProcessOutput();
         displayAddressOutput();
-        displayAllDownloadedStorageOutput();
     }
 
     /*
@@ -218,13 +203,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
                     databaseFetch = new DatabaseFetch(this);
 
-                    photo1 = (ImageView) findViewById(R.id.photo1);
-                    photo2 = (ImageView) findViewById(R.id.photo2);
-                    photo3 = (ImageView) findViewById(R.id.photo3);
-                    post1 = (TextView) findViewById(R.id.post1);
-                    post2 = (TextView) findViewById(R.id.post2);
-                    post3 = (TextView) findViewById(R.id.post3);
-
                     ServiceStarter.startLocationService(getApplicationContext(),
                             mLocationResultReceiver);
 
@@ -233,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 }
                 return;
             }
-
         }
     }
 
@@ -354,26 +331,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             Log.d(TAG, "Cloud result received");
 
-            boolean downloaded_items_exist = false;
-
             // Display the address string
             // or an error message sent from the intent service.
             mCloudProcessMsgs.add(resultData.getString("CLOUD_PROCESS_MSG_KEY"));
 
-            if (resultData.getString("CLOUD_ACTION_TYPE").equals("download")) {
-                Log.d(TAG, "Cloud download complete");
-
-                if (resultData.getString("CLOUD_DOWNLOADED_FILENAME") != null) {
-                    downloaded_items_exist = true;
-                    Log.d(TAG, "Cloud downloaded something");
-                    String stg_filename = resultData.getString("CLOUD_DOWNLOADED_FILENAME");
-                    mCloudDownloadedFilenames.add(stg_filename);
-                    addFilesToDownloadedStreams(stg_filename);
-                }
-
-                mCloudDownloadedContentTypes.add(resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
-                Log.d(TAG, "Downloaded content type: " + resultData.getString("CLOUD_DOWNLOADED_CONTENT_TYPE"));
-            } else if (resultData.getString("CLOUD_ACTION_TYPE").equals("upload")) {
+            if (resultData.getString("CLOUD_ACTION_TYPE").equals("upload")) {
                 Log.d(TAG, "Cloud upload complete");
                 // upload creation to firebase database
                 DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
@@ -381,47 +343,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
             }
 
-            if (downloaded_items_exist) {
-                displayDownloadedStorageOutput();
-            }
-
             displayProcessOutput();
 
             Log.d(TAG, "Cloud process finished");
-
-        }
-    }
-
-    private void addFilesToDownloadedStreams(String stg_filename) {
-        Context context = getApplicationContext();
-        try {
-            mCloudDownloadedStreams.add(new BufferedInputStream(new FileInputStream(
-                    new File(context.getDir("downloaded_storage_items", Context.MODE_PRIVATE),
-                            stg_filename))));
-            Log.d(TAG, "getting stuff from : " + stg_filename);
-            Log.d(TAG, "new stream added : size of " +
-                    "mCloudDownloadedStreams = " + mCloudDownloadedStreams.size());
-            Log.d(TAG, "new stream null?:" +
-                    (mCloudDownloadedStreams.get(mCloudDownloadedStreams.size() - 1) == null));
-
-        } catch (IOException e) {
-            Log.d(TAG, "failed to create inputstream " +
-                    "from internal storage file: " + e.getMessage());
         }
     }
 
     public void displayLocation() {
         latitude = mCurrentLocation.getLatitude();
         longitude = mCurrentLocation.getLongitude();
-        Log.d(TAG, "Latitude: " + latitude + ", " + "Longitude: " + longitude);
-        TextView location_msg = (TextView) findViewById(R.id.location_msg);
-        location_msg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
+        mLocationFragment.displayCoords(latitude, longitude);
 
     }
 
     protected void displayAddressOutput() {
-        TextView address_msg = (TextView) findViewById(R.id.address_msg);
-        address_msg.setText(mAddressOutput);
+        mLocationFragment.displayAddress(mAddressOutput);
     }
 
     protected void displayProcessOutput() {
@@ -429,44 +365,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         Log.d(TAG, "displayProcessOutput called");
         TextView process_msg = (TextView) findViewById(R.id.process_msg);
         process_msg.setText(mCloudProcessMsgs.get(mCloudProcessMsgs.size() - 1));
-    }
-
-    protected void displayDownloadedStorageOutput() {
-        if (mCloudDownloadedStreams.size() == 0) return;
-        Log.d(TAG, "displayDownloadedStorageOutput called");
-
-        if (photo1_occupied && photo2_occupied) {
-            return;
-        }
-
-        ImageView downloaded_img = (ImageView) findViewById(R.id.photo1);
-        if (photo1_occupied) {
-            downloaded_img = (ImageView) findViewById(R.id.photo2);
-            photo2_occupied = true;
-        } else {
-            photo1_occupied = true;
-        }
-
-        Log.d(TAG, "displaying image " + mCloudDownloadedStreams.size());
-        downloaded_img.setImageBitmap(
-                BitmapFactory.decodeStream(
-                        mCloudDownloadedStreams.get(mCloudDownloadedStreams.size() - 1)));
-    }
-
-    protected void displayAllDownloadedStorageOutput() {
-        ImageView img_1 = (ImageView) findViewById(R.id.photo1);
-        ImageView img_2 = (ImageView) findViewById(R.id.photo2);
-        if (mCloudDownloadedStreams.size() == 0) return;
-        if (mCloudDownloadedStreams.size() >= 1) {
-            img_1.setImageBitmap(
-                    BitmapFactory.decodeStream(
-                            mCloudDownloadedStreams.get(0)));
-            if (mCloudDownloadedStreams.size() >= 2) {
-                img_2.setImageBitmap(
-                        BitmapFactory.decodeStream(
-                                mCloudDownloadedStreams.get(1)));
-            }
-        }
     }
 
     protected void uploadStreamToFirebaseStorage(InputStream inputStream,
