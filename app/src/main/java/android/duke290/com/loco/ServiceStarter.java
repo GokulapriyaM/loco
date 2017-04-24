@@ -26,37 +26,4 @@ public class ServiceStarter {
         context.startService(intent);
     }
 
-//    protected static void startCloudIntentService(String action,
-//                                           InputStream local_stream,
-//                                           String storage_path,
-//                                           String content_type,
-//                                           Context context,
-//                                           ResultReceiver receiver) {
-//        Log.d(TAG, "starting cloud intent service");
-//        Intent intent = new Intent(context, CloudStorageService.class);
-//        intent.putExtra("CLOUD_STORAGE_OPTION", action);
-//        intent.putExtra("CLOUD_STORAGE_RECEIVER",receiver);
-//
-//        byte[] uplded_b_ar = null;
-//
-//        if (local_stream != null) {
-//            try {
-//                uplded_b_ar = IOUtils.toByteArray(local_stream);
-//            } catch (IOException e) {
-//                Log.d(TAG, "IOException when converting downloaded input stream to byte array");
-//            }
-//        } else {
-//            Log.d(TAG, "local_stream to upload is missing (ok if downloading something)");
-//        }
-//
-//        intent.putExtra("CLOUD_STORAGE_LOCAL_BYTE_ARRAY", uplded_b_ar);
-//        intent.putExtra("CLOUD_STORAGE_STORAGE_PATH", storage_path);
-//        intent.putExtra("CLOUD_STORAGE_CONTENT_TYPE", content_type);
-//
-//        context.startService(intent);
-//    }
-
-
-
-
 }

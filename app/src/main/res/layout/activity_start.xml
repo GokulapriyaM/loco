@@ -10,7 +10,7 @@
         android:id="@+id/activity_location"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="android.duke290.com.loco.StartActivity">
+        tools:context="android.duke290.com.loco.MainActivity">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/start_toolbar"

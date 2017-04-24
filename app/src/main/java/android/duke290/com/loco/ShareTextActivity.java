@@ -52,6 +52,6 @@ public class ShareTextActivity extends AppCompatActivity {
         Creation creation = new Creation(latitude, longitude, address, type, message, "", timestamp);
         DatabaseAction.putCreationInFirebaseDatabase(creation, latitude, longitude);
         Toast.makeText(getApplicationContext(), "Shared successfully!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(ShareTextActivity.this, StartActivity.class));
+        startActivity(new Intent(ShareTextActivity.this, MainActivity.class));
     }
 }

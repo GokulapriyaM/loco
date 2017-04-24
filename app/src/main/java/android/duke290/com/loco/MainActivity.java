@@ -5,10 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.duke290.com.loco.database.DatabaseAction;
 import android.duke290.com.loco.database.DatabaseFetch;
 import android.duke290.com.loco.database.DatabaseFetchCallback;
+import android.duke290.com.loco.cloud.CloudStorageAction;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
@@ -55,7 +55,7 @@ import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
  * Connect to internet -> Gets coordinates -> Gets address -> Displays coordinates/address
  */
 
-public class StartActivity extends AppCompatActivity implements DatabaseFetchCallback{
+public class MainActivity extends AppCompatActivity implements DatabaseFetchCallback{
 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
@@ -86,7 +86,7 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
 
     private LocationResultReceiver mLocationResultReceiver;
 
-    private String TAG = "StartActivity";
+    private String TAG = "MainActivity";
     private FirebaseAuth mAuth;
 
     final String LATITUDE = "latitude";
@@ -245,19 +245,6 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     /*
     Handling menu options clicks
      */
-
-    public boolean photosclick(MenuItem item){
-        Intent intentphotos = new Intent(this, PhotosActivity.class);
-        this.startActivity(intentphotos);
-        return true;
-    }
-
-    public boolean postsclick(MenuItem item){
-        Intent intentposts = new Intent(this, PostsActivity.class);
-        this.startActivity(intentposts);
-        return true;
-    }
-
     public boolean profileclick(MenuItem item){
         Intent intentprofile = new Intent(this, ProfileActivity.class);
         this.startActivity(intentprofile);
@@ -270,7 +257,7 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
     }
 
     public boolean homeclick(MenuItem item){
-        Intent intenthome = new Intent(this, StartActivity.class);
+        Intent intenthome = new Intent(this, MainActivity.class);
         this.startActivity(intenthome);
         return true;
     }
@@ -480,14 +467,6 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
         }
     }
 
-    protected void resetReceivedCloudItems() {
-        mCloudProcessMsgs = new ArrayList<String>();
-        mCloudDownloadedStreams = new ArrayList<InputStream>();
-        mCloudDownloadedContentTypes = new ArrayList<String>();
-        mOutputMessageList = new ArrayList<String>();
-        mCloudDownloadedFilenames = new ArrayList<String>();
-    }
-
     protected void uploadStreamToFirebaseStorage(InputStream inputStream,
                                                  String storage_path,
                                                  String content_type) {
@@ -501,60 +480,8 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
         action.doCloudAction();
     }
 
-    /*
-     * downloaded stream is put in mCloudDownloadedStream
-     */
-    protected void downloadStreamFromFirebaseStorage(String storage_path) {
-        Log.d(TAG, "downloading stream from firebase storage");
-        CloudStorageAction action = new CloudStorageAction(getApplicationContext(),
-                "download",
-                mCloudResultReceiver,
-                null,
-                storage_path,
-                null);
-        action.doCloudAction();
-    }
-
-    protected void uploadClick(View button) {
-        Log.d(TAG, "upload button clicked");
-
-        String image_storage_path = DatabaseAction.createImageStoragePath();
-        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
-
-        Creation new_reference = new Creation(mCurrentLocation.getLatitude(),
-                mCurrentLocation.getLongitude(), "420 Chapel Drive",
-                "image", "cool beans 3", image_storage_path, timestamp);
-
-        // upload test file
-        AssetManager assetManager = getAssets();
-        InputStream imageStream = null;
-
-        try {
-            imageStream = assetManager.open("Images/ola_pic.gif");
-        } catch (IOException e) {
-            Log.d(TAG, "IOException opening local file");
-        }
-
-        uploadStreamToFirebaseStorage(imageStream,
-                image_storage_path,
-                "image");
-
-        ///
-
-        DatabaseAction.putCreationInFirebaseDatabase(new_reference, mCurrentLocation);
-
-    }
-
-
-
-    protected void profileClick(View view){
-        startActivity(new Intent(StartActivity.this, ProfileActivity.class));
-//        finish(); // commented out so that user can hit back button in ProfileActivity to go
-        // back here
-    }
-
     protected void shareTextClick(View view) {
-        Intent intent = new Intent(StartActivity.this, ShareTextActivity.class);
+        Intent intent = new Intent(MainActivity.this, ShareTextActivity.class);
         intent.putExtra(LATITUDE, latitude);
         intent.putExtra(LONGITUDE, longitude);
         intent.putExtra(ADDRESS, mAddressOutput);
@@ -617,12 +544,12 @@ public class StartActivity extends AppCompatActivity implements DatabaseFetchCal
 
     // on learn more click
     public void onMorePostsClick(View view){
-        Intent intent = new Intent(StartActivity.this, PostsActivity.class);
+        Intent intent = new Intent(MainActivity.this, PostsActivity.class);
         startActivity(intent);
     }
 
     public void onMorePhotosClick(View view){
-        Intent intent = new Intent(StartActivity.this, PhotosActivity.class);
+        Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
         startActivity(intent);
     }
 
