@@ -7,6 +7,14 @@
     android:fitsSystemWindows="true"
     tools:context="android.duke290.com.loco.LoginActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -19,9 +27,9 @@
         <ImageView
             android:layout_width="@dimen/logo_w_h"
             android:layout_height="@dimen/logo_w_h"
-            android:layout_marginTop="5dip"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="30dp"
+            android:layout_marginTop="5dip"
             android:src="@mipmap/ic_login" />
 
         <android.support.design.widget.TextInputLayout
@@ -61,9 +69,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:background="@drawable/button_solid"
+            android:background="@drawable/bn_solid"
             android:text="@string/btn_login"
-            android:textColor="@drawable/button_solid_text" />
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:clickable="true"/>
 
         <Button
             android:id="@+id/btn_reset_password"
@@ -88,12 +98,4 @@
             android:textColor="@color/offWhite"
             android:textSize="15sp" />
     </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="20dp"
-        android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>

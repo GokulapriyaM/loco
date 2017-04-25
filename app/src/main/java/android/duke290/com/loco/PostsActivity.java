@@ -24,6 +24,7 @@ public class PostsActivity extends AppCompatActivity {
 
         //Setting the toolbar for the activity
         Toolbar myToolbar = (Toolbar) findViewById(R.id.posts_toolbar);
+        myToolbar.setTitle("Posts");
         setSupportActionBar(myToolbar);
 
         // Defining recycler view

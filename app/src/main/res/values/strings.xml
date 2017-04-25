@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Loco</string>
-    <string name="action_sign_in_short">Register</string>
+    <string name="action_sign_up">Sign Up</string>
     <string name="email">Email</string>
     <string name="enter_email">Enter email address!</string>
     <string name="enter_name">Enter name!</string>
@@ -19,8 +19,8 @@
     <string name="hint_name">Name</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_signup">SIGN UP</string>
-    <string name="btn_link_to_register">Not a member? Get registered in Loco now!</string>
-    <string name="btn_link_to_login">Already registered? Login Here!</string>
+    <string name="btn_link_to_register">Not a member? Sign up for Loco now!</string>
+    <string name="btn_link_to_login">Already a member? Login Here!</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
@@ -45,7 +45,7 @@
     <string name="signout">Sign-Out</string>
     <string name="profile">Profile</string>
     <string name="latest">Latest Activity!</string>
-    <string name="more">Check more!</string>
+    <string name="more">SEE MORE</string>
     <string name="thingsshared">Things you shared!</string>
     <string name="sharebtn">Share!</string>
     <string name="sharetext">Jot down what\'s on your mind</string>

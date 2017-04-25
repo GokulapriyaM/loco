@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
         //Setting the toolbar for the activity
         Toolbar myToolbar = (Toolbar) findViewById(R.id.start_toolbar);
+        myToolbar.setTitle("Discover");
         setSupportActionBar(myToolbar);
 
         // get layout variables

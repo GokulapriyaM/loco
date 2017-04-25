@@ -53,14 +53,14 @@ public class SignupActivity extends AppCompatActivity {
         inputName = (EditText) findViewById(R.id.name);
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        resetButton = (Button) findViewById(R.id.btn_reset_password);
-
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SignupActivity.this, ResetPasswordActivity.class));
-            }
-        });
+//        resetButton = (Button) findViewById(R.id.btn_reset_password);
+//
+//        resetButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(SignupActivity.this, ResetPasswordActivity.class));
+//            }
+//        });
 
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override

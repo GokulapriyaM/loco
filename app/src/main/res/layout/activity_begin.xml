@@ -31,9 +31,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:background="@drawable/button_solid"
+            android:background="@drawable/bn_solid"
             android:text="@string/btn_signup"
-            android:textColor="@drawable/button_solid_text" />
+            android:textColor="@color/colorPrimary" />
 
         <!-- Login Button -->
 
@@ -42,9 +42,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:background="@drawable/button_bordered"
+            android:background="@drawable/bn_border"
             android:text="@string/btn_login"
-            android:textColor="@drawable/button_bordered_text" />
+            android:textColor="@color/offWhite" />
 
         <Button
             android:id="@+id/btn_reset_password"

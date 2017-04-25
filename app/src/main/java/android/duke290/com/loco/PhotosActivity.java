@@ -17,6 +17,7 @@ public class PhotosActivity extends AppCompatActivity {
 
         //Setting the toolbar for the activity
         Toolbar myToolbar = (Toolbar) findViewById(R.id.photos_toolbar);
+        myToolbar.setTitle("Photos");
         setSupportActionBar(myToolbar);
 
         GridView gridview = (GridView) findViewById(R.id.grid_view);

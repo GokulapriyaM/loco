@@ -70,7 +70,8 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         setContentView(R.layout.activity_profile);
         //mAddPicture = (TextView) findViewById(R.id.addpicture);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitle("My Profile");
+        //toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
         mStorage = FirebaseStorage.getInstance();
