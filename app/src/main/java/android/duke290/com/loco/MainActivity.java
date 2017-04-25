@@ -2,7 +2,6 @@ package android.duke290.com.loco;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.duke290.com.loco.database.DatabaseAction;
@@ -12,7 +11,6 @@ import android.duke290.com.loco.cloud.CloudStorageAction;
 import android.duke290.com.loco.location.Constants;
 import android.duke290.com.loco.location.LocationService;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
@@ -38,12 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.content_main);
 
         mCloudProcessMsgs = new ArrayList<String>();
         mOutputMessageList = new ArrayList<String>();

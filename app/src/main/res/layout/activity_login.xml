@@ -1,9 +1,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/login"
     android:fitsSystemWindows="true"
     tools:context="android.duke290.com.loco.LoginActivity">
 
@@ -32,6 +32,8 @@
             android:layout_marginTop="5dip"
             android:src="@mipmap/ic_login" />
 
+        <!-- Email & Password Inputs -->
+
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -43,8 +45,7 @@
                 android:layout_marginBottom="5dp"
                 android:hint="@string/hint_email"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/offWhite"
-                android:textColorHint="@color/offWhite" />
+                android:textColor="@color/offWhite" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -58,8 +59,7 @@
                 android:layout_marginBottom="10dp"
                 android:hint="@string/hint_password"
                 android:inputType="textPassword"
-                android:textColor="@color/offWhite"
-                android:textColorHint="@color/offWhite" />
+                android:textColor="@color/offWhite" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Login Button -->
@@ -70,22 +70,26 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
             android:background="@drawable/bn_solid"
+            android:clickable="true"
             android:text="@string/btn_login"
             android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            android:clickable="true"/>
+            android:textSize="16dp" />
+
+        <!-- Reset Password -->
 
         <Button
             android:id="@+id/btn_reset_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
             android:background="@null"
+            android:padding="0dp"
             android:text="@string/btn_forgot_password"
             android:textAllCaps="false"
-            android:textColor="@color/offWhite" />
+            android:textColor="@color/offWhite"
+            android:textSize="13dp" />
+        <!-- android:gravity="center_vertical|right" -->
 
-        <!-- Link to Login Screen -->
+        <!-- Sign Up Button -->
 
         <Button
             android:id="@+id/btn_signup"
@@ -96,6 +100,6 @@
             android:text="@string/btn_link_to_register"
             android:textAllCaps="false"
             android:textColor="@color/offWhite"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
