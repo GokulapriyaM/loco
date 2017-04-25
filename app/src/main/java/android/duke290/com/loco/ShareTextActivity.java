@@ -49,7 +49,7 @@ public class ShareTextActivity extends AppCompatActivity {
     protected void onShareClick(View view) {
         String message = mEditText.getText().toString();
         String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
-        Creation creation = new Creation(latitude, longitude, address, type, message, "", timestamp);
+        Creation creation = new Creation(latitude, longitude, address, type, message, "", 0,timestamp);
         DatabaseAction.putCreationInFirebaseDatabase(creation, latitude, longitude);
         Toast.makeText(getApplicationContext(), "Shared successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(ShareTextActivity.this, MainActivity.class));

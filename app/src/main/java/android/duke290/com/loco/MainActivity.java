@@ -404,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
             mCreation = new Creation(mCurrentLocation.getLatitude(),
                     mCurrentLocation.getLongitude(), mAddressOutput,
-                    "image", "", image_storage_path, timestamp);
+                    "image", "", image_storage_path, 0,timestamp);
 
             // upload image to firebase storage
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
