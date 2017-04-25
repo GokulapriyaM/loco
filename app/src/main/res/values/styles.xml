@@ -5,25 +5,23 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">#FFFFFF</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <!-- override default use of colorAccent for EditText placeholders-->
+        <item name="colorControlNormal">@color/offWhite</item>
+        <item name="colorControlActivated">#ffffff</item>
+        <item name="colorControlHighlight">#ffffff</item>
+        <item name="android:textColorHint">@color/offWhite</item>
     </style>
 
+    <!-- Edit text theme. (for posts) -->
     <style name="MyEditTextTheme">
-        <item name="colorControlNormal">#9e9e9e</item>
+        <item name="colorControlNormal">#fafafa</item>
         <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
+    <!-- Pop up window theme? -->
     <style name="MaterialDialogSheet" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -34,10 +32,20 @@
         <item name="android:windowAnimationStyle">@style/MaterialDialogSheetAnimation</item>
     </style>
 
-
-
     <style name="MaterialDialogSheetAnimation">
         <item name="android:windowEnterAnimation">@anim/popup_show</item>
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
+
+    <!-- below is deafult given -->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>
