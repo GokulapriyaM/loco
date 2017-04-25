@@ -41,15 +41,6 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/username_prompt"
-            android:layout_width="239dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
-
-
-        <TextView
             android:id="@+id/sharetext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,20 +78,5 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="0dp">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
 
 </android.support.design.widget.CoordinatorLayout>
