@@ -18,6 +18,7 @@
     <string name="hint_password">Password</string>
     <string name="hint_name">Name</string>
     <string name="btn_login">LOGIN</string>
+    <string name="btn_signup">SIGN UP</string>
     <string name="btn_link_to_register">Not a member? Get registered in Loco now!</string>
     <string name="btn_link_to_login">Already registered? Login Here!</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>

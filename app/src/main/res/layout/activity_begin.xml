@@ -24,35 +24,16 @@
             android:layout_marginBottom="30dp"
             android:src="@mipmap/ic_login" />
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!-- Sign Up Button -->
 
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:hint="@string/hint_email"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/offWhite"
-                android:textColorHint="@color/offWhite" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/hint_password"
-                android:inputType="textPassword"
-                android:textColor="@color/offWhite"
-                android:textColorHint="@color/offWhite" />
-        </android.support.design.widget.TextInputLayout>
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/button_solid"
+            android:text="@string/btn_signup"
+            android:textColor="@drawable/button_solid_text" />
 
         <!-- Login Button -->
 
@@ -61,9 +42,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:background="@drawable/button_solid"
+            android:background="@drawable/button_bordered"
             android:text="@string/btn_login"
-            android:textColor="@drawable/button_solid_text" />
+            android:textColor="@drawable/button_bordered_text" />
 
         <Button
             android:id="@+id/btn_reset_password"
