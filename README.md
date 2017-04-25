@@ -7,9 +7,9 @@ Loco is a location-driven app that allows users to check or share their pictures
 ## Current Progress
 ##### Remaining tasks before release
 * Improve UI/UX
-* Refactor code
 * Fine-tuning app features(including store full-size pictures)
 * Add happiness level
+* Refactor code
 
 
 ##### Functional as of 4/25 (beta)
@@ -27,7 +27,7 @@ Basic functionality has been achieved.
     * External camera for taking pictures
 	* Glide API for loading pictures from Firebase storage
 	
-
+## Past versions
 ##### Functional as of 4/17 (alpha)
 * User interface
     * User authentication (sign in/sign up/reset)
