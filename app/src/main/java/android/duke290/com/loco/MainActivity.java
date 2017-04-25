@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private TextView post1;
     private TextView post2;
     private TextView post3;
-
-    private LocationFragment mLocationFragment;
+    private TextView mCoordsMsg;
+    private TextView mAddressMsg;
 
     private final int limit = 3;
 
@@ -122,9 +122,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         post1 = (TextView) findViewById(R.id.post1);
         post2 = (TextView) findViewById(R.id.post2);
         post3 = (TextView) findViewById(R.id.post3);
-
-        mLocationFragment = (LocationFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.start_location_fragment);
+        mCoordsMsg = (TextView) findViewById(R.id.coords_msg);
+        mAddressMsg = (TextView) findViewById(R.id.address_msg);
 
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
@@ -347,19 +346,18 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     public void displayLocation() {
         latitude = mCurrentLocation.getLatitude();
         longitude = mCurrentLocation.getLongitude();
-        mLocationFragment.displayCoords(latitude, longitude);
-
+        mCoordsMsg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
     }
 
     protected void displayAddressOutput() {
-        mLocationFragment.displayAddress(mAddressOutput);
+        mAddressMsg.setText(mAddressOutput);
     }
 
     protected void displayProcessOutput() {
         if (mCloudProcessMsgs.size() == 0) return;
         Log.d(TAG, "displayProcessOutput called");
-        TextView process_msg = (TextView) findViewById(R.id.process_msg);
-        process_msg.setText(mCloudProcessMsgs.get(mCloudProcessMsgs.size() - 1));
+        Toast.makeText(this, mCloudProcessMsgs.get(mCloudProcessMsgs.size() - 1),
+                Toast.LENGTH_LONG).show();
     }
 
     protected void uploadStreamToFirebaseStorage(InputStream inputStream,
