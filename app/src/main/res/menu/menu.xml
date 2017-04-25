@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/home"
-            android:title="@string/home"
-            android:onClick="homeclick"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+    <item
+        android:id="@+id/home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="homeclick"
+        android:icon="@drawable/ic_menu_discover"
+        android:title="Discover" />
 
-    <item android:id="@+id/profile"
-        android:title="@string/profile"
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_menu_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:onClick="profileclick"
+        android:title="@string/profile" />
+    <item
+        android:id="@+id/nav_photos"
+        android:icon="@drawable/ic_menu_gallery"
+        android:title="My Photos" />
+    <item
+        android:id="@+id/nav_posts"
+        android:icon="@drawable/ic_menu_posts"
+        android:title="My Posts" />
+    <item
+        android:id="@+id/signout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <item android:id="@+id/signout"
-        android:title="@string/signout"
+        android:layout_height="wrap_content"
         android:onClick="signoutclick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:title="@string/signout" />
 </menu>
