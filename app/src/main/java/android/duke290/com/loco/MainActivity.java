@@ -475,16 +475,16 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
-    //When clicking share
-    public void shareClick(View view){
-        // Show a pop-up dialog
-        final Dialog mBottomSheetDialog = new Dialog(this, R.style.MaterialDialogSheet);
-        mBottomSheetDialog.setContentView(R.layout.item_share); // your custom view.
-        mBottomSheetDialog.setCancelable(true);
-        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
-        mBottomSheetDialog.show();
-    }
+//    //When clicking share
+//    public void shareClick(View view){
+//        // Show a pop-up dialog
+//        final Dialog mBottomSheetDialog = new Dialog(this, R.style.MaterialDialogSheet);
+//        mBottomSheetDialog.setContentView(R.layout.item_share); // your custom view.
+//        mBottomSheetDialog.setCancelable(true);
+//        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+//        mBottomSheetDialog.show();
+//    }
 
     private void getCreations(){
         String coordname = DatabaseAction.createCoordName(mCurrentLocation);
@@ -502,23 +502,23 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         startActivity(intent);
     }
 
-    public void postRatingClick(View button) {
-        // creating creation
-        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
-
-        Random r = new Random();
-        final int min = 1;
-        final int max = 5;
-        final int random_rating = r.nextInt((max - min) + 1) + min;
-
-        Log.d(TAG, "Posted rating: " + random_rating);
-
-        mCreation = new Creation(mCurrentLocation.getLatitude(),
-                mCurrentLocation.getLongitude(), mAddressOutput,
-                "rating", "", "", random_rating, timestamp);
-
-        DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
-    }
+//    public void postRatingClick(View button) {
+//        // creating creation
+//        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
+//
+//        Random r = new Random();
+//        final int min = 1;
+//        final int max = 5;
+//        final int random_rating = r.nextInt((max - min) + 1) + min;
+//
+//        Log.d(TAG, "Posted rating: " + random_rating);
+//
+//        mCreation = new Creation(mCurrentLocation.getLatitude(),
+//                mCurrentLocation.getLongitude(), mAddressOutput,
+//                "rating", "", "", random_rating, timestamp);
+//
+//        DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
+//    }
 
 
     @Override

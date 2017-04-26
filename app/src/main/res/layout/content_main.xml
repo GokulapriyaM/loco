@@ -168,7 +168,7 @@
                     android:textSize="14sp" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
-
+<!--
         <Button
             android:id="@+id/share_button"
             android:layout_width="match_parent"
@@ -177,12 +177,12 @@
             android:layout_centerHorizontal="true"
             android:onClick="shareClick"
             android:text="@string/sharebtn" />
-
+-->
         <TextView
             android:id="@+id/coords_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/share_button"
+            android:layout_below="@+id/cvposts"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
             android:clickable="true"
@@ -210,7 +210,7 @@
             android:clickable="true"
             android:onClick="onMorePhotosClick"
             android:text="No rating yet :(" />
-
+<!--
         <Button
             android:id="@+id/post_rating_button"
             android:layout_width="match_parent"
@@ -219,8 +219,7 @@
             android:layout_centerHorizontal="true"
             android:onClick="postRatingClick"
             android:text="post rating (test)" />
-
-
+-->
 
 
     </RelativeLayout>

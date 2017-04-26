@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/fab_share_photo"
-        android:icon="@drawable/testimage"
+        android:icon="@drawable/ic_add_photo"
         android:title="Share photo" />
     <item
         android:id="@+id/fab_share_text"
-        android:icon="@drawable/testimage"
+        android:icon="@drawable/ic_add_post"
         android:title="Share text"/>
     <item
         android:id="@+id/fab_rate"
-        android:icon="@drawable/testimage"
+        android:icon="@drawable/ic_rate_happy"
         android:title="Rate" />
+
 </menu>
