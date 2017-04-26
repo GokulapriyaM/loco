@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -448,34 +449,46 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             //Bitmap mBitmap = (Bitmap) extras.get("data");
             // After storing the image in the database, we can go back to home
             // or go to photos activity and show user image uploaded ...
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(final Void... params) {
+                    // This is the full-size bitmap
+                    Bitmap fullsizeBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+                    // Testing in imageview
+                    //Log.d(TAG, "is null?"+ mBitmap);
+                    //ImageView testimage = (ImageView) findViewById(R.id.testfullsize);
+                    //testimage.setImageBitmap(mBitmap);
 
-            // This is the full-size bitmap
-            Bitmap fullsizeBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-            // Testing in imageview
-            //Log.d(TAG, "is null?"+ mBitmap);
-            //ImageView testimage = (ImageView) findViewById(R.id.testfullsize);
-            //testimage.setImageBitmap(mBitmap);
+                    // getting bitmap
+                    Bitmap mBitmap = ThumbnailUtils.extractThumbnail(fullsizeBitmap, 180, 240);
+                    //testimage.setImageBitmap(mBitmap);
 
-            // getting bitmap
-            Bitmap mBitmap = ThumbnailUtils.extractThumbnail(fullsizeBitmap, 180, 240);
-            //testimage.setImageBitmap(mBitmap);
+                    // creating creation
+                    String image_storage_path = DatabaseAction.createImageStoragePath();
+                    String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
 
-            // creating creation
-            String image_storage_path = DatabaseAction.createImageStoragePath();
-            String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
-            mCreation = new Creation(mCurrentLocation.getLatitude(),
-                    mCurrentLocation.getLongitude(), mAddressOutput,
-                    "image", "", image_storage_path, 0,timestamp);
 
-            // upload image to firebase storage
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            mBitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            byte[] bitmapdata = bos.toByteArray();
-            ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+                    mCreation =new
 
-            uploadStreamToFirebaseStorage(bs, image_storage_path, "image");
+                            Creation(mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude(),mAddressOutput,
+                            "image","",image_storage_path,0,timestamp);
 
-            // uploading creation to database is handled by CloudStorageReceiver.onReceiveResult
+                    // upload image to firebase storage
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    fullsizeBitmap.compress(Bitmap.CompressFormat.PNG,0 /*ignored for PNG*/,bos);
+                    byte[] bitmapdata = bos.toByteArray();
+                    ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+
+                    Log.d(TAG,"uploading stream to storage");
+
+                    uploadStreamToFirebaseStorage(bs, image_storage_path, "image");
+
+                    // uploading creation to database is handled by CloudStorageReceiver.onReceiveResult
+
+                    return null;
+                }
+            }.execute();
 
         }
     }
