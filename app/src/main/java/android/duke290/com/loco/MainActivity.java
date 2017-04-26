@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -449,10 +450,14 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             // or go to photos activity and show user image uploaded ...
 
             // This is the full-size bitmap
-            Bitmap mBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+            Bitmap fullsizeBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
             // Testing in imageview
             //Log.d(TAG, "is null?"+ mBitmap);
             //ImageView testimage = (ImageView) findViewById(R.id.testfullsize);
+            //testimage.setImageBitmap(mBitmap);
+
+            // getting bitmap
+            Bitmap mBitmap = ThumbnailUtils.extractThumbnail(fullsizeBitmap, 180, 240);
             //testimage.setImageBitmap(mBitmap);
 
             // creating creation
