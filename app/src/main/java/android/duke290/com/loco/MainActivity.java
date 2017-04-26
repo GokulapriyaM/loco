@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     private String TAG = "MainActivity";
     private FirebaseAuth mAuth;
+    private User currentUser;
 
     final String LATITUDE = "latitude";
     final String LONGITUDE = "longitude";
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +123,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         toolbar.setTitle("Discover");
         setSupportActionBar(toolbar);
 
+        navigationView = (NavigationView)findViewById(R.id.navigation_view);
+
+
         // get layout variables
         photo1 = (ImageView) findViewById(R.id.photo1);
         photo2 = (ImageView) findViewById(R.id.photo2);
@@ -133,10 +138,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
         databaseFetch = new DatabaseFetch(this);
 
-        // set up fab menu
+        // set up fab menu and nav drawer
         setUpFabMenu();
         initNavigationDrawer();
 
+        databaseFetch.getCurrentUser();
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
 
@@ -584,13 +590,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
 
     @Override
-    public void onUserReceived(User user) {
+    public void onUserReceived(User user){
+        currentUser = user;
+        setUserText();
+    }
 
+    private void setUserText(){
+        View header = navigationView.getHeaderView(0);
+        TextView user_name = (TextView)header.findViewById(R.id.user_name);
+        TextView user_email = (TextView)header.findViewById(R.id.user_email);
+        user_name.setText(currentUser.name);
+        user_email.setText(currentUser.email);
     }
 
     public void initNavigationDrawer() {
 
-        NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -615,7 +629,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 return true;
             }
         });
-        View header = navigationView.getHeaderView(0);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
