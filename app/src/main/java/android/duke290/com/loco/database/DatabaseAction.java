@@ -33,18 +33,20 @@ public class DatabaseAction {
         refCreationList.child("cre" + "" + System.currentTimeMillis() + uid).setValue(reference);
     }
 
-    public static void putCreationInFirebaseDatabase(Creation reference, double latitute, double longitude) {
+    public static void putCreationInFirebaseDatabase(Creation reference, double latitude, double longitude) {
         final FirebaseUser this_user = mAuth.getCurrentUser();
         uid = this_user.getUid();
         DatabaseReference ref = mDatabase.getReference(USERS).child(uid).child(CONTENT);
         ref.child("ref" + System.currentTimeMillis()).setValue(reference);
-        String coordName = createCoordName(latitute, longitude);
+        String coordName = createCoordName(latitude, longitude);
         DatabaseReference refCreationList = mDatabase.getReference(CREATIONS).child(coordName);
         refCreationList.child("cre" + "" + System.currentTimeMillis() + uid).setValue(reference);
     }
 
 
     public static String createImageStoragePath() {
+        final FirebaseUser this_user = mAuth.getCurrentUser();
+        uid = this_user.getUid();
         return "images/" + "img" + uid + System.currentTimeMillis();
     }
 
