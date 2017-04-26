@@ -463,7 +463,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             // creating creation
             String image_storage_path = DatabaseAction.createImageStoragePath();
             String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
-
             mCreation = new Creation(mCurrentLocation.getLatitude(),
                     mCurrentLocation.getLongitude(), mAddressOutput,
                     "image", "", image_storage_path, 0,timestamp);

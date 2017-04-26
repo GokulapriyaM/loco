@@ -46,7 +46,7 @@
         <service
             android:name=".location.LocationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -55,8 +55,10 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <activity android:name=".photos.PhotoFullSizeActivity"></activity>
     </application>
 
 </manifest>
