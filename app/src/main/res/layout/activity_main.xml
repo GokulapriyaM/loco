@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coord_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="android.duke290.com.loco.MainActivity">
@@ -38,6 +39,7 @@
         android:padding="16dp">
 
         <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/our_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -50,5 +52,10 @@
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
+
+
+
+
+
 
 

@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_call"
+        android:id="@+id/fab_share_photo"
         android:icon="@drawable/testimage"
-        android:title="1" />
+        android:title="Share photo" />
     <item
-        android:id="@+id/action_text"
+        android:id="@+id/fab_share_text"
         android:icon="@drawable/testimage"
-        android:title="2"/>
+        android:title="Share text"/>
     <item
-        android:id="@+id/action_email"
+        android:id="@+id/fab_rate"
         android:icon="@drawable/testimage"
-        android:title="3" />
+        android:title="Rate" />
 </menu>

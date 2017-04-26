@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
+import android.support.design.internal.NavigationMenu;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +46,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
 
@@ -127,6 +132,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mCoordsMsg = (TextView) findViewById(R.id.coords_msg);
         mAddressMsg = (TextView) findViewById(R.id.address_msg);
 
+        // set up fab menu
+        setUpFabMenu();
+
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
 
@@ -144,6 +152,52 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mCloudResultReceiver = new CloudResultReceiver(new Handler());
 
         databaseFetch = new DatabaseFetch(this);
+
+    }
+
+    private void setUpFabMenu() {
+        Log.d(TAG, "setting up fab menu");
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.our_fab);
+        Log.d(TAG, "setting up menu listener");
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                Log.d(TAG, "onMenuItemSelected called");
+                Log.d(TAG, "menu item id: " + menuItem.getItemId());
+                if (menuItem.getItemId() == R.id.fab_share_text) {
+                    Log.d(TAG, "share text button pressed");
+                    Intent intent = new Intent(MainActivity.this, ShareTextActivity.class);
+                    intent.putExtra(LATITUDE, latitude);
+                    intent.putExtra(LONGITUDE, longitude);
+                    intent.putExtra(ADDRESS, mAddressOutput);
+                    startActivity(intent);
+                } else if (menuItem.getItemId() == R.id.fab_share_photo) {
+                    Log.d(TAG, "share photo button pressed");
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
+                } else if (menuItem.getItemId() == R.id.fab_rate) {
+                    Log.d(TAG, "rate button pressed");
+                    // creating creation
+                    String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
+
+                    Random r = new Random();
+                    final int min = 1;
+                    final int max = 5;
+                    final int random_rating = r.nextInt((max - min) + 1) + min;
+
+                    Log.d(TAG, "Posted rating: " + random_rating);
+
+                    mCreation = new Creation(mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude(), mAddressOutput,
+                            "rating", "", "", random_rating, timestamp);
+
+                    DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
+                }
+                return false;
+            }
+        });
 
     }
 
