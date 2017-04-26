@@ -1,5 +1,10 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.posts;
 
+import android.duke290.com.loco.Creation;
+import android.duke290.com.loco.R;
+import android.duke290.com.loco.SharedLists;
+import android.duke290.com.loco.posts.Post;
+import android.duke290.com.loco.posts.PostAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;

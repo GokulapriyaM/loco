@@ -1,6 +1,9 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.posts;
 
 import android.content.Intent;
+import android.duke290.com.loco.Creation;
+import android.duke290.com.loco.MainActivity;
+import android.duke290.com.loco.R;
 import android.duke290.com.loco.database.DatabaseAction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

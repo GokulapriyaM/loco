@@ -1,5 +1,6 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.registration;
 
+import android.duke290.com.loco.R;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;

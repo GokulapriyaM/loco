@@ -7,7 +7,7 @@
     android:id="@+id/activity_location"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="android.duke290.com.loco.PhotosActivity">
+    tools:context="android.duke290.com.loco.photos.PhotosActivity">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/photos_toolbar"

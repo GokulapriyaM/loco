@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/login"
     android:fitsSystemWindows="true"
-    tools:context="android.duke290.com.loco.LoginActivity">
+    tools:context="android.duke290.com.loco.registration.LoginActivity">
 
     <LinearLayout
         android:layout_width="fill_parent"
