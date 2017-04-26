@@ -1,11 +1,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:state_pressed="false"
-        android:textColor="@color/offWhite" />
+    <item android:state_pressed="false" android:textColor="@color/offWhite" />
 
-    <item
-        android:state_pressed="true"
-        android:textColor="@color/colorPrimary" />
+    <item android:state_pressed="true" android:textColor="@color/colorPrimary" />
 
 </selector>
 
