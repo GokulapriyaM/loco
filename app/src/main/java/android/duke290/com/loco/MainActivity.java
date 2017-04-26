@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main);
+        setContentView(R.layout.activity_main);
 
         mCloudProcessMsgs = new ArrayList<String>();
         mOutputMessageList = new ArrayList<String>();
