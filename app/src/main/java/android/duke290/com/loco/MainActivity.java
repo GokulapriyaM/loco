@@ -172,34 +172,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 Log.d(TAG, "menu item id: " + menuItem.getItemId());
                 if (menuItem.getItemId() == R.id.fab_share_text) {
                     Log.d(TAG, "share text button pressed");
-                    Intent intent = new Intent(MainActivity.this, ShareTextActivity.class);
-                    intent.putExtra(LATITUDE, latitude);
-                    intent.putExtra(LONGITUDE, longitude);
-                    intent.putExtra(ADDRESS, mAddressOutput);
-                    startActivity(intent);
+                    shareText();
                 } else if (menuItem.getItemId() == R.id.fab_share_photo) {
                     Log.d(TAG, "share photo button pressed");
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                    }
+                    sharePhoto();
                 } else if (menuItem.getItemId() == R.id.fab_rate) {
                     Log.d(TAG, "rate button pressed");
-                    // creating creation
-                    String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
-
-                    Random r = new Random();
-                    final int min = 1;
-                    final int max = 5;
-                    final int random_rating = r.nextInt((max - min) + 1) + min;
-
-                    Log.d(TAG, "Posted rating: " + random_rating);
-
-                    mCreation = new Creation(mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude(), mAddressOutput,
-                            "rating", "", "", random_rating, timestamp);
-
-                    DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
+                    postRating();
                 }
                 return false;
             }
@@ -240,9 +219,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         displayAddressOutput();
     }
 
-    /*
-     * Just indicates whether or not user granted permissions (can change implementation if necesssary)
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -403,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         action.doCloudAction();
     }
 
-    protected void shareTextClick(View view) {
+    protected void shareText() {
         Intent intent = new Intent(MainActivity.this, ShareTextActivity.class);
         intent.putExtra(LATITUDE, latitude);
         intent.putExtra(LONGITUDE, longitude);
@@ -412,11 +388,29 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     }
 
     // Code for taking a picture
-    protected void sharePhotoClick(View view) {
+    protected void sharePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+    }
+
+    public void postRating() {
+        // creating creation
+        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
+
+        Random r = new Random();
+        final int min = 1;
+        final int max = 5;
+        final int random_rating = r.nextInt((max - min) + 1) + min;
+
+        Log.d(TAG, "Posted rating: " + random_rating);
+
+        mCreation = new Creation(mCurrentLocation.getLatitude(),
+                mCurrentLocation.getLongitude(), mAddressOutput,
+                "rating", "", "", random_rating, timestamp);
+
+        DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
     }
 
     @Override
@@ -475,24 +469,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
         startActivity(intent);
     }
-
-//    public void postRatingClick(View button) {
-//        // creating creation
-//        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
-//
-//        Random r = new Random();
-//        final int min = 1;
-//        final int max = 5;
-//        final int random_rating = r.nextInt((max - min) + 1) + min;
-//
-//        Log.d(TAG, "Posted rating: " + random_rating);
-//
-//        mCreation = new Creation(mCurrentLocation.getLatitude(),
-//                mCurrentLocation.getLongitude(), mAddressOutput,
-//                "rating", "", "", random_rating, timestamp);
-//
-//        DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
-//    }
 
 
     @Override
