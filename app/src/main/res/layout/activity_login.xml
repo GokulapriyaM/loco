@@ -69,7 +69,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:background="@drawable/bn_solid"
+            android:background="@drawable/btn_solid"
             android:clickable="true"
             android:text="@string/btn_login"
             android:textColor="@color/colorPrimary"
