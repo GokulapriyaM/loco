@@ -25,6 +25,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
 
+    private static int UPDATE_INTERVAL = 1000 * 10; // /< location update interval
+    private static int FASTEST_INTERVAL = 1000 * 5; // /< fastest location update interval
+
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
     public LocationService() {
@@ -83,6 +86,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setInterval(FASTEST_INTERVAL);
         startLocationUpdates();
 
     }
