@@ -8,10 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <!-- override default use of colorAccent for EditText placeholders-->
+        <!-- override default use of colorAccent for EditText placeholders (colorColorHighlighted is for button click ripple effect) -->
         <item name="colorControlNormal">@color/offWhite</item>
         <item name="colorControlActivated">#ffffff</item>
-        <item name="colorControlHighlight">#ffffff</item>
         <item name="android:textColorHint">@color/offWhite</item>
     </style>
 
