@@ -13,13 +13,17 @@ import android.duke290.com.loco.photos.PhotosActivity;
 import android.duke290.com.loco.posts.PostsActivity;
 import android.duke290.com.loco.posts.ShareTextActivity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +43,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +56,7 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -100,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private TextView post3;
     private TextView mCoordsMsg;
     private TextView mAddressMsg;
+
+
+    private String mCurrentPhotoPath;
 
     private final int limit = 3;
 
@@ -178,7 +188,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                     shareText();
                 } else if (menuItem.getItemId() == R.id.fab_share_photo) {
                     Log.d(TAG, "share photo button pressed");
-                    sharePhoto();
+                    try {
+                        sharePhoto();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } else if (menuItem.getItemId() == R.id.fab_rate) {
                     Log.d(TAG, "rate button pressed");
                     postRating();
@@ -391,10 +405,19 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     }
 
     // Code for taking a picture
-    protected void sharePhoto() {
+    protected void sharePhoto() throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            File photoFile = createImageFile();
+            // Continue only if the File was successfully created
+            Log.d(TAG, "Photo file" + photoFile);
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "android.duke290.com.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
     }
 
@@ -419,11 +442,18 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
+            //Bundle extras = data.getExtras();
             // Kevin, this is the thumbnail Bitmap you could use for storage
-            Bitmap mBitmap = (Bitmap) extras.get("data");
+            //Bitmap mBitmap = (Bitmap) extras.get("data");
             // After storing the image in the database, we can go back to home
-            // or go to photos activity and shoe user image uploaded ...
+            // or go to photos activity and show user image uploaded ...
+
+            // This is the full-size bitmap
+            Bitmap mBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+            // Testing in imageview
+            //Log.d(TAG, "is null?"+ mBitmap);
+            //ImageView testimage = (ImageView) findViewById(R.id.testfullsize);
+            //testimage.setImageBitmap(mBitmap);
 
             // creating creation
             String image_storage_path = DatabaseAction.createImageStoragePath();
@@ -444,6 +474,24 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             // uploading creation to database is handled by CloudStorageReceiver.onReceiveResult
 
         }
+    }
+
+    // Creating a unique filename with timestamp
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName, //* prefix *//*
+                ".jpg",        //* suffix *//*
+        storageDir     //* directory *//*
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        Log.d(TAG, "image path " + mCurrentPhotoPath);
+        return image;
     }
 
 //    //When clicking share

@@ -197,6 +197,15 @@
             android:clickable="true"
             android:onClick="onMorePhotosClick"
             android:text="No rating yet :(" />
+<!-- Image View testing full-size image
+        <ImageView
+            android:id="@+id/testfullsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/rating_msg"/>
+            -->
+
 <!--
         <Button
             android:id="@+id/post_rating_button"
