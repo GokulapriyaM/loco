@@ -25,7 +25,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
 
-    private static int UPDATE_INTERVAL = 1000 * 10; // /< location update interval
+    private static int UPDATE_INTERVAL = 1000 * 5; // /< location update interval
     private static int FASTEST_INTERVAL = 1000 * 5; // /< fastest location update interval
 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
