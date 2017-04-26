@@ -200,6 +200,26 @@
             android:onClick="onMorePhotosClick"
             android:text="Getting address..." />
 
+        <TextView
+            android:id="@+id/rating_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/address_msg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:onClick="onMorePhotosClick"
+            android:text="No rating yet :(" />
+
+        <Button
+            android:id="@+id/post_rating_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rating_msg"
+            android:layout_centerHorizontal="true"
+            android:onClick="postRatingClick"
+            android:text="post rating (test)" />
+
 
 
 

@@ -43,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
 
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private String mAddressOutput;
     private double latitude;
     private double longitude;
+    private double mAverageRating;
 
     private Creation mCreation;
 
@@ -446,6 +448,24 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         startActivity(intent);
     }
 
+    public void postRatingClick(View button) {
+        // creating creation
+        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
+
+        Random r = new Random();
+        final int min = 1;
+        final int max = 5;
+        final int random_rating = r.nextInt((max - min) + 1) + min;
+
+        Log.d(TAG, "Posted rating: " + random_rating);
+
+        mCreation = new Creation(mCurrentLocation.getLatitude(),
+                mCurrentLocation.getLongitude(), mAddressOutput,
+                "rating", "", "", random_rating, timestamp);
+
+        DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
+    }
+
 
     @Override
     public void onDatabaseResultReceived(ArrayList<Creation> creations) {
@@ -456,6 +476,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
         ArrayList<Creation> messagecreations = new ArrayList<>();
         ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
+        double rating_sum = 0;
+        int rating_cnt = 0;
 
         ArrayList<String> messages = new ArrayList<>();
         ArrayList<StorageReference> storagerefs = new ArrayList<>();
@@ -470,6 +492,20 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 StorageReference storageRef = mStorage.getReference().child(storage_path);
                 storagerefs.add(storageRef);
             }
+            if (c.type.equals("rating")) {
+                rating_cnt++;
+                rating_sum += c.rating;
+                Log.d(TAG, "received rating: " + c.rating);
+            }
+        }
+
+        if (rating_cnt > 0) {
+            Log.d(TAG, "rating_sum = " + rating_sum);
+            Log.d(TAG, "rating_cnt = " + rating_cnt);
+            mAverageRating = rating_sum / rating_cnt;
+            Log.d(TAG, "mAverageRating = " + mAverageRating);
+            TextView rating_msg = (TextView) findViewById(R.id.rating_msg);
+            rating_msg.setText("Average Rating: " + mAverageRating);
         }
 
         SharedLists.getInstance().setMessageCreations(messagecreations);

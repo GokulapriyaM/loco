@@ -20,7 +20,7 @@ public class Creation {
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
-        this.type = type;
+        this.type = type; // text, image, or rating
         this.message = message;
         this.extra_storage_path = extra_storage_path;
         this.rating = rating;
