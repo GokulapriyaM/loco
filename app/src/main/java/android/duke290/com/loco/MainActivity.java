@@ -1,13 +1,12 @@
 package android.duke290.com.loco;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.duke290.com.loco.cloud.CloudStorageAction;
 import android.duke290.com.loco.database.DatabaseAction;
 import android.duke290.com.loco.database.DatabaseFetch;
 import android.duke290.com.loco.database.DatabaseFetchCallback;
-import android.duke290.com.loco.cloud.CloudStorageAction;
 import android.duke290.com.loco.location.Constants;
 import android.duke290.com.loco.location.LocationService;
 import android.graphics.Bitmap;
@@ -17,18 +16,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
-import android.support.design.internal.NavigationMenu;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     private final int limit = 3;
 
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate called");
@@ -118,9 +117,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mAuth = FirebaseAuth.getInstance();
 
         //Setting the toolbar for the activity
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.start_toolbar);
-        myToolbar.setTitle("Discover");
-        setSupportActionBar(myToolbar);
+        toolbar = (Toolbar) findViewById(R.id.start_toolbar);
+        toolbar.setTitle("Discover");
+        setSupportActionBar(toolbar);
 
         // get layout variables
         photo1 = (ImageView) findViewById(R.id.photo1);
@@ -132,8 +131,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mCoordsMsg = (TextView) findViewById(R.id.coords_msg);
         mAddressMsg = (TextView) findViewById(R.id.address_msg);
 
+        databaseFetch = new DatabaseFetch(this);
+
         // set up fab menu
         setUpFabMenu();
+        initNavigationDrawer();
 
         // update values from last saved instance
         updateValuesFromBundle(savedInstanceState);
@@ -150,8 +152,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mAddressResultReceiver = new AddressResultReceiver(new Handler());
         mLocationResultReceiver = new LocationResultReceiver(new Handler());
         mCloudResultReceiver = new CloudResultReceiver(new Handler());
-
-        databaseFetch = new DatabaseFetch(this);
 
     }
 
@@ -262,38 +262,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 return;
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    /*
-    Handling menu options clicks
-     */
-    public boolean profileclick(MenuItem item){
-        Intent intentprofile = new Intent(this, ProfileActivity.class);
-        this.startActivity(intentprofile);
-        return true;
-    }
-
-    public boolean signoutclick(MenuItem item){
-        signOut();
-        return true;
-    }
-
-    public boolean homeclick(MenuItem item){
-        Intent intenthome = new Intent(this, MainActivity.class);
-        this.startActivity(intenthome);
-        return true;
-    }
-
-
-    public void signOut() {
-        mAuth.signOut();
     }
 
     @Override
@@ -620,9 +588,51 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void initNavigationDrawer() {
+
+        NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                int id = menuItem.getItemId();
+
+                switch (id){
+                    case R.id.home:
+                        startActivity(new Intent(MainActivity.this, MainActivity.class));
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.profile:
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        break;
+                    case R.id.my_photos:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.my_posts:
+                        drawerLayout.closeDrawers();
+                        break;
+                }
+                return true;
+            }
+        });
+        View header = navigationView.getHeaderView(0);
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
+
+            @Override
+            public void onDrawerClosed(View v){
+                super.onDrawerClosed(v);
+            }
+
+            @Override
+            public void onDrawerOpened(View v) {
+                super.onDrawerOpened(v);
+            }
+        };
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
     }
 
 }
+

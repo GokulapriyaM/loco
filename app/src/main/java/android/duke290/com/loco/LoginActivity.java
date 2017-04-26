@@ -131,33 +131,4 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-/*    @Override
-    protected void onResume(){
-        super.onResume();
-        popupwindow();
-    }
-
-    private void popupwindow() {
-        LayoutInflater inflater = (LayoutInflater) LoginActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        View window = inflater.from(LoginActivity.this).inflate(R.layout.popup_window, null);
-
-        mPopup = new PopupWindow(window, Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT, true);
-        //mPopup.showAtLocation(inputEmail, Gravity.CENTER, 0,0);
-        new Handler().postDelayed(new Runnable(){
-
-            public void run() {
-                mPopup.showAtLocation(findViewById(R.id.login), Gravity.CENTER, 0, 0);
-            }
-
-        }, 100L);
-
-        window.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mPopup.dismiss();
-                return true;
-            }
-        });
-
-    }*/
 }
