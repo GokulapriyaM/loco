@@ -72,7 +72,7 @@
                     android:layout_marginBottom="4dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/rate_5" />
+                    android:src="@drawable/rate_face_5" />
 
 
                 <TextView
@@ -154,23 +154,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/postscv"
-                    android:orientation="vertical"
-                    android:padding="8dp">
+                    android:orientation="vertical" >
 
                     <TextView
                         android:id="@+id/post1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="16dp"
+                        android:textSize="14dp"/>
 
                     <TextView
                         android:id="@+id/post2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/post1"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textSize="14dp"/>
 
                     <TextView
                         android:id="@+id/post3"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textSize="14dp"/>
                 </LinearLayout>
 
                 <Button
