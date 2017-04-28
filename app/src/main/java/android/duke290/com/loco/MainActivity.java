@@ -12,6 +12,7 @@ import android.duke290.com.loco.location.LocationService;
 import android.duke290.com.loco.photos.PhotosActivity;
 import android.duke290.com.loco.posts.PostsActivity;
 import android.duke290.com.loco.posts.ShareTextActivity;
+import android.duke290.com.loco.registration.LoginActivity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
@@ -115,6 +116,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private NavigationView navigationView;
+
+    private String FETCHTYPE = "fetchtype";
+    private String INDIVIDUAL = "individual";
+    private String SHARED = "shared";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -529,11 +535,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     // on learn more click
     public void onMorePostsClick(View view){
         Intent intent = new Intent(MainActivity.this, PostsActivity.class);
+        intent.putExtra(FETCHTYPE,SHARED);
         startActivity(intent);
     }
 
     public void onMorePhotosClick(View view){
         Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
+        intent.putExtra(FETCHTYPE,SHARED);
         startActivity(intent);
     }
 
@@ -663,9 +671,16 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                         break;
                     case R.id.my_photos:
                         drawerLayout.closeDrawers();
+                        onMyPhotosClick();
                         break;
                     case R.id.my_posts:
                         drawerLayout.closeDrawers();
+                        onMyPostsClick();
+                        break;
+                    case R.id.signout:
+                        mAuth.signOut();
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        finish();
                         break;
                 }
                 return true;
@@ -687,6 +702,19 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         };
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+    }
+
+    private void onMyPhotosClick(){
+        Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
+        intent.putExtra(FETCHTYPE,INDIVIDUAL);
+        startActivity(intent);
+
+    }
+
+    private void onMyPostsClick(){
+        Intent intent = new Intent(MainActivity.this, PostsActivity.class);
+        intent.putExtra(FETCHTYPE,INDIVIDUAL);
+        startActivity(intent);
     }
 
 }
