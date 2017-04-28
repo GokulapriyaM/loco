@@ -351,6 +351,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             // Display the address string
             // or an error message sent from the intent service.
             mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+
+            // edit address string so that it is just one line
+            mAddressOutput = mAddressOutput.replace("\r\n", ", ").replace("\n", ", ");
             displayAddressOutput();
 
             Log.d(TAG, "address found");
