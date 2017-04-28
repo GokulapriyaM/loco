@@ -67,6 +67,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged called");
+        Log.d(TAG, "location accuracy: " + location.getAccuracy());
         deliverResultToReceiver(Constants.SUCCESS_RESULT, location);
     }
 

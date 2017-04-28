@@ -58,7 +58,6 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -86,8 +85,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private FirebaseStorage mStorage;
 
     private ArrayList<String> mCloudProcessMsgs;
-
-    private ArrayList<String> mOutputMessageList;
 
     private CloudResultReceiver mCloudResultReceiver;
 
@@ -126,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         setContentView(R.layout.activity_main);
 
         mCloudProcessMsgs = new ArrayList<String>();
-        mOutputMessageList = new ArrayList<String>();
 
         mStorage = FirebaseStorage.getInstance();
 
@@ -217,9 +213,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             if (savedInstanceState.keySet().contains("PROCESS_MSGS")) {
                 mCloudProcessMsgs = savedInstanceState.getStringArrayList("PROCESS_MSGS");
             }
-            if (savedInstanceState.keySet().contains("DOWNLOADED_MSGS")) {
-                mOutputMessageList = savedInstanceState.getStringArrayList("DOWNLOADED_MSGS");
-            }
 
             updateUI();
         }
@@ -229,12 +222,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         Log.d(TAG, "saving location values");
         savedInstanceState.putParcelable("LOCATION_KEY", mCurrentLocation);
         savedInstanceState.putStringArrayList("PROCESS_MSGS", mCloudProcessMsgs);
-        savedInstanceState.putStringArrayList("DOWNLOADED_MSGS", mOutputMessageList);
         super.onSaveInstanceState(savedInstanceState);
     }
 
     private void updateUI() {
-        displayProcessOutput();
+        displayLocation();
         displayAddressOutput();
     }
 
@@ -275,15 +267,22 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     protected void onStop() {
         Log.d(TAG, "onStop called");
         super.onStop();
+        if (!isChangingConfigurations()) {
+            Log.d(TAG, "stopping location service");
+            this.stopService(new Intent(this, LocationService.class));
+        }
 
-        this.stopService(new Intent(this, LocationService.class));
     }
 
     @Override
     protected void onPause() {
         Log.d(TAG, "onPause called");
         super.onPause();
-        this.stopService(new Intent(this, LocationService.class));
+        if (!isChangingConfigurations()) {
+            Log.d(TAG, "stopping location service");
+            this.stopService(new Intent(this, LocationService.class));
+        }
+
     }
 
     @Override
@@ -476,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
                     // upload image to firebase storage
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    fullsizeBitmap.compress(Bitmap.CompressFormat.PNG,0 /*ignored for PNG*/,bos);
+                    fullsizeBitmap.compress(Bitmap.CompressFormat.JPEG, 50 ,bos);
                     byte[] bitmapdata = bos.toByteArray();
                     ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
 
@@ -626,21 +625,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(0))
-                    .override(75, 75)
+                    .thumbnail(0.1f)
                     .into(photo1);
         }
         if(storagerefs_size>=2){
             Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(1))
-                    .override(75, 75)
+                    .thumbnail(0.1f)
                     .into(photo2);
         }
         if(storagerefs_size>=3){
             Glide.with(getApplicationContext())
                     .using(new FirebaseImageLoader())
                     .load(storagerefs.get(2))
-                    .override(75, 75)
+                    .thumbnail(0.1f)
                     .into(photo3);
         }
     }
@@ -670,7 +669,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
                 switch (id){
                     case R.id.home:
-                        startActivity(new Intent(MainActivity.this, MainActivity.class));
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.profile:
