@@ -475,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
                     // upload image to firebase storage
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    fullsizeBitmap.compress(Bitmap.CompressFormat.JPEG, 25 ,bos);
+                    fullsizeBitmap.compress(Bitmap.CompressFormat.JPEG, 50 ,bos);
                     byte[] bitmapdata = bos.toByteArray();
                     ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
 
