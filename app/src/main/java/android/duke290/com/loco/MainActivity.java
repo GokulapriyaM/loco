@@ -545,6 +545,19 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         startActivity(intent);
     }
 
+    public void onMapClick(View view){
+        Uri gmmIntentUri = Uri.parse("geo:" +latitude +","+longitude);
+        showMap(gmmIntentUri);
+    }
+
+    public void showMap(Uri geoLocation) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
 
     @Override
     public void onDatabaseResultReceived(ArrayList<Creation> creations) {

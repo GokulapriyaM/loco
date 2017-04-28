@@ -194,6 +194,17 @@
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:text="No rating yet :(" />
+
+        <TextView
+            android:id="@+id/map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rating_msg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:onClick="onMapClick"
+            android:text="View Map"/>
 <!-- Image View testing full-size image
         <ImageView
             android:id="@+id/testfullsize"
