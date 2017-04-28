@@ -60,8 +60,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         mReceiver = intent.getParcelableExtra("LOCATION_RECEIVER");
 
-        mPastLocation = null;
-
         return START_STICKY;
     }
 

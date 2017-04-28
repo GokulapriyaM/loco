@@ -168,8 +168,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         initNavigationDrawer();
 
         databaseFetch.getCurrentUser();
-        // update values from last saved instance
-        updateValuesFromBundle(savedInstanceState);
 
         // request location permissions if necessary
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -180,9 +178,17 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             return;
         }
 
+        // if location permission granted
+        Log.d(TAG, "receivers instantiated");
         mAddressResultReceiver = new AddressResultReceiver(new Handler());
         mLocationResultReceiver = new LocationResultReceiver(new Handler());
         mCloudResultReceiver = new CloudResultReceiver(new Handler());
+
+        if (savedInstanceState != null) {
+            // update values from last saved instance
+            updateValuesFromBundle(savedInstanceState);
+            updateUI();
+        }
 
     }
 
@@ -228,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 mCloudProcessMsgs = savedInstanceState.getStringArrayList("PROCESS_MSGS");
             }
 
-            updateUI();
         }
     }
 
@@ -241,7 +246,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     private void updateUI() {
         displayLocation();
-        displayAddressOutput();
+        getAddress();
+        getCreations();
     }
 
     @Override
@@ -257,8 +263,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                     mAddressResultReceiver = new AddressResultReceiver(new Handler());
                     mLocationResultReceiver = new LocationResultReceiver(new Handler());
                     mCloudResultReceiver = new CloudResultReceiver(new Handler());
-
-                    databaseFetch = new DatabaseFetch(this);
 
                     ServiceStarter.startLocationService(getApplicationContext(),
                             mLocationResultReceiver);
