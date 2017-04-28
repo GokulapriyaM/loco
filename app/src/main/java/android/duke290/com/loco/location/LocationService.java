@@ -30,7 +30,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private static int UPDATE_INTERVAL = 1000 * 5; // /< location update interval
     private static int FASTEST_INTERVAL = 1000 * 5; // /< fastest location update interval
 
-    private static double CLOSE_DISTANCE = 0.00001;
+    private static double CLOSE_DISTANCE = 0.0002;
 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
@@ -72,9 +72,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged called");
         Log.d(TAG, "location accuracy: " + location.getAccuracy());
+        Log.d(TAG, "latitude: " + location.getLatitude()
+                + ", longitude: " + location.getLongitude());
 
         if (mPastLocation == null ||
                 !isClose(mPastLocation, location)) {
+            mPastLocation = location;
             Log.d(TAG, "delivering location result");
             deliverResultToReceiver(Constants.SUCCESS_RESULT, location);
         } else {
@@ -83,8 +86,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     public boolean isClose(Location loc1 , Location loc2) {
-        if (Math.abs(loc1.getLatitude() - loc2.getLatitude()) <= CLOSE_DISTANCE ||
-                Math.abs(loc1.getLongitude() - loc2.getLongitude()) <= CLOSE_DISTANCE) {
+        double latitude_diff = Math.abs(loc1.getLatitude() - loc2.getLatitude());
+        double longitude_diff = Math.abs(loc1.getLongitude() - loc2.getLongitude());
+        Log.d(TAG, "latitude_diff = " + latitude_diff + ", longitude_diff = " + longitude_diff);
+        if (latitude_diff <= CLOSE_DISTANCE && longitude_diff <= CLOSE_DISTANCE) {
             return true;
         }
         return false;
