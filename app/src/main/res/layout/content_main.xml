@@ -72,7 +72,7 @@
                     android:layout_marginBottom="4dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/rate_face_5" />
+                    android:src="@drawable/rate_face_50" />
 
 
                 <TextView
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rating_msg"
-                    android:text="Based on 28 ratings" />
+                    android:text="" />
 
             </RelativeLayout>
         </android.support.v7.widget.CardView>

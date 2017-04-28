@@ -44,8 +44,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -60,7 +58,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -86,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private double latitude;
     private double longitude;
     private double mAverageRating;
+    private int mTotalNumRatings;
 
     private Creation mCreation;
 
@@ -106,15 +104,14 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     final String LONGITUDE = "longitude";
     final String ADDRESS = "address";
 
-//    private ImageView photo1;
-//    private ImageView photo2;
-//    private ImageView photo3;
     private TextView post1;
     private TextView post2;
     private TextView post3;
-//    private TextView mCoordsMsg;
     private TextView mAddressMsg;
     Dialog mBottomSheetDialog;
+    TextView mRatingMsg;
+    TextView mNumRatingMsg;
+    ImageView mRatingImg;
 
 
     private String mCurrentPhotoPath;
@@ -157,14 +154,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
 
         // get layout variables
-//        photo1 = (ImageView) findViewById(R.id.photo1);
-//        photo2 = (ImageView) findViewById(R.id.photo2);
-//        photo3 = (ImageView) findViewById(R.id.photo3);
         post1 = (TextView) findViewById(R.id.post1);
         post2 = (TextView) findViewById(R.id.post2);
         post3 = (TextView) findViewById(R.id.post3);
-//        mCoordsMsg = (TextView) findViewById(R.id.coords_msg);
         mAddressMsg = (TextView) findViewById(R.id.address_msg);
+        mRatingMsg = (TextView) findViewById(R.id.rating_msg);
+        mNumRatingMsg = (TextView) findViewById(R.id.num_ratings);
+        mRatingImg = (ImageView) findViewById(R.id.rating_faces);
 
         databaseFetch = new DatabaseFetch(this);
 
@@ -417,6 +413,29 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 Toast.LENGTH_LONG).show();
     }
 
+    public void displayRatings() {
+        if (mTotalNumRatings == 0) {
+            mRatingMsg.setText("No ratings yet :(");
+            return;
+        }
+        // set rating text msgs
+        String avg_rating_str = String.format("%.1f", mAverageRating);
+        mRatingMsg.setText("Average Rating: " + avg_rating_str);
+        String plural = "";
+        if (mTotalNumRatings > 1) plural = "s";
+        mNumRatingMsg.setText("Based on " + mTotalNumRatings + " rating" + plural);
+
+        // set rating image
+        double rounded_rating = Double.parseDouble(avg_rating_str);
+        // find biggest rating (factor of 0.5) below rounded_rating and multiply that by 10
+        int adj_rating = (int) ((((int) (rounded_rating * 10)) / 5) * 5);
+
+        // set image
+        Context context = mRatingImg.getContext();
+        int id = context.getResources().getIdentifier("rate_face_" + adj_rating, "drawable", context.getPackageName());
+        mRatingImg.setImageResource(id);
+    }
+
     protected void uploadStreamToFirebaseStorage(InputStream inputStream,
                                                  String storage_path,
                                                  String content_type) {
@@ -629,11 +648,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             Log.d(TAG, "rating_sum = " + rating_sum);
             Log.d(TAG, "rating_cnt = " + rating_cnt);
             mAverageRating = rating_sum / rating_cnt;
-            Log.d(TAG, "mAverageRating = " + mAverageRating);
+            mTotalNumRatings = rating_cnt;
+            Log.d(TAG, "mAverageRating = " + mAverageRating
+                    + ", mTotalNumRatings = " + mTotalNumRatings);
 
-            String avg_rating_str = String.format("%.1f", mAverageRating);
-            TextView rating_msg = (TextView) findViewById(R.id.rating_msg);
-            rating_msg.setText("Average Rating: " + avg_rating_str);
+            displayRatings();
         }
 
         SharedLists.getInstance().setMessageCreations(messagecreations);
@@ -646,9 +665,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         post1.setText("");
         post2.setText("");
         post3.setText("");
-//        photo1.setImageResource(0);
-//        photo2.setImageResource(0);
-//        photo3.setImageResource(0);
     }
 
     private void populateView(ArrayList<String> messages, ArrayList<StorageReference> storagerefs){
@@ -664,28 +680,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         if(messages_size>=3){
             post3.setText(messages.get(2));
         }
-
-        //        if(storagerefs_size>=1){
-//            Glide.with(getApplicationContext())
-//                    .using(new FirebaseImageLoader())
-//                    .load(storagerefs.get(0))
-//                    .thumbnail(0.1f)
-//                    .into(photo1);
-//        }
-//        if(storagerefs_size>=2){
-//            Glide.with(getApplicationContext())
-//                    .using(new FirebaseImageLoader())
-//                    .load(storagerefs.get(1))
-//                    .thumbnail(0.1f)
-//                    .into(photo2);
-//        }
-//        if(storagerefs_size>=3){
-//            Glide.with(getApplicationContext())
-//                    .using(new FirebaseImageLoader())
-//                    .load(storagerefs.get(2))
-//                    .thumbnail(0.1f)
-//                    .into(photo3);
-//        }
 
         ArrayList<StorageReference> shorterStorageRefs = new ArrayList<StorageReference>();
         if (storagerefs.size() <= 5) shorterStorageRefs = storagerefs;
