@@ -612,8 +612,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             Log.d(TAG, "rating_cnt = " + rating_cnt);
             mAverageRating = rating_sum / rating_cnt;
             Log.d(TAG, "mAverageRating = " + mAverageRating);
+
+            String avg_rating_str = String.format("%.1f", mAverageRating);
             TextView rating_msg = (TextView) findViewById(R.id.rating_msg);
-            rating_msg.setText("Average Rating: " + mAverageRating);
+            rating_msg.setText("Average Rating: " + avg_rating_str);
         }
 
         SharedLists.getInstance().setMessageCreations(messagecreations);
