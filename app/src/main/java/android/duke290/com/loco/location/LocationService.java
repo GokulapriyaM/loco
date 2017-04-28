@@ -32,8 +32,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     private static double CLOSE_DISTANCE = 0.0002;
 
-    private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
-
     public LocationService() {
     }
 

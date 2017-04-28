@@ -1,6 +1,8 @@
 package android.duke290.com.loco;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.duke290.com.loco.cloud.CloudStorageAction;
@@ -34,9 +36,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,14 +106,15 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     final String LONGITUDE = "longitude";
     final String ADDRESS = "address";
 
-    private ImageView photo1;
-    private ImageView photo2;
-    private ImageView photo3;
+//    private ImageView photo1;
+//    private ImageView photo2;
+//    private ImageView photo3;
     private TextView post1;
     private TextView post2;
     private TextView post3;
-    private TextView mCoordsMsg;
+//    private TextView mCoordsMsg;
     private TextView mAddressMsg;
+    Dialog mBottomSheetDialog;
 
 
     private String mCurrentPhotoPath;
@@ -213,7 +218,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                     }
                 } else if (menuItem.getItemId() == R.id.fab_rate) {
                     Log.d(TAG, "rate button pressed");
-                    postRating();
+                    // Show the rating pop-up dialog
+                    mBottomSheetDialog = new Dialog(MainActivity.this, R.style.MaterialDialogSheet);
+                    mBottomSheetDialog.setContentView(R.layout.rating_dialog); // your custom view.
+                    mBottomSheetDialog.setCancelable(true);
+                    mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+                    mBottomSheetDialog.show();
                 }
                 return false;
             }
@@ -444,20 +455,20 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
-    public void postRating() {
+    public void postRating(int rating) {
         // creating creation
         String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
 
-        Random r = new Random();
-        final int min = 1;
-        final int max = 5;
-        final int random_rating = r.nextInt((max - min) + 1) + min;
+//        Random r = new Random();
+//        final int min = 1;
+//        final int max = 5;
+//        final int random_rating = r.nextInt((max - min) + 1) + min;
 
-        Log.d(TAG, "Posted rating: " + random_rating);
+        Log.d(TAG, "Posted rating: " + rating);
 
         mCreation = new Creation(mCurrentLocation.getLatitude(),
                 mCurrentLocation.getLongitude(), mAddressOutput,
-                "rating", "", "", random_rating, timestamp);
+                "rating", "", "", rating, timestamp);
 
         DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
     }
@@ -542,6 +553,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 //        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
 //        mBottomSheetDialog.show();
 //    }
+
+    public void onRatingClick(View button) {
+        String button_id = getResources().getResourceName(button.getId());
+        int rating = button_id.charAt(button_id.length() - 1) - '0';
+        postRating(rating);
+        mBottomSheetDialog.dismiss();
+    }
 
     private void getCreations(){
         String coordname = DatabaseAction.createCoordName(mCurrentLocation);
