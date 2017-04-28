@@ -58,7 +58,6 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -657,7 +656,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
                 switch (id){
                     case R.id.home:
-                        startActivity(new Intent(MainActivity.this, MainActivity.class));
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.profile:
