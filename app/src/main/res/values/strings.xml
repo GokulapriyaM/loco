@@ -38,6 +38,7 @@
     <string name="signed_in_as">You are signed in as: </string>
     <string name="takepicture">Add your picture here!</string>
     <string name="home">Home</string>
+    <string name="location">Your Location</string>
     <string name="photos">Photos</string>
     <string name="posts">Posts</string>
     <string name="event">Events</string>
@@ -45,7 +46,7 @@
     <string name="signout">Sign-Out</string>
     <string name="profile">Profile</string>
     <string name="latest">Latest Activity!</string>
-    <string name="more">SEE MORE</string>
+    <string name="more">VIEW ALL</string>
     <string name="thingsshared">Things you shared!</string>
     <string name="sharebtn">Share!</string>
     <string name="sharetext">Jot down what\'s on your mind</string>

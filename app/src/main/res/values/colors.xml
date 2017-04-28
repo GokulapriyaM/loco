@@ -27,6 +27,7 @@
 
     <color name="offWhite">#fafafa</color>
     <color name="darkGray">#222A2A</color>
+    <color name="black">#000000</color>
     <color name="button_pressed">#fafafa</color>
 
 

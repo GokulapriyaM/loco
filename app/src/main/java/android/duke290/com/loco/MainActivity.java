@@ -152,13 +152,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
 
         // get layout variables
-        photo1 = (ImageView) findViewById(R.id.photo1);
-        photo2 = (ImageView) findViewById(R.id.photo2);
-        photo3 = (ImageView) findViewById(R.id.photo3);
+//        photo1 = (ImageView) findViewById(R.id.photo1);
+//        photo2 = (ImageView) findViewById(R.id.photo2);
+//        photo3 = (ImageView) findViewById(R.id.photo3);
         post1 = (TextView) findViewById(R.id.post1);
         post2 = (TextView) findViewById(R.id.post2);
         post3 = (TextView) findViewById(R.id.post3);
-        mCoordsMsg = (TextView) findViewById(R.id.coords_msg);
+//        mCoordsMsg = (TextView) findViewById(R.id.coords_msg);
         mAddressMsg = (TextView) findViewById(R.id.address_msg);
 
         databaseFetch = new DatabaseFetch(this);
@@ -392,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     public void displayLocation() {
         latitude = mCurrentLocation.getLatitude();
         longitude = mCurrentLocation.getLongitude();
-        mCoordsMsg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
+//        mCoordsMsg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
     }
 
     protected void displayAddressOutput() {
@@ -628,9 +628,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         post1.setText("");
         post2.setText("");
         post3.setText("");
-        photo1.setImageResource(0);
-        photo2.setImageResource(0);
-        photo3.setImageResource(0);
+//        photo1.setImageResource(0);
+//        photo2.setImageResource(0);
+//        photo3.setImageResource(0);
     }
 
     private void populateView(ArrayList<String> messages, ArrayList<StorageReference> storagerefs){
