@@ -25,8 +25,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
 
+    Location mPastLocation;
+
     private static int UPDATE_INTERVAL = 1000 * 5; // /< location update interval
     private static int FASTEST_INTERVAL = 1000 * 5; // /< fastest location update interval
+
+    private static double CLOSE_DISTANCE = 0.00001;
 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
@@ -56,6 +60,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         mReceiver = intent.getParcelableExtra("LOCATION_RECEIVER");
 
+        mPastLocation = null;
+
         return START_STICKY;
     }
 
@@ -68,7 +74,22 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged called");
         Log.d(TAG, "location accuracy: " + location.getAccuracy());
-        deliverResultToReceiver(Constants.SUCCESS_RESULT, location);
+
+        if (mPastLocation == null ||
+                !isClose(mPastLocation, location)) {
+            Log.d(TAG, "delivering location result");
+            deliverResultToReceiver(Constants.SUCCESS_RESULT, location);
+        } else {
+            Log.d(TAG, "not delivering location result");
+        }
+    }
+
+    public boolean isClose(Location loc1 , Location loc2) {
+        if (Math.abs(loc1.getLatitude() - loc2.getLatitude()) <= CLOSE_DISTANCE ||
+                Math.abs(loc1.getLongitude() - loc2.getLongitude()) <= CLOSE_DISTANCE) {
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -30,6 +30,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -52,6 +54,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -121,6 +124,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private String INDIVIDUAL = "individual";
     private String SHARED = "shared";
 
+    private List<String> mStoragePaths;
+    private RecyclerView mPhotosRecyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         setSupportActionBar(toolbar);
 
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
+
+        mPhotosRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
 
 
         // get layout variables
@@ -359,7 +367,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             // or an error message sent from the intent service.
             mCloudProcessMsgs.add(resultData.getString("CLOUD_PROCESS_MSG_KEY"));
 
-            if (resultData.getString("CLOUD_ACTION_TYPE").equals("upload")) {
+            if (resultData.getString("CLOUD_ACTION_TYPE").equals("upload") &&
+                    resultCode == Constants.SUCCESS_RESULT) {
                 Log.d(TAG, "Cloud upload complete");
                 // upload creation to firebase database
                 DatabaseAction.putCreationInFirebaseDatabase(mCreation, mCurrentLocation);
@@ -629,27 +638,41 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             post3.setText(messages.get(2));
         }
 
-        if(storagerefs_size>=1){
-            Glide.with(getApplicationContext())
-                    .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(0))
-                    .thumbnail(0.1f)
-                    .into(photo1);
+        //        if(storagerefs_size>=1){
+//            Glide.with(getApplicationContext())
+//                    .using(new FirebaseImageLoader())
+//                    .load(storagerefs.get(0))
+//                    .thumbnail(0.1f)
+//                    .into(photo1);
+//        }
+//        if(storagerefs_size>=2){
+//            Glide.with(getApplicationContext())
+//                    .using(new FirebaseImageLoader())
+//                    .load(storagerefs.get(1))
+//                    .thumbnail(0.1f)
+//                    .into(photo2);
+//        }
+//        if(storagerefs_size>=3){
+//            Glide.with(getApplicationContext())
+//                    .using(new FirebaseImageLoader())
+//                    .load(storagerefs.get(2))
+//                    .thumbnail(0.1f)
+//                    .into(photo3);
+//        }
+
+        ArrayList<StorageReference> shorterStorageRefs = new ArrayList<StorageReference>();
+        if (storagerefs.size() <= 5) shorterStorageRefs = storagerefs;
+        else {
+            for (int k1 = 0; k1 < 5; k1++) {
+                shorterStorageRefs.add(storagerefs.get(k1));
+            }
         }
-        if(storagerefs_size>=2){
-            Glide.with(getApplicationContext())
-                    .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(1))
-                    .thumbnail(0.1f)
-                    .into(photo2);
-        }
-        if(storagerefs_size>=3){
-            Glide.with(getApplicationContext())
-                    .using(new FirebaseImageLoader())
-                    .load(storagerefs.get(2))
-                    .thumbnail(0.1f)
-                    .into(photo3);
-        }
+
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        mPhotosRecyclerView.setLayoutManager(layoutManager);
+        mPhotosRecyclerView.setAdapter(new PhotoAdapter(getApplicationContext(), shorterStorageRefs));
     }
 
 

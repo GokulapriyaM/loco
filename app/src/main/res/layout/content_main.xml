@@ -205,6 +205,14 @@
             android:clickable="true"
             android:onClick="onMapClick"
             android:text="View Map"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/photos_recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/map"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"/>
 <!-- Image View testing full-size image
         <ImageView
             android:id="@+id/testfullsize"

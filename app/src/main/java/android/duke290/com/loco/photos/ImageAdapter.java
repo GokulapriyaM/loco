@@ -67,6 +67,7 @@ public class ImageAdapter extends BaseAdapter {
         Glide.with(mContext)
                 .using(new FirebaseImageLoader())
                 .load(mStorage.getReference().child(storage_path))
+                .thumbnail(0.1f)
                 .into(imageView);
 
         return imageView;
