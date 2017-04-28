@@ -24,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/poststitle"
         android:textSize="20sp"
         android:layout_below="@+id/posts_toolbar"
         android:layout_margin="16dp"/>

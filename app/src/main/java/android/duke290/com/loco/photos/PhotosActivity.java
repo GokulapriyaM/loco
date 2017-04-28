@@ -13,20 +13,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-
-import com.google.firebase.auth.FirebaseAuth;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCallback {
     public ImageAdapter mImage_adp;
     private GridView gridview;
+    private TextView titletext;
     private String fetchtype;
     private String FETCHTYPE = "fetchtype";
     private String INDIVIDUAL = "individual";
     private String SHARED = "shared";
-    private FirebaseAuth mAuth;
-    public User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,17 +37,37 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
         myToolbar.setTitle("Photos");
         setSupportActionBar(myToolbar);
         gridview = (GridView) findViewById(R.id.grid_view);
+        titletext = (TextView) findViewById(R.id.photos_title) ;
+
         Intent intent = getIntent();
         fetchtype = intent.getStringExtra(FETCHTYPE);
         if(fetchtype.equals(SHARED)){
+            titletext.setText(getString(R.string.photostitle));
             ArrayList<Creation> imagecreations = new ArrayList<>();
             imagecreations = SharedLists.getInstance().getImageCreations();
             setImages(imagecreations);
         }
         if(fetchtype.equals(INDIVIDUAL)){
+            titletext.setText(getString(R.string.photostitle_ind));
             DatabaseFetch databasefetch = new DatabaseFetch(this);
             databasefetch.fetchByUser();
         }
+
+    }
+
+    @Override
+    public void onDatabaseResultReceived(ArrayList<Creation> creations) {
+        ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
+        for (Creation c : creations) {
+            if (c.type.equals("image")) {
+                image_creation_list.add(c);
+            }
+        }
+        setImages(image_creation_list);
+    }
+
+    @Override
+    public void onUserReceived(User user) {
 
     }
 
@@ -69,19 +87,4 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
         });
     }
 
-    @Override
-    public void onDatabaseResultReceived(ArrayList<Creation> creations) {
-        ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
-        for (Creation c : creations) {
-            if (c.type.equals("image")) {
-                image_creation_list.add(c);
-            }
-        }
-        setImages(image_creation_list);
-    }
-
-    @Override
-    public void onUserReceived(User user) {
-
-    }
 }

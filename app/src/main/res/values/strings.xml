@@ -49,8 +49,10 @@
     <string name="thingsshared">Things you shared!</string>
     <string name="sharebtn">Share!</string>
     <string name="sharetext">Jot down what\'s on your mind</string>
-    <string name="photostitle">Photos taken at your location!</string>
-    <string name="poststitle">Posts shared at your location!</string>
+    <string name="photostitle">Photos shared here!</string>
+    <string name="photostitle_ind">Photos you shared!</string>
+    <string name="poststitle">Posts shared here!</string>
+    <string name="poststitle_ind">Posts you shared!</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="getuser">Getting user info!</string>
