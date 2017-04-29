@@ -57,7 +57,7 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             imageView = new ImageView (mContext);
             imageView.setScaleType (ImageView.ScaleType.FIT_CENTER);
-            imageView.setLayoutParams (new GridView.LayoutParams(220, 220));
+            imageView.setLayoutParams (new GridView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         } else {
             imageView = (ImageView) convertView;
         }
@@ -67,7 +67,8 @@ public class ImageAdapter extends BaseAdapter {
         Glide.with(mContext)
                 .using(new FirebaseImageLoader())
                 .load(mStorage.getReference().child(storage_path))
-                .thumbnail(0.1f)
+                .thumbnail(0.05f)
+                .override(400, 400)
                 .into(imageView);
 
         return imageView;
