@@ -8,10 +8,10 @@
     <item
         android:id="@+id/fab_share_text"
         android:icon="@drawable/ic_add_post"
-        android:title="Share text"/>
+        android:title="Share post"/>
     <item
         android:id="@+id/fab_rate"
         android:icon="@drawable/ic_rate_semi_happy"
-        android:title="Rate" />
+        android:title="Rate happiness" />
 
 </menu>

@@ -174,39 +174,110 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/postLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/postscv"
                     android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/ic_profile_1"
+                        android:layout_width="30dp"
+                        android:src="@drawable/ic_gray_profile_account"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/postscv"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:adjustViewBounds="true" />
 
                     <TextView
                         android:id="@+id/post1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/postscv"
+                        android:layout_toRightOf="@+id/ic_profile_1"
+                        android:layout_marginBottom="26dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="20dp"
+                        android:textSize="14dp"
+                        android:color="@color/gray"/>
+
+                    <ImageView
+                        android:id="@+id/ic_profile_2"
+                        android:layout_width="30dp"
+                        android:src="@drawable/ic_gray_profile_account"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ic_profile_1"
                         android:layout_marginBottom="16dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:textSize="14dp" />
+                        android:adjustViewBounds="true" />
 
                     <TextView
                         android:id="@+id/post2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/post1"
+                        android:layout_toRightOf="@+id/ic_profile_2"
+                        android:layout_marginBottom="26dp"
+                        android:layout_marginStart="16dp"
+                        android:textSize="14dp"
+                        android:color="@color/gray"/>
+
+                    <ImageView
+                        android:id="@+id/ic_profile_3"
+                        android:layout_width="30dp"
+                        android:src="@drawable/ic_gray_profile_account"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ic_profile_2"
                         android:layout_marginBottom="16dp"
                         android:layout_marginStart="16dp"
-                        android:textSize="14dp" />
-
+                        android:adjustViewBounds="true" />
                     <TextView
                         android:id="@+id/post3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_below="@+id/post2"
+                        android:layout_toRightOf="@+id/ic_profile_3"
+                        android:layout_marginBottom="20dp"
                         android:layout_marginStart="16dp"
-                        android:textSize="14dp" />
-                </LinearLayout>
+                        android:textSize="14dp"
+                        android:color="@color/gray"/>
+                </RelativeLayout>
+
+                <!--<LinearLayout-->
+                    <!--android:id="@+id/postLayout"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/postscv"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/post1"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="16dp"-->
+                        <!--android:layout_marginStart="16dp"-->
+                        <!--android:layout_marginTop="16dp"-->
+                        <!--android:textSize="14dp" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/post2"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@id/post1"-->
+                        <!--android:layout_marginBottom="16dp"-->
+                        <!--android:layout_marginStart="16dp"-->
+                        <!--android:textSize="14dp" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/post3"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="16dp"-->
+                        <!--android:layout_marginStart="16dp"-->
+                        <!--android:textSize="14dp" />-->
+                <!--</LinearLayout>-->
 
                 <Button
                     android:id="@+id/checkposts"
@@ -224,6 +295,7 @@
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
+        <!-- Empty Cardview for extra padding on bottom -->
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/empty"
             android:layout_width="match_parent"
