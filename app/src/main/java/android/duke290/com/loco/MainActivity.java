@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
         // set rating text msgs
         String avg_rating_str = String.format("%.1f", mAverageRating);
-        mRatingMsg.setText("Average Rating: " + avg_rating_str);
+        mRatingMsg.setText("Average Happiness: " + avg_rating_str);
         String plural = "";
         if (mTotalNumRatings > 1) plural = "s";
         mNumRatingMsg.setText("Based on " + mTotalNumRatings + " rating" + plural);
