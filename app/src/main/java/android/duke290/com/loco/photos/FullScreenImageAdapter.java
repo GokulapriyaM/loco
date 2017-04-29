@@ -54,7 +54,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
         View viewLayout = mInflater.inflate(R.layout.activity_photo_full_size, container, false);
 
         mStorage = FirebaseStorage.getInstance();
-        ImageView myimage = (ImageView) viewLayout.findViewById(R.id.imagefull);
+        TouchImageView myimage = (TouchImageView) viewLayout.findViewById(R.id.imagefull);
         //myimage.setImageResource(mImages[position]);
         Glide.with(mActivity)
                 .using(new FirebaseImageLoader())

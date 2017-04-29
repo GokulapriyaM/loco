@@ -8,7 +8,7 @@
     android:gravity="center"
     tools:context="android.duke290.com.loco.MainActivity">
 
-    <ImageView
+    <android.duke290.com.loco.photos.TouchImageView
         android:id="@+id/imagefull"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
