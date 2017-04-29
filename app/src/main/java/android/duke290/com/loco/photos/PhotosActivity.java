@@ -25,6 +25,8 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
     private String FETCHTYPE = "fetchtype";
     private String INDIVIDUAL = "individual";
     private String SHARED = "shared";
+    private ArrayList<Creation> imagecreations;
+    private ArrayList<String> image_paths;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,7 +45,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
         fetchtype = intent.getStringExtra(FETCHTYPE);
         if(fetchtype.equals(SHARED)){
             titletext.setText(getString(R.string.photostitle));
-            ArrayList<Creation> imagecreations = new ArrayList<>();
+            imagecreations = new ArrayList<>();
             imagecreations = SharedLists.getInstance().getImageCreations();
             setImages(imagecreations);
         }
@@ -57,13 +59,13 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
 
     @Override
     public void onDatabaseResultReceived(ArrayList<Creation> creations) {
-        ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
+        imagecreations = new ArrayList<Creation>();
         for (Creation c : creations) {
             if (c.type.equals("image")) {
-                image_creation_list.add(c);
+                imagecreations.add(c);
             }
         }
-        setImages(image_creation_list);
+        setImages(imagecreations);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
 
     }
 
-    private void setImages(ArrayList<Creation> imagecreations){
+    private void setImages(final ArrayList<Creation> imagecreations){
         mImage_adp = new ImageAdapter(this, imagecreations);
         gridview.setAdapter(mImage_adp);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -82,6 +84,12 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
                 String path = storageplace.extra_storage_path;
                 Intent fullsize = new Intent(PhotosActivity.this, PhotoFullSizeActivity.class);
                 fullsize.putExtra("path", path);
+                fullsize.putExtra("position", position);
+                for (Creation c:imagecreations){
+                    image_paths.add(c.extra_storage_path);
+
+                }
+                fullsize.putStringArrayListExtra("imagepaths", image_paths);
                 startActivity(fullsize);
             }
         });
