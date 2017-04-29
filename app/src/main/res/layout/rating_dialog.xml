@@ -1,40 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <Button
+    <ImageButton
         android:id="@+id/rating1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onRatingClick"
-        android:text="1" />
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/rating_face_btn"
+        android:onClick="onRatingClick" />
 
     <Button
         android:id="@+id/rating2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onRatingClick"
-        android:text="2" />
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/rating_face_btn"
+        android:onClick="onRatingClick" />
 
     <Button
         android:id="@+id/rating3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onRatingClick"
-        android:text="3" />
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/rating_face_btn"
+        android:onClick="onRatingClick" />
 
     <Button
         android:id="@+id/rating4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onRatingClick"
-        android:text="4" />
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/rating_face_btn"
+        android:onClick="onRatingClick" />
 
     <Button
         android:id="@+id/rating5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onRatingClick"
-        android:text="5" />
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/rating_face_btn"
+        android:onClick="onRatingClick" />
 </LinearLayout>

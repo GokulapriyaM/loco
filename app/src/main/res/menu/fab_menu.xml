@@ -11,7 +11,7 @@
         android:title="Share text"/>
     <item
         android:id="@+id/fab_rate"
-        android:icon="@drawable/ic_rate_happy"
+        android:icon="@drawable/ic_rate_semi_happy"
         android:title="Rate" />
 
 </menu>
