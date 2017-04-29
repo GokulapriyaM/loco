@@ -2,6 +2,7 @@ package android.duke290.com.loco;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -579,10 +580,16 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 //    }
 
     public void onRatingClick(View button) {
+        openDialog();
         String button_id = getResources().getResourceName(button.getId());
         int rating = button_id.charAt(button_id.length() - 1) - '0';
         postRating(rating);
         mBottomSheetDialog.dismiss();
+    }
+
+    public void openDialog() {
+        DialogFragment confirmation = new ConfirmDialogFragment();
+        confirmation.show(getFragmentManager(), "next");
     }
 
     private void getCreations(){

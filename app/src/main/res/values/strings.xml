@@ -57,4 +57,7 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="getuser">Getting user info!</string>
+    <string name="confirmation">Confirm your rating</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
