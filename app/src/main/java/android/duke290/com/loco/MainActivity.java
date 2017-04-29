@@ -694,13 +694,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         ArrayList<Post> posts_list = new ArrayList<Post>();
         for (Creation c : messagecreations) {
             posts_list.add(new Post(c.message, c.timestamp));
-            if (posts_list.size() >= 3) {
+            if (posts_list.size() >= 5) {
                 break;
             }
         }
 
         mPostsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mPostsRecyclerView.setAdapter(new PostAdapter(posts_list));
+        mPostsRecyclerView.setAdapter(new PostAdapter(posts_list, true));
 
         ArrayList<StorageReference> shorterStorageRefs = new ArrayList<StorageReference>();
         if (storagerefs.size() <= 5) shorterStorageRefs = storagerefs;
