@@ -40,6 +40,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
         setSupportActionBar(myToolbar);
         gridview = (GridView) findViewById(R.id.grid_view);
         titletext = (TextView) findViewById(R.id.photos_title) ;
+        image_paths = new ArrayList<>();
 
         Intent intent = getIntent();
         fetchtype = intent.getStringExtra(FETCHTYPE);

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +31,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
     private LayoutInflater mInflater;
     private FirebaseStorage mStorage;
 
+
     // constructor
     public FullScreenImageAdapter(Activity activity, ArrayList<String> imagepaths){
         mActivity = activity;
@@ -43,7 +45,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((RelativeLayout) object);
+        return view == ((LinearLayout) object);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
         mStorage = FirebaseStorage.getInstance();
         ImageView myimage = (ImageView) viewLayout.findViewById(R.id.imagefull);
         //myimage.setImageResource(mImages[position]);
-        Glide.with(getApplicationContext())
+        Glide.with(mActivity)
                 .using(new FirebaseImageLoader())
                 .load(mStorage.getReference().child(mImages.get(position)))
                 .fitCenter()
@@ -66,7 +68,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((RelativeLayout) object);
+        ((ViewPager) container).removeView((LinearLayout) object);
 
     }
 }
