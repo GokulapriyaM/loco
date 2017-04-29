@@ -9,38 +9,38 @@
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/rating_face_btn"
+        android:src="@drawable/rating_button"
         android:onClick="onRatingClick" />
 
-    <Button
+    <ImageButton
         android:id="@+id/rating2"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/rating_face_btn"
+        android:src="@drawable/rating_button"
         android:onClick="onRatingClick" />
 
-    <Button
+    <ImageButton
         android:id="@+id/rating3"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/rating_face_btn"
+        android:src="@drawable/rating_button"
         android:onClick="onRatingClick" />
 
-    <Button
+    <ImageButton
         android:id="@+id/rating4"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/rating_face_btn"
+        android:src="@drawable/rating_button"
         android:onClick="onRatingClick" />
 
-    <Button
+    <ImageButton
         android:id="@+id/rating5"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/rating_face_btn"
+        android:src="@drawable/rating_button"
         android:onClick="onRatingClick" />
 </LinearLayout>
