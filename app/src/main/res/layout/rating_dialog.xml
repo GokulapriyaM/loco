@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:background="@color/white">
 
     <ImageButton
@@ -10,6 +12,10 @@
         android:layout_height="65dp"
         android:background="@android:color/transparent"
         android:src="@drawable/rating_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
         android:onClick="onRatingClick" />
 
     <ImageButton
@@ -18,6 +24,9 @@
         android:layout_height="65dp"
         android:background="@android:color/transparent"
         android:src="@drawable/rating_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="12dp"
         android:onClick="onRatingClick" />
 
     <ImageButton
@@ -26,6 +35,9 @@
         android:layout_height="65dp"
         android:background="@android:color/transparent"
         android:src="@drawable/rating_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="12dp"
         android:onClick="onRatingClick" />
 
     <ImageButton
@@ -34,6 +46,9 @@
         android:layout_height="65dp"
         android:background="@android:color/transparent"
         android:src="@drawable/rating_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="12dp"
         android:onClick="onRatingClick" />
 
     <ImageButton
@@ -42,5 +57,9 @@
         android:layout_height="65dp"
         android:background="@android:color/transparent"
         android:src="@drawable/rating_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="12dp"
         android:onClick="onRatingClick" />
 </LinearLayout>
+
