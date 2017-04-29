@@ -56,7 +56,8 @@ public class ImageAdapter extends BaseAdapter {
 
         if (convertView == null) {
             imageView = new ImageView (mContext);
-            imageView.setScaleType (ImageView.ScaleType.FIT_CENTER);
+            //imageView.setScaleType (ImageView.ScaleType.FIT_CENTER);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setLayoutParams (new GridView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         } else {
             imageView = (ImageView) convertView;
@@ -68,7 +69,7 @@ public class ImageAdapter extends BaseAdapter {
                 .using(new FirebaseImageLoader())
                 .load(mStorage.getReference().child(storage_path))
                 .thumbnail(0.05f)
-                .override(400, 400)
+                .override(200, 200)
                 .into(imageView);
 
         return imageView;
