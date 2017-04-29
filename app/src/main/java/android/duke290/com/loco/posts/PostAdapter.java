@@ -4,6 +4,7 @@ import android.duke290.com.loco.R;
 import android.duke290.com.loco.posts.Post;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,11 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Post> mDataset;
+
+    private static final int VIEW_TYPE_EMPTY_LIST_PLACEHOLDER = 0;
+    private static final int VIEW_TYPE_OBJECT_VIEW = 1;
+
+    private static final String TAG = "PostAdapter";
 
     // Provide a reference to the views for each data item
     public static class PostViewHolder extends RecyclerView.ViewHolder {
@@ -36,10 +42,34 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         mDataset = myDataset;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        Log.d(TAG, "mDataset size = " + mDataset.size());
+        if (mDataset.size() == 0) {
+            Log.d(TAG, "empty list view type returned");
+            return VIEW_TYPE_EMPTY_LIST_PLACEHOLDER;
+        } else {
+            return VIEW_TYPE_OBJECT_VIEW;
+        }
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false);
+        Log.d(TAG, "onCreateViewHolder called");
+        View v = null;
+        switch(viewType) {
+            case VIEW_TYPE_EMPTY_LIST_PLACEHOLDER:
+                Log.d(TAG, "recycler view empty, posting empty message");
+                v = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.item_photo_empty, parent, false);
+                TextView empty_msg = (TextView) v.findViewById(R.id.empty_msg);
+                empty_msg.setText("Be the first to create a post!");
+                break;
+            case VIEW_TYPE_OBJECT_VIEW:
+                v = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.item_post, parent, false);
+                break;
+        }
         PostViewHolder gvh = new PostViewHolder(v);
         return gvh;
     }
@@ -48,13 +78,17 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PostViewHolder postholder = (PostViewHolder) holder;
 //        postholder.mUsernameView.setText(mDataset.get(position).getUsername());
-        postholder.mPostView.setText(mDataset.get(position).getPost());
-        postholder.mTimeView.setText(mDataset.get(position).getTimestamp());
+        if (position < mDataset.size()) {
+            Post post = mDataset.get(position);
+            postholder.mPostView.setText(post.getPost());
+            postholder.mTimeView.setText(post.getTimestamp());
+        }
 
     }
 
     @Override
     public int getItemCount() {
+        if (mDataset.size() == 0) return 1;
         return mDataset.size();
     }
 }

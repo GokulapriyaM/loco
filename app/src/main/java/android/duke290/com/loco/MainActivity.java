@@ -12,6 +12,8 @@ import android.duke290.com.loco.database.DatabaseFetchCallback;
 import android.duke290.com.loco.location.Constants;
 import android.duke290.com.loco.location.LocationService;
 import android.duke290.com.loco.photos.PhotosActivity;
+import android.duke290.com.loco.posts.Post;
+import android.duke290.com.loco.posts.PostAdapter;
 import android.duke290.com.loco.posts.PostsActivity;
 import android.duke290.com.loco.posts.ShareTextActivity;
 import android.duke290.com.loco.registration.LoginActivity;
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     private List<String> mStoragePaths;
     private RecyclerView mPhotosRecyclerView;
+    private RecyclerView mPostsRecyclerView;
 
 
     @Override
@@ -151,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
 
         mPhotosRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
-
+        mPostsRecyclerView = (RecyclerView) findViewById(R.id.posts_recycler_view);
 
         // get layout variables
         post1 = (TextView) findViewById(R.id.post1);
@@ -415,7 +418,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     public void displayRatings() {
         if (mTotalNumRatings == 0) {
+            Log.d(TAG, "no ratings found");
             mRatingMsg.setText("No ratings yet :(");
+            mRatingImg.setImageResource(0);
             return;
         }
         // set rating text msgs
@@ -617,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         Log.d(TAG, "onDatabaseResultReceived called");
         Log.d(TAG, "creations.size() = " + creations.size());
 
-        clearUI();
+//        clearUI();
 
         ArrayList<Creation> messagecreations = new ArrayList<>();
         ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
@@ -651,35 +656,44 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             mTotalNumRatings = rating_cnt;
             Log.d(TAG, "mAverageRating = " + mAverageRating
                     + ", mTotalNumRatings = " + mTotalNumRatings);
-
-            displayRatings();
         }
+        displayRatings();
 
         SharedLists.getInstance().setMessageCreations(messagecreations);
         SharedLists.getInstance().setImageCreations(image_creation_list);
 
-        populateView(messages, storagerefs);
+        populateView(messagecreations, storagerefs);
     }
 
-    public void clearUI() {
-        post1.setText("");
-        post2.setText("");
-        post3.setText("");
-    }
+//    public void clearUI() {
+//        post1.setText("");
+//        post2.setText("");
+//        post3.setText("");
+//    }
 
-    private void populateView(ArrayList<String> messages, ArrayList<StorageReference> storagerefs){
-        int messages_size = messages.size();
-        int storagerefs_size = storagerefs.size();
+    private void populateView(ArrayList<Creation> messagecreations, ArrayList<StorageReference> storagerefs){
+//        int messages_size = messages.size();
+//
+//        if(messages_size>=1){
+//            post1.setText(messages.get(0));
+//        }
+//        if(messages_size>=2){
+//            post2.setText(messages.get(1));
+//        }
+//        if(messages_size>=3){
+//            post3.setText(messages.get(2));
+//        }
 
-        if(messages_size>=1){
-            post1.setText(messages.get(0));
+        ArrayList<Post> posts_list = new ArrayList<Post>();
+        for (Creation c : messagecreations) {
+            posts_list.add(new Post(c.message, c.timestamp));
+            if (posts_list.size() >= 3) {
+                break;
+            }
         }
-        if(messages_size>=2){
-            post2.setText(messages.get(1));
-        }
-        if(messages_size>=3){
-            post3.setText(messages.get(2));
-        }
+
+        mPostsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mPostsRecyclerView.setAdapter(new PostAdapter(posts_list));
 
         ArrayList<StorageReference> shorterStorageRefs = new ArrayList<StorageReference>();
         if (storagerefs.size() <= 5) shorterStorageRefs = storagerefs;
@@ -689,11 +703,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             }
         }
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        if (shorterStorageRefs.size() == 0) {
+            Log.d(TAG, "shorterStorageRefs empty");
+        }
 
-        mPhotosRecyclerView.setLayoutManager(layoutManager);
+        mPhotosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mPhotosRecyclerView.setAdapter(new PhotoAdapter(getApplicationContext(), shorterStorageRefs));
+
     }
 
 
