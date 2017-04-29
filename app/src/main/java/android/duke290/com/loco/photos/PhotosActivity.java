@@ -94,6 +94,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
                 }
                 fullsize.putStringArrayListExtra("imagepaths", image_paths);
                 fullsize.putStringArrayListExtra("locations", locations);
+                fullsize.putExtra("fetchtype", fetchtype);
                 startActivity(fullsize);
             }
         });

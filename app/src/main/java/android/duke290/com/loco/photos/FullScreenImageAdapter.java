@@ -32,13 +32,15 @@ public class FullScreenImageAdapter extends PagerAdapter {
     private ArrayList<String> mLocations;
     private LayoutInflater mInflater;
     private FirebaseStorage mStorage;
+    private String mFetchType;
 
 
     // constructor
-    public FullScreenImageAdapter(Activity activity, ArrayList<String> imagepaths, ArrayList<String> locations){
+    public FullScreenImageAdapter(Activity activity, ArrayList<String> imagepaths, ArrayList<String> locations, String fetchtype){
         mActivity = activity;
         mImages = imagepaths;
         mLocations = locations;
+        mFetchType = fetchtype;
     }
 
     @Override
@@ -59,7 +61,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
         mStorage = FirebaseStorage.getInstance();
         TouchImageView myimage = (TouchImageView) viewLayout.findViewById(R.id.imagefull);
         TextView img_loc = (TextView) viewLayout.findViewById(R.id.img_location);
-        img_loc.setText(mLocations.get(position));
+        if (mFetchType.equals("individual")) {img_loc.setText(mLocations.get(position));}
+        else {img_loc.setVisibility(View.INVISIBLE);}
         //myimage.setImageResource(mImages[position]);
         Glide.with(mActivity)
                 .using(new FirebaseImageLoader())

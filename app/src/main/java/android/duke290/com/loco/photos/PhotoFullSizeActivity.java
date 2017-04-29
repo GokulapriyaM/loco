@@ -30,12 +30,14 @@ public class PhotoFullSizeActivity extends AppCompatActivity {
         // Getting all locations
         ArrayList<String> locations = getIntent().getStringArrayListExtra("locations");
 
+        // Getting fetchtype
+        String fetchtype = getIntent().getStringExtra("fetchtype");
 
         // Get Pager from xml
         mPager = (ViewPager) findViewById(R.id.pager);
 
         // Set Adapter for GridView
-        mPager.setAdapter(new FullScreenImageAdapter(this, image_paths, locations));
+        mPager.setAdapter(new FullScreenImageAdapter(this, image_paths, locations, fetchtype));
         mPager.setCurrentItem(pos);
 
 
