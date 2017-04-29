@@ -14,6 +14,13 @@
         <item name="android:textColorHint">@color/offWhite</item>
     </style>
 
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:color">#E0E0E0</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
     <!-- Edit text theme. (for posts) -->
     <style name="MyEditTextTheme">
         <item name="colorControlNormal">#fafafa</item>
