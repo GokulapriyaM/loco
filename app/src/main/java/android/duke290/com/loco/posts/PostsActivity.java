@@ -41,6 +41,10 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
         myToolbar.setTitle("Posts");
         setSupportActionBar(myToolbar);
 
+        // back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         titletext = (TextView) findViewById(R.id.posts_title);
 
         Intent intent = getIntent();
@@ -64,6 +68,12 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
             DatabaseFetch databasefetch = new DatabaseFetch(this);
             databasefetch.fetchByUser();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void setDataset(ArrayList<Creation> creations) {

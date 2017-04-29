@@ -39,6 +39,11 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
         Toolbar myToolbar = (Toolbar) findViewById(R.id.photos_toolbar);
         myToolbar.setTitle("Photos");
         setSupportActionBar(myToolbar);
+
+        // back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         gridview = (GridView) findViewById(R.id.grid_view);
         titletext = (TextView) findViewById(R.id.photos_title) ;
         image_paths = new ArrayList<>();
@@ -58,6 +63,12 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
             databasefetch.fetchByUser();
         }
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
