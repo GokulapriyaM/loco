@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -28,14 +29,16 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class FullScreenImageAdapter extends PagerAdapter {
     private Activity mActivity;
     private ArrayList<String> mImages;
+    private ArrayList<String> mLocations;
     private LayoutInflater mInflater;
     private FirebaseStorage mStorage;
 
 
     // constructor
-    public FullScreenImageAdapter(Activity activity, ArrayList<String> imagepaths){
+    public FullScreenImageAdapter(Activity activity, ArrayList<String> imagepaths, ArrayList<String> locations){
         mActivity = activity;
         mImages = imagepaths;
+        mLocations = locations;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((LinearLayout) object);
+        return view == ((RelativeLayout) object);
     }
 
     @Override
@@ -55,6 +58,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
         mStorage = FirebaseStorage.getInstance();
         TouchImageView myimage = (TouchImageView) viewLayout.findViewById(R.id.imagefull);
+        TextView img_loc = (TextView) viewLayout.findViewById(R.id.img_location);
+        img_loc.setText(mLocations.get(position));
         //myimage.setImageResource(mImages[position]);
         Glide.with(mActivity)
                 .using(new FirebaseImageLoader())
@@ -68,7 +73,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((LinearLayout) object);
+        ((ViewPager) container).removeView((RelativeLayout) object);
 
     }
 }

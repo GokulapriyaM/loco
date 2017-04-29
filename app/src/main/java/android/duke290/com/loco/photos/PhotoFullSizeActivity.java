@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -26,11 +27,15 @@ public class PhotoFullSizeActivity extends AppCompatActivity {
         // Getting all images
         ArrayList<String> image_paths = getIntent().getStringArrayListExtra("imagepaths");
 
+        // Getting all locations
+        ArrayList<String> locations = getIntent().getStringArrayListExtra("locations");
+
+
         // Get Pager from xml
         mPager = (ViewPager) findViewById(R.id.pager);
 
         // Set Adapter for GridView
-        mPager.setAdapter(new FullScreenImageAdapter(this, image_paths));
+        mPager.setAdapter(new FullScreenImageAdapter(this, image_paths, locations));
         mPager.setCurrentItem(pos);
 
 
