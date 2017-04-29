@@ -1,15 +1,11 @@
 package android.duke290.com.loco.photos;
 
-import android.duke290.com.loco.Creation;
 import android.duke290.com.loco.R;
-import android.duke290.com.loco.SharedLists;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -37,14 +33,7 @@ public class PhotoFullSizeActivity extends AppCompatActivity {
         mPager.setAdapter(new FullScreenImageAdapter(this, image_paths));
         mPager.setCurrentItem(pos);
 
-        /*mImage = (ImageView) findViewById(R.id.imagefull);
-        mImage.setAdjustViewBounds(true);
 
-        Glide.with(getApplicationContext())
-                .using(new FirebaseImageLoader())
-                .load(mStorage.getReference().child(path))
-                .fitCenter()
-                .into(mImage);*/
     }
 
 }

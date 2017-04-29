@@ -27,6 +27,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
     private String SHARED = "shared";
     private ArrayList<Creation> imagecreations;
     private ArrayList<String> image_paths;
+    private ArrayList<String> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -41,6 +42,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
         gridview = (GridView) findViewById(R.id.grid_view);
         titletext = (TextView) findViewById(R.id.photos_title) ;
         image_paths = new ArrayList<>();
+        locations = new ArrayList<>();
 
         Intent intent = getIntent();
         fetchtype = intent.getStringExtra(FETCHTYPE);
@@ -88,9 +90,10 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
                 fullsize.putExtra("position", position);
                 for (Creation c:imagecreations){
                     image_paths.add(c.extra_storage_path);
-
+                    locations.add(c.address.replace("\r\n", ", ").replace("\n", ", "));
                 }
                 fullsize.putStringArrayListExtra("imagepaths", image_paths);
+                fullsize.putStringArrayListExtra("locations", locations);
                 startActivity(fullsize);
             }
         });
