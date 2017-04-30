@@ -26,8 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_gray_profile_account"
-                android:visibility="invisible"
+                android:src="@drawable/ic_username"
                 />
 
             <TextView
@@ -93,6 +92,91 @@
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/change_email_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_email_black"
+                android:visibility="invisible"
+                />
+
+            <TextView
+                android:id="@+id/change_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/change_email_icon"
+                android:text="@string/change_email"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/password_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_password" />
+
+            <TextView
+                android:id="@+id/change_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/password_icon"
+                android:text="@string/change_password"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/sign_out_profile_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_menu_signout" />
+
+            <TextView
+                android:id="@+id/sign_out_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@id/sign_out_profile_icon"
+                android:text="@string/signout"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
