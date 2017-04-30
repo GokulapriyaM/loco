@@ -80,11 +80,11 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         mEmail = getIntent().getStringExtra("email");
         mPassword = getIntent().getStringExtra("oldpassword");
         mOldEmail = getIntent().getStringExtra("oldemail");
-        mNewPassword = getIntent().getStringExtra("email");
+        mNewPassword = getIntent().getStringExtra("newdata");
         String change = getIntent().getStringExtra("change");
 
         mUsernameView.setText(mUsername);
-        if (change == null || change != null && change.equals("email"))mEmailView.setText(mEmail);
+        if (change == null) mEmailView.setText(mEmail);
         else mEmailView.setText(mOldEmail);
 
         //get firebase auth instance
@@ -192,9 +192,10 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(ProfileActivity.this, "Email address is updated", Toast.LENGTH_LONG).show();
+                                mEmailView.setText(mEmail);
+                                Toast.makeText(ProfileActivity.this, "Email address is updated", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(ProfileActivity.this, "Failed to update email!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProfileActivity.this, "Failed to update email!", Toast.LENGTH_SHORT).show();
                                 Log.w("Except", task.getException());
                             }
                         }
