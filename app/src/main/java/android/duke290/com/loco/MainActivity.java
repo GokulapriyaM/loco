@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private RecyclerView mPhotosRecyclerView;
     private RecyclerView mPostsRecyclerView;
 
+    private int mRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +195,18 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             updateValuesFromBundle(savedInstanceState);
             updateUI();
         }
+
+        if (getIntent() != null) {
+            int confirmed = getIntent().getIntExtra("confirmed", 2);
+            mRating = getIntent().getIntExtra("rating", 0);
+            mCurrentLocation = getIntent().getParcelableExtra("LOCATION_KEY");
+            mCloudProcessMsgs = getIntent().getStringArrayListExtra("PROCESS_MSGS");
+
+            if (confirmed==1){
+                confirmReceived();
+            }
+        }
+
 
     }
 
@@ -580,16 +593,37 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 //    }
 
     public void onRatingClick(View button) {
-        openDialog();
+        Log.d(TAG, "here about to open dialog");
         String button_id = getResources().getResourceName(button.getId());
-        int rating = button_id.charAt(button_id.length() - 1) - '0';
-        postRating(rating);
-        mBottomSheetDialog.dismiss();
+        mRating = button_id.charAt(button_id.length() - 1) - '0';
+        openDialog();
+        /*while (confirmed==2){
+            continue;
+        }
+        if (confirmed == 1){
+            postRating(rating);
+            mBottomSheetDialog.dismiss();
+        }*/
+
+        //postRating(rating);
+        //mBottomSheetDialog.dismiss();
+    }
+
+    public void confirmReceived(){
+        postRating(mRating);
     }
 
     public void openDialog() {
         DialogFragment confirmation = new ConfirmDialogFragment();
-        confirmation.show(getFragmentManager(), "next");
+        Log.d(TAG, "opening dialog");
+        Bundle args = new Bundle();
+        args.putInt("rating", mRating);
+        if (mCurrentLocation != null) {
+            args.putParcelable("LOCATION_KEY", mCurrentLocation);
+            args.putStringArrayList("PROCESS_MSGS", mCloudProcessMsgs);
+            confirmation.setArguments(args);
+            confirmation.show(getFragmentManager(), "");
+        }
     }
 
     private void getCreations(){

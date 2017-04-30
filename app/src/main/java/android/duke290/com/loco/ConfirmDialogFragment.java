@@ -13,14 +13,26 @@ import android.support.v7.app.AlertDialog;
 
 public class ConfirmDialogFragment extends DialogFragment {
     Class mClass;
+    int mRating;
+
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Create an alert dialog to move to the next quiz
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.confirmation)
+        mRating = getArguments().getInt("rating");
+
+        builder.setMessage("Confirm your rating: " + mRating)
                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        dismiss();
+                        Intent homeintent = new Intent(getActivity(), MainActivity.class);
+                        homeintent.putExtra("confirmed", 1);
+                        homeintent.putExtra("rating", mRating);
+                        homeintent.putExtra("LOCATION_KEY",
+                                getArguments().getParcelable("LOCATION_KEY"));
+                        homeintent.putStringArrayListExtra("PROCESS_MSGS",
+                                getArguments().getStringArrayList("PROCESS_MSGS"));
+                        startActivity(homeintent);
 
                     }
                 })
@@ -28,6 +40,7 @@ public class ConfirmDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         // Back to Home Screen
                         Intent homeintent = new Intent(getActivity(), MainActivity.class);
+                        homeintent.putExtra("confirmed", 0);
                         startActivity(homeintent);
 
                     }
@@ -35,4 +48,5 @@ public class ConfirmDialogFragment extends DialogFragment {
 
         return builder.create();
     }
+
 }
