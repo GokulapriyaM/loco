@@ -1,9 +1,7 @@
 package android.duke290.com.loco.posts;
 
 import android.duke290.com.loco.R;
-import android.duke290.com.loco.posts.Post;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,7 +60,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             case VIEW_TYPE_EMPTY_LIST_PLACEHOLDER:
                 Log.d(TAG, "recycler view empty, posting empty message");
                 v = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.item_photo_empty, parent, false);
+                        R.layout.item_empty, parent, false);
                 TextView empty_msg = (TextView) v.findViewById(R.id.empty_msg);
                 empty_msg.setText("Be the first to create a post!");
                 break;

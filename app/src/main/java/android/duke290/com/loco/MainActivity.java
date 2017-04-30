@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mRatingMsg.setText("Average Happiness: " + avg_rating_str);
         String plural = "";
         if (mTotalNumRatings > 1) plural = "s";
-        mNumRatingMsg.setText("Based on " + mTotalNumRatings + " rating" + plural);
+        mNumRatingMsg.setText(mTotalNumRatings + " rating" + plural);
 
         // set rating image
         double rounded_rating = Double.parseDouble(avg_rating_str);
