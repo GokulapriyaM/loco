@@ -65,7 +65,7 @@ import java.util.Locale;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
-import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
+//import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private RecyclerView mPostsRecyclerView;
 
     private int mRating;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -463,7 +465,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mRatingMsg.setText("Average Happiness: " + avg_rating_str);
         String plural = "";
         if (mTotalNumRatings > 1) plural = "s";
-        mNumRatingMsg.setText("Based on " + mTotalNumRatings + " rating" + plural);
+        mNumRatingMsg.setText(mTotalNumRatings + " rating" + plural);
 
         // set rating image
         double rounded_rating = Double.parseDouble(avg_rating_str);
