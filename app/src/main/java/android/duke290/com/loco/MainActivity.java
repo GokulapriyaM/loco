@@ -197,13 +197,17 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
 
         if (getIntent() != null) {
-            int confirmed = getIntent().getIntExtra("confirmed", 2);
-            mRating = getIntent().getIntExtra("rating", 0);
-            mCurrentLocation = getIntent().getParcelableExtra("LOCATION_KEY");
-            mCloudProcessMsgs = getIntent().getStringArrayListExtra("PROCESS_MSGS");
+            if (getIntent().getStringExtra("TYPE") != null &&
+                    getIntent().getStringExtra("TYPE").equals("dialog")) {
+                Log.d(TAG, "coming back from dialog fragment");
+                int confirmed = getIntent().getIntExtra("confirmed", 2);
+                mRating = getIntent().getIntExtra("rating", 0);
+                mCurrentLocation = getIntent().getParcelableExtra("LOCATION_KEY");
+                mCloudProcessMsgs = getIntent().getStringArrayListExtra("PROCESS_MSGS");
 
-            if (confirmed==1){
-                confirmReceived();
+                if (confirmed == 1) {
+                    confirmReceived();
+                }
             }
         }
 

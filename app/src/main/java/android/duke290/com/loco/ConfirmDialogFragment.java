@@ -26,6 +26,7 @@ public class ConfirmDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent homeintent = new Intent(getActivity(), MainActivity.class);
+                        homeintent.putExtra("TYPE", "dialog");
                         homeintent.putExtra("confirmed", 1);
                         homeintent.putExtra("rating", mRating);
                         homeintent.putExtra("LOCATION_KEY",
