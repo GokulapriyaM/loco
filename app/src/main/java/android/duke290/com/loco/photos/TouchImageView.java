@@ -16,6 +16,9 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
+/**
+ * Class for pinch zooming on images
+ */
 
 public class TouchImageView extends android.support.v7.widget.AppCompatImageView {
 

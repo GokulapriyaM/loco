@@ -24,9 +24,9 @@ public class ChangeProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_change_profile);
 
         // initialize view elements
-        mChangetext = (EditText) findViewById(R.id.change_text);
         mOldEmail = (EditText) findViewById(R.id.old_email);
         mPassword = (EditText) findViewById(R.id.password_profile);
+        mChangetext = (EditText) findViewById(R.id.change_text);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.changeprofile_toolbar);
         //toolbar.setTitle("My Profile");
@@ -75,7 +75,8 @@ public class ChangeProfileActivity extends AppCompatActivity {
         Intent changed = new Intent(ChangeProfileActivity.this, ProfileActivity.class);
         changed.putExtra("change", change);
         changed.putExtra("oldemail", mOldEmail.getText().toString().trim());
-        changed.putExtra("email", newinfo);
+        changed.putExtra("newdata", newinfo);
+        if (change.equals("email")) changed.putExtra("email", newinfo);
         changed.putExtra("username", mUsername);
         changed.putExtra("oldpassword", mPassword.getText().toString().trim());
         startActivity(changed);
