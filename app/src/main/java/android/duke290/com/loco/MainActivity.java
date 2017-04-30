@@ -59,13 +59,10 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
-
-//import static android.duke290.com.loco.ProfileActivity.REQUEST_IMAGE_CAPTURE;
 
 /*
  * Everytime onCreate() is called, the activity does the following:
@@ -76,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
-    // for now, this is always true, but we can change it if needed
     private boolean mAddressRequested = true;
 
     private AddressResultReceiver mAddressResultReceiver;
@@ -107,19 +103,13 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     final String LONGITUDE = "longitude";
     final String ADDRESS = "address";
 
-    private TextView post1;
-    private TextView post2;
-    private TextView post3;
     private TextView mAddressMsg;
     Dialog mBottomSheetDialog;
     TextView mRatingMsg;
     TextView mNumRatingMsg;
     ImageView mRatingImg;
 
-
     private String mCurrentPhotoPath;
-
-    private final int limit = 3;
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -129,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private String INDIVIDUAL = "individual";
     private String SHARED = "shared";
 
-    private List<String> mStoragePaths;
     private RecyclerView mPhotosRecyclerView;
     private RecyclerView mPostsRecyclerView;
 
@@ -161,9 +150,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mPostsRecyclerView = (RecyclerView) findViewById(R.id.posts_recycler_view);
 
         // get layout variables
-        post1 = (TextView) findViewById(R.id.post1);
-        post2 = (TextView) findViewById(R.id.post2);
-        post3 = (TextView) findViewById(R.id.post3);
         mAddressMsg = (TextView) findViewById(R.id.address_msg);
         mRatingMsg = (TextView) findViewById(R.id.rating_msg);
         mNumRatingMsg = (TextView) findViewById(R.id.num_ratings);
@@ -192,12 +178,14 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mLocationResultReceiver = new LocationResultReceiver(new Handler());
         mCloudResultReceiver = new CloudResultReceiver(new Handler());
 
+        // restore state after orientation change
         if (savedInstanceState != null) {
             // update values from last saved instance
             updateValuesFromBundle(savedInstanceState);
             updateUI();
         }
 
+        // restore state after coming from dialog (rating confirmation) fragment
         if (getIntent() != null) {
             if (getIntent().getStringExtra("TYPE") != null &&
                     getIntent().getStringExtra("TYPE").equals("dialog")) {
@@ -213,9 +201,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             }
         }
 
-
     }
 
+    /**
+     * Sets up Floating Action Button menu for taking pictures, creating posts,
+     * and posting ratings.
+     */
     private void setUpFabMenu() {
         Log.d(TAG, "setting up fab menu");
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.our_fab);
@@ -251,6 +242,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     }
 
+    /**
+     * Updates current location and cloud process messages from the last saved instance state.
+     * @param savedInstanceState - last saved instance state
+     */
     public void updateValuesFromBundle(Bundle savedInstanceState) {
         Log.d(TAG, "updating location values");
         if (savedInstanceState != null) {
@@ -274,8 +269,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    /**
+     * Updates displayed location, address, and fetches Creations for the current location
+     * from the database.
+     */
     private void updateUI() {
-        displayLocation();
+        updateLocation();
         getAddress();
         getCreations();
     }
@@ -341,6 +340,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     }
 
+    /**
+     * Starts the FetchAddressIntentService to fetch the current address from
+     * surrounding geocodes.
+     */
     protected void getAddress() {
         if (mCurrentLocation != null) {
             // Determine whether a Geocoder is available.
@@ -357,6 +360,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
+    /**
+     * Class extending ResultReceiver that, when receiving a location result, updates the displayed
+     * location, address, and fetches Creation objects for the current location.
+     */
     class LocationResultReceiver extends ResultReceiver {
         public LocationResultReceiver(Handler handler) { super(handler); }
 
@@ -364,12 +371,16 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             mCurrentLocation = resultData.getParcelable("LOCATION_KEY");
             getAddress();
-            displayLocation();
+            updateLocation();
             getCreations();
         }
 
     }
 
+    /**
+     * Class extending ResultReceiver that, when receiving an address result, updates the
+     * displayed address.
+     */
     class AddressResultReceiver extends ResultReceiver {
         public AddressResultReceiver(Handler handler) {
             super(handler);
@@ -382,8 +393,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             // or an error message sent from the intent service.
             mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
 
-//            // edit address string so that it is just one line
-//            mAddressOutput = mAddressOutput.replace("\r\n", ", ").replace("\n", ", ");
             // edit address string so that it is just two lines
             String edited_adr = "";
             int cnt = 0;
@@ -408,6 +417,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
+    /**
+     * Class extending ResultReceiver that, when receiving a result from CloudStorageAction, uploads
+     * the Creation corresponding to the uploaded item to Firebase Storage, and displays the cloud
+     * process output.
+     */
     class CloudResultReceiver extends ResultReceiver {
         public CloudResultReceiver(Handler handler) {
             super(handler);
@@ -436,16 +450,24 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
-    public void displayLocation() {
+    /**
+     * Updates the latitude and longitude global variables.
+     */
+    public void updateLocation() {
         latitude = mCurrentLocation.getLatitude();
         longitude = mCurrentLocation.getLongitude();
-//        mCoordsMsg.setText("Latitude: " + latitude + ", Longitude: " + longitude);
     }
 
+    /**
+     * Displays the address on the UI.
+     */
     protected void displayAddressOutput() {
         mAddressMsg.setText(mAddressOutput);
     }
 
+    /**
+     * Displays the cloud process message from the last cloud action via a toast.
+     */
     protected void displayProcessOutput() {
         if (mCloudProcessMsgs.size() == 0) return;
         Log.d(TAG, "displayProcessOutput called");
@@ -453,6 +475,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Displays the rating message and rating image.
+     */
     public void displayRatings() {
         if (mTotalNumRatings == 0) {
             Log.d(TAG, "no ratings found");
@@ -478,6 +503,15 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mRatingImg.setImageResource(id);
     }
 
+    /**
+     * Calls the CloudStorageAction class to upload an InputStream to Firebase Storage.
+     *
+     * @param inputStream - InputStream to upload to Firebase Storage
+     * @param storage_path - String representing the path in Storage that the InputStream will
+     *                     be located in
+     * @param content_type - String representing the type of content being uploaded (text, image,
+     *                     or rating)
+     */
     protected void uploadStreamToFirebaseStorage(InputStream inputStream,
                                                  String storage_path,
                                                  String content_type) {
@@ -491,6 +525,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         action.doCloudAction();
     }
 
+    /**
+     * Calls the ShareTextActivity class to share a text Creation object.
+     */
     protected void shareText() {
         Intent intent = new Intent(MainActivity.this, ShareTextActivity.class);
         intent.putExtra(LATITUDE, latitude);
@@ -499,7 +536,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         startActivity(intent);
     }
 
-    // Code for taking a picture
+    /**
+     * Allows user to take a photo, which will then be handled by onActivityResult.
+     *
+     * @exception IOException - IOException for creating a file
+     */
     protected void sharePhoto() throws IOException {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -516,6 +557,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
+    /**
+     * Creates and uploads a Creation object holding the user's posted rating.
+     *
+     * @param rating - the user's posted rating.
+     */
     public void postRating(int rating) {
         // creating creation
         String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
@@ -581,7 +627,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
-    // Creating a unique filename with timestamp
+    /**
+     *  Creating a unique filename for the uploaded image with timestamp.
+     *
+     *  @exception - IOException - for creating a file
+     */
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -599,7 +649,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         return image;
     }
 
-
+    /**
+     * Opens dialog (ConfirmDialogFragment) to confirm rating when user chooses a rating.
+     *
+     * @param button - Button that user clicked on to select rating.
+     */
     public void onRatingClick(View button) {
         Log.d(TAG, "here about to open dialog");
         String button_id = getResources().getResourceName(button.getId());
@@ -607,10 +661,18 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         openDialog();
     }
 
+    /**
+     * Called when ConfirmDialogFragment sends intent to MainActivity and MainActivity restores
+     * its previous state (location and cloud process messages). Calls postRating to post rating.
+     *
+     */
     public void confirmReceived(){
         postRating(mRating);
     }
 
+    /**
+     * Calls ConfirmDialogFragment to open dialog to confirm rating.
+     */
     public void openDialog() {
         DialogFragment confirmation = new ConfirmDialogFragment();
         Log.d(TAG, "opening dialog");
@@ -624,6 +686,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         }
     }
 
+    /**
+     * Calls fetchByCoordinate to get Creation objects for the current location.
+     */
     private void getCreations(){
         String coordname = DatabaseAction.createCoordName(mCurrentLocation);
         databaseFetch.fetchByCoordinate(coordname);
@@ -660,8 +725,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     public void onDatabaseResultReceived(ArrayList<Creation> creations) {
         Log.d(TAG, "onDatabaseResultReceived called");
         Log.d(TAG, "creations.size() = " + creations.size());
-
-//        clearUI();
 
         ArrayList<Creation> messagecreations = new ArrayList<>();
         ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
