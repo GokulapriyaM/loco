@@ -13,6 +13,7 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Post> mDataset;
+    private boolean mFromMainUI;
 
     private static final int VIEW_TYPE_EMPTY_LIST_PLACEHOLDER = 0;
     private static final int VIEW_TYPE_OBJECT_VIEW = 1;
@@ -37,14 +38,15 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public PostAdapter(List<Post> myDataset) {
+    public PostAdapter(List<Post> myDataset, boolean fromMainUI) {
         mDataset = myDataset;
+        mFromMainUI = fromMainUI;
     }
 
     @Override
     public int getItemViewType(int position) {
         Log.d(TAG, "mDataset size = " + mDataset.size());
-        if (mDataset.size() == 0) {
+        if (mDataset.size() == 0 && mFromMainUI) {
             Log.d(TAG, "empty list view type returned");
             return VIEW_TYPE_EMPTY_LIST_PLACEHOLDER;
         } else {
@@ -88,7 +90,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemCount() {
-        if (mDataset.size() == 0) return 1;
+        if (mDataset.size() == 0 && mFromMainUI) return 1;
         return mDataset.size();
     }
 }
