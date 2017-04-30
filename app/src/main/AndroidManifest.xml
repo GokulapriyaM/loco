@@ -58,7 +58,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".photos.PhotoFullSizeActivity"></activity>
+        <activity android:name=".photos.PhotoFullSizeActivity" />
+        <activity android:name=".ChangeProfileActivity"></activity>
     </application>
 
 </manifest>

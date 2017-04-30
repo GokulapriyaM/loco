@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="android.duke290.com.loco.ChangeProfileActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/changeprofile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <EditText
+        android:id="@+id/old_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:cursorVisible="true"
+        android:gravity="top|start"
+        android:inputType="textEmailAddress"
+        android:lines="5"
+        android:minLines="1"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        android:textCursorDrawable="@null"
+        android:layout_below="@+id/changeprofile_toolbar"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:theme="@style/MyEditTextTheme"/>
+
+    <EditText
+        android:id="@+id/password_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:cursorVisible="true"
+        android:gravity="top|start"
+        android:lines="5"
+        android:minLines="1"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        android:textCursorDrawable="@null"
+        android:layout_below="@+id/old_email"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:textColorHint="@color/gray"
+        android:inputType="textPassword"
+        android:theme="@style/MyEditTextTheme"/>
+
+    <EditText
+        android:id="@+id/change_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:cursorVisible="true"
+        android:gravity="top|start"
+        android:lines="5"
+        android:minLines="1"
+        android:inputType="textEmailAddress"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        android:textCursorDrawable="@null"
+        android:layout_below="@+id/password_profile"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:textColorHint="@color/gray"
+        android:theme="@style/MyEditTextTheme"/>
+
+
+    <Button
+        android:id="@+id/change_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:onClick="onConfirmClick"
+        android:text="@string/confirm"
+        android:textColor="@color/offWhite"
+        android:layout_below="@id/change_text"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="20dp"
+        android:textStyle="bold"/>
+
+</RelativeLayout>

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
-            android:clickable="true"
+            android:clickable="false"
             android:padding="16dp">
 
             <ImageView
@@ -47,7 +47,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/username_icon"
-                android:text="Jihane"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#727272" />
 
@@ -57,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
-            android:clickable="true"
+            android:clickable="false"
             android:padding="16dp">
 
             <ImageView
@@ -79,13 +78,13 @@
                 android:textColor="#212121" />
 
             <TextView
+                android:id="@+id/email_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/email_text"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/emailicon"
-                android:text="jb442@duke.edu"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#727272" />
 
@@ -94,10 +93,12 @@
         <include layout="@layout/item_divider" />
 
         <RelativeLayout
+            android:id="@+id/email_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
+            android:onClick="onChangeEmail"
             android:padding="16dp">
 
             <ImageView
@@ -123,6 +124,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/password_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -152,6 +154,7 @@
         <include layout="@layout/item_divider" />
 
         <RelativeLayout
+            android:id="@+id/signout_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"

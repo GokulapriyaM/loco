@@ -772,7 +772,11 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.profile:
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
+                        profile_intent.putExtra("username", currentUser.name);
+                        profile_intent.putExtra("email", currentUser.email);
+                        startActivity(profile_intent);
+                        //startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                         break;
                     case R.id.my_photos:
                         drawerLayout.closeDrawers();
