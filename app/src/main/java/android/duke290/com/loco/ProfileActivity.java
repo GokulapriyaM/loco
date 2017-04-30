@@ -24,6 +24,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -47,8 +49,12 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser mUser;
+    private DatabaseReference mDatabase;
 
     private DatabaseFetch databaseFetch;
+
+    private static final String USERS = "users";
+    private static final String USERINFO = "userinfo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +153,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("", "User re-authenticated.");
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
                         if (change != null && change.equals("password")) {
                             updatePasswordInfo();
                         }
@@ -159,6 +166,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     }
 
     private void updatePasswordInfo() {
+        // update authentication
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null && !mNewPassword.equals("")) {
                 user.updatePassword(mNewPassword)
@@ -173,8 +181,8 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
                                 }
                             }
                         });
-            }
         }
+    }
 
     private void updateEmailInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -192,6 +200,10 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
                         }
                     });
         }
+
+        // update database
+        User new_user_entry = new User(mUsername, mEmail);
+        mDatabase.child(USERS).child(user.getUid()).child(USERINFO).setValue(new_user_entry);
     }
 
 
