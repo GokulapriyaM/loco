@@ -733,8 +733,16 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             }
         }
 
-        mPostsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mPostsRecyclerView.setAdapter(new PostAdapter(posts_list, true));
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+
+        mPostsRecyclerView.setLayoutManager(linearLayoutManager);
+        mPostsRecyclerView.setAdapter(new PostAdapter(posts_list));
 
         ArrayList<StorageReference> shorterStorageRefs = new ArrayList<StorageReference>();
         if (storagerefs.size() <= 5) shorterStorageRefs = storagerefs;

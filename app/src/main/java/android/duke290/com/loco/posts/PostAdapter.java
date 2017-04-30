@@ -14,7 +14,6 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Post> mDataset;
-    private boolean mFromMainUI;
 
     private static final int VIEW_TYPE_EMPTY_LIST_PLACEHOLDER = 0;
     private static final int VIEW_TYPE_OBJECT_VIEW = 1;
@@ -39,9 +38,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public PostAdapter(List<Post> myDataset, boolean fromMainUI) {
+    public PostAdapter(List<Post> myDataset) {
         mDataset = myDataset;
-        mFromMainUI = fromMainUI;
     }
 
     @Override
@@ -73,11 +71,6 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 break;
         }
 
-        if (mFromMainUI) {
-            ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
-            layoutParams.width = 500;
-            v.setLayoutParams(layoutParams);
-        }
         PostViewHolder gvh = new PostViewHolder(v);
         return gvh;
     }

@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
             card_view:cardCornerRadius="0dp"
-            card_view:cardElevation="1dp"
+            card_view:cardElevation="0dp"
             card_view:cardUseCompatPadding="false">
 
             <RelativeLayout
@@ -50,42 +50,15 @@
                     android:clickable="true"
                     android:text="Getting address..."
                     android:textColor="@color/gray"
-                    android:textSize="16dp" />
-
-                <ImageView
-                    android:id="@+id/rating_faces"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/address_msg"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="10dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/rate_face_50" />
-
-                <TextView
-                    android:id="@+id/rating_msg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rating_faces"
-                    android:layout_marginBottom="2dp"
-                    android:clickable="true"
-                    android:text="No rating yet :(" />
-
-                <TextView
-                    android:id="@+id/num_ratings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rating_msg"
-                    android:text="" />
+                    android:textSize="14sp" />
 
                 <Button
                     android:id="@+id/map"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/rating_msg"
-                    android:layout_margin="0dp"
+                    android:layout_below="@+id/address_msg"
+                    android:layout_marginTop="8dp"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:onClick="onMapClick"
@@ -97,17 +70,103 @@
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
+        <!--&lt;!&ndash; HAPPINESS &ndash;&gt;-->
+        <!--<TextView-->
+        <!--android:id="@+id/happiness_header"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/locationcv"-->
+        <!--android:padding="16dp"-->
+        <!--android:text="@string/location"-->
+        <!--android:textColor="@color/gray"-->
+        <!--android:textSize="20sp" />-->
+
+        <!-- Happiness CardView -->
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/happinesscv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/locationcv"
+            android:layout_marginTop="1dp"
+            card_view:cardCornerRadius="0dp"
+            card_view:cardElevation="1dp"
+            card_view:cardUseCompatPadding="false">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp">
+
+                <!--<TextView-->
+                    <!--android:id="@+id/happiness_header"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/location"-->
+                    <!--android:textColor="@color/gray"-->
+                    <!--android:textSize="20sp" />-->
+                <TextView
+                    android:id="@+id/rating_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:text="No rating yet :( "
+                    android:textSize="20sp"
+                    android:layout_gravity="center_vertical"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rating_msg"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:id="@+id/rating_faces"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/rate_face_50"
+                        android:layout_gravity="center_vertical"/>
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/rating_msg"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/rating_faces"-->
+                    <!--android:layout_marginBottom="2dp"-->
+                    <!--android:clickable="true"-->
+                    <!--android:text="No rating yet :("-->
+                    <!--android:textSize="16sp" />-->
+
+                    <TextView
+                        android:id="@+id/num_ratings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
         <!-- PHOTOS -->
         <TextView
             android:id="@+id/photos_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/locationcv"
+            android:layout_below="@id/happinesscv"
             android:padding="16dp"
             android:text="@string/photos"
             android:textColor="@color/gray"
             android:textSize="20sp" />
 
+        <!-- Photos CardView -->
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/photoscv"
             android:layout_width="match_parent"
@@ -127,8 +186,8 @@
                     android:id="@+id/photos_recycler_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="4dp"
+                    android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/checkpics"
@@ -177,112 +236,112 @@
                     android:id="@+id/posts_recycler_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="4dp"
+                    android:layout_weight="1" />
 
                 <!--<RelativeLayout-->
-                    <!--android:id="@+id/postLayout"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="vertical">-->
+                <!--android:id="@+id/postLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="vertical">-->
 
-                    <!--<ImageView-->
-                        <!--android:id="@+id/ic_profile_1"-->
-                        <!--android:layout_width="30dp"-->
-                        <!--android:src="@drawable/ic_gray_profile_account"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@+id/postscv"-->
-                        <!--android:layout_marginBottom="16dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:layout_marginTop="16dp"-->
-                        <!--android:adjustViewBounds="true" />-->
+                <!--<ImageView-->
+                <!--android:id="@+id/ic_profile_1"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:src="@drawable/ic_gray_profile_account"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/postscv"-->
+                <!--android:layout_marginBottom="16dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:adjustViewBounds="true" />-->
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/post1"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@+id/postscv"-->
-                        <!--android:layout_toRightOf="@+id/ic_profile_1"-->
-                        <!--android:layout_marginBottom="26dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:layout_marginTop="20dp"-->
-                        <!--android:textSize="14dp"-->
-                        <!--android:color="@color/gray"/>-->
+                <!--<TextView-->
+                <!--android:id="@+id/post1"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/postscv"-->
+                <!--android:layout_toRightOf="@+id/ic_profile_1"-->
+                <!--android:layout_marginBottom="26dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--android:textSize="14dp"-->
+                <!--android:color="@color/gray"/>-->
 
-                    <!--<ImageView-->
-                        <!--android:id="@+id/ic_profile_2"-->
-                        <!--android:layout_width="30dp"-->
-                        <!--android:src="@drawable/ic_gray_profile_account"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@+id/ic_profile_1"-->
-                        <!--android:layout_marginBottom="16dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:adjustViewBounds="true" />-->
+                <!--<ImageView-->
+                <!--android:id="@+id/ic_profile_2"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:src="@drawable/ic_gray_profile_account"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/ic_profile_1"-->
+                <!--android:layout_marginBottom="16dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:adjustViewBounds="true" />-->
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/post2"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@id/post1"-->
-                        <!--android:layout_toRightOf="@+id/ic_profile_2"-->
-                        <!--android:layout_marginBottom="26dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:textSize="14dp"-->
-                        <!--android:color="@color/gray"/>-->
+                <!--<TextView-->
+                <!--android:id="@+id/post2"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/post1"-->
+                <!--android:layout_toRightOf="@+id/ic_profile_2"-->
+                <!--android:layout_marginBottom="26dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:textSize="14dp"-->
+                <!--android:color="@color/gray"/>-->
 
-                    <!--<ImageView-->
-                        <!--android:id="@+id/ic_profile_3"-->
-                        <!--android:layout_width="30dp"-->
-                        <!--android:src="@drawable/ic_gray_profile_account"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@+id/ic_profile_2"-->
-                        <!--android:layout_marginBottom="16dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:adjustViewBounds="true" />-->
-                    <!--<TextView-->
-                        <!--android:id="@+id/post3"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@+id/post2"-->
-                        <!--android:layout_toRightOf="@+id/ic_profile_3"-->
-                        <!--android:layout_marginBottom="20dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:textSize="14dp"-->
-                        <!--android:color="@color/gray"/>-->
+                <!--<ImageView-->
+                <!--android:id="@+id/ic_profile_3"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:src="@drawable/ic_gray_profile_account"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/ic_profile_2"-->
+                <!--android:layout_marginBottom="16dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:adjustViewBounds="true" />-->
+                <!--<TextView-->
+                <!--android:id="@+id/post3"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/post2"-->
+                <!--android:layout_toRightOf="@+id/ic_profile_3"-->
+                <!--android:layout_marginBottom="20dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:textSize="14dp"-->
+                <!--android:color="@color/gray"/>-->
                 <!--</RelativeLayout>-->
 
                 <!--<LinearLayout-->
-                    <!--android:id="@+id/postLayout"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/postscv"-->
-                    <!--android:orientation="vertical">-->
+                <!--android:id="@+id/postLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/postscv"-->
+                <!--android:orientation="vertical">-->
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/post1"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginBottom="16dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:layout_marginTop="16dp"-->
-                        <!--android:textSize="14dp" />-->
+                <!--<TextView-->
+                <!--android:id="@+id/post1"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="16dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:textSize="14dp" />-->
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/post2"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@id/post1"-->
-                        <!--android:layout_marginBottom="16dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:textSize="14dp" />-->
+                <!--<TextView-->
+                <!--android:id="@+id/post2"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/post1"-->
+                <!--android:layout_marginBottom="16dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:textSize="14dp" />-->
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/post3"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginBottom="16dp"-->
-                        <!--android:layout_marginStart="16dp"-->
-                        <!--android:textSize="14dp" />-->
+                <!--<TextView-->
+                <!--android:id="@+id/post3"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="16dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:textSize="14dp" />-->
                 <!--</LinearLayout>-->
 
                 <Button

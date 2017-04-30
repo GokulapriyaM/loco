@@ -84,7 +84,7 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
     }
 
     private void populateView() {
-        mAdapter = new PostAdapter(mDataset, false);
+        mAdapter = new PostAdapter(mDataset);
         mRecyclerView.setAdapter(mAdapter);
     }
 
