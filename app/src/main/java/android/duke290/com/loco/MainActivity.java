@@ -182,7 +182,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         if (savedInstanceState != null) {
             // update values from last saved instance
             updateValuesFromBundle(savedInstanceState);
-            updateUI();
+            if (mCurrentLocation != null) {
+                updateUI();
+            }
         }
 
         // restore state after coming from dialog (rating confirmation) fragment
@@ -193,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 int confirmed = getIntent().getIntExtra("confirmed", 2);
                 mRating = getIntent().getIntExtra("rating", 0);
                 mCurrentLocation = getIntent().getParcelableExtra("LOCATION_KEY");
-                mCloudProcessMsgs = getIntent().getStringArrayListExtra("PROCESS_MSGS");
 
                 if (confirmed == 1) {
                     confirmReceived();
@@ -250,13 +251,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         Log.d(TAG, "updating location values");
         if (savedInstanceState != null) {
             if (savedInstanceState.keySet().contains("LOCATION_KEY")) {
-                // Since LOCATION_KEY was found in the Bundle, we can be sure that
-                // mCurrentLocation is not null.
                 mCurrentLocation = savedInstanceState.getParcelable("LOCATION_KEY");
-            }
-
-            if (savedInstanceState.keySet().contains("PROCESS_MSGS")) {
-                mCloudProcessMsgs = savedInstanceState.getStringArrayList("PROCESS_MSGS");
             }
 
         }
@@ -265,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.d(TAG, "saving location values");
         savedInstanceState.putParcelable("LOCATION_KEY", mCurrentLocation);
-        savedInstanceState.putStringArrayList("PROCESS_MSGS", mCloudProcessMsgs);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -454,8 +448,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
      * Updates the latitude and longitude global variables.
      */
     public void updateLocation() {
-        latitude = mCurrentLocation.getLatitude();
-        longitude = mCurrentLocation.getLongitude();
+        if (mCurrentLocation != null) {
+            latitude = mCurrentLocation.getLatitude();
+            longitude = mCurrentLocation.getLongitude();
+        }
     }
 
     /**
@@ -680,7 +676,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         args.putInt("rating", mRating);
         if (mCurrentLocation != null) {
             args.putParcelable("LOCATION_KEY", mCurrentLocation);
-            args.putStringArrayList("PROCESS_MSGS", mCloudProcessMsgs);
             confirmation.setArguments(args);
             confirmation.show(getFragmentManager(), "");
         }
