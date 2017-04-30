@@ -11,6 +11,9 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
+/**
+ * Activity for showing full-size images when clicked
+ */
 public class PhotoFullSizeActivity extends AppCompatActivity {
     ImageView mImage;
     private FirebaseStorage mStorage;

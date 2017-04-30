@@ -26,6 +26,10 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by Jihane on 4/28/17.
  */
 
+/**
+ * Implements an image slider for full-size images
+ */
+
 public class FullScreenImageAdapter extends PagerAdapter {
     private Activity mActivity;
     private ArrayList<String> mImages;
@@ -53,6 +57,12 @@ public class FullScreenImageAdapter extends PagerAdapter {
         return view == ((RelativeLayout) object);
     }
 
+    /**
+     * Gets item to put on the full-size slide
+     * @param container: group of views for full-size display
+     * @param position: position of image to display in full-size
+     * @return full-size image layout
+     */
     @Override
     public Object instantiateItem(ViewGroup container, int position){
         mInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

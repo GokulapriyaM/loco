@@ -16,6 +16,10 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
+/**
+ * Puts images in the gridview of PhotosActivity
+ */
+
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Creation> mImageCreations;
@@ -48,7 +52,13 @@ public class ImageAdapter extends BaseAdapter {
         return position;
     }
 
-
+    /**
+     *
+     * @param position: position of image in Gridview
+     * @param convertView: view at selected position
+     * @param parent: group of views in th gridview
+     * @return image to show in the gridview
+     */
     @Override
     public View getView (int position, View convertView, ViewGroup parent) {
         Log.d(TAG, "getView called");

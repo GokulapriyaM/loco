@@ -17,6 +17,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * Activity for showing photos shared
+ */
+
 public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCallback {
     public ImageAdapter mImage_adp;
     private GridView gridview;
@@ -65,11 +69,19 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
 
     }
 
+    /**
+     * Sets the back button in the toolbar
+     */
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
+
+    /**
+     * Fetches images from Databse to put in the Photos Activity
+     * @param creations: arraylist of data stored in database
+     */
 
     @Override
     public void onDatabaseResultReceived(ArrayList<Creation> creations) {
@@ -87,6 +99,10 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
 
     }
 
+    /**
+     * Sets adapter and click listeners for images in the gridview
+     * @param imagecreations: arraylist of data in the database to retrieve image paths
+     */
     private void setImages(final ArrayList<Creation> imagecreations){
         mImage_adp = new ImageAdapter(this, imagecreations);
         gridview.setAdapter(mImage_adp);
