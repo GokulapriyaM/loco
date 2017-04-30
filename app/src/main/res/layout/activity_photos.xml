@@ -18,27 +18,27 @@
             android:theme="@style/AppTheme.AppBarOverlay"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+        <!--<TextView-->
+            <!--android:id="@+id/photos_title"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:text="@string/photostitle"-->
+            <!--android:textSize="20sp"-->
+            <!--android:layout_below="@+id/photos_toolbar"-->
+            <!--android:layout_margin="16dp"/>-->
+
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignRight="@+id/photos_title"-->
+            <!--/>-->
+
         <!-- ImageGrid Screen Title -->
-        <TextView
-            android:id="@+id/photos_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/photostitle"
-            android:textSize="20sp"
-            android:layout_below="@+id/photos_toolbar"
-            android:layout_margin="16dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/photos_title"
-            />
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/photos_title"
+            android:layout_below="@+id/photos_toolbar"
             android:fillViewport="true" >
 
             <!-- Grid View showing image thumbnails -->

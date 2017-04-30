@@ -45,20 +45,20 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         gridview = (GridView) findViewById(R.id.grid_view);
-        titletext = (TextView) findViewById(R.id.photos_title) ;
+//        titletext = (TextView) findViewById(R.id.photos_title);
         image_paths = new ArrayList<>();
         locations = new ArrayList<>();
 
         Intent intent = getIntent();
         fetchtype = intent.getStringExtra(FETCHTYPE);
         if(fetchtype.equals(SHARED)){
-            titletext.setText(getString(R.string.photostitle));
+//            titletext.setText(getString(R.string.photostitle));
             imagecreations = new ArrayList<>();
             imagecreations = SharedLists.getInstance().getImageCreations();
             setImages(imagecreations);
         }
         if(fetchtype.equals(INDIVIDUAL)){
-            titletext.setText(getString(R.string.photostitle_ind));
+//            titletext.setText(getString(R.string.photostitle_ind));
             DatabaseFetch databasefetch = new DatabaseFetch(this);
             databasefetch.fetchByUser();
         }

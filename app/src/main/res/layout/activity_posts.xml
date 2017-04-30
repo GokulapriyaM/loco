@@ -18,21 +18,23 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <!-- RecyclerView Screen Title -->
-    <TextView
-        android:id="@+id/posts_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="20sp"
-        android:layout_below="@+id/posts_toolbar"
-        android:layout_margin="16dp"/>
+    <!--<TextView-->
+        <!--android:id="@+id/posts_title"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:textSize="20sp"-->
+        <!--android:layout_below="@+id/posts_toolbar"-->
+        <!--android:layout_margin="16dp"/>-->
 
+    <!-- RecyclerView Screen Title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:layout_below="@+id/posts_title" >
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_below="@+id/posts_toolbar" >
         <!--
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" -->

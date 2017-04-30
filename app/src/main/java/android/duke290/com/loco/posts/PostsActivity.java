@@ -45,7 +45,7 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        titletext = (TextView) findViewById(R.id.posts_title);
+//        titletext = (TextView) findViewById(R.id.posts_title);
 
         Intent intent = getIntent();
         fetchtype = intent.getStringExtra(FETCHTYPE);
@@ -59,12 +59,12 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
 
 
         if(fetchtype.equals(SHARED)){
-            titletext.setText(getString(R.string.poststitle));
+//            titletext.setText(getString(R.string.poststitle));
             setDataset(SharedLists.getInstance().getMessageCreations());
             populateView();
         }
         if(fetchtype.equals(INDIVIDUAL)){
-            titletext.setText(getString(R.string.poststitle_ind));
+//            titletext.setText(getString(R.string.poststitle_ind));
             DatabaseFetch databasefetch = new DatabaseFetch(this);
             databasefetch.fetchByUser();
         }
