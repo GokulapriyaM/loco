@@ -17,6 +17,10 @@ import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Service that fetches the address of a location based on geocoding.
+ */
+
 public class FetchAddressIntentService extends IntentService {
 
     protected ResultReceiver mReceiver;
@@ -81,6 +85,12 @@ public class FetchAddressIntentService extends IntentService {
         }
     }
 
+    /**
+     * Sends address result to receiver
+     *
+     * @param resultCode - code indicating success or failure
+     * @param message - address result
+     */
     private void deliverResultToReceiver(int resultCode, String message) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.RESULT_DATA_KEY, message);

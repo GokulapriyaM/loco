@@ -378,8 +378,25 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             // or an error message sent from the intent service.
             mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
 
-            // edit address string so that it is just one line
-            mAddressOutput = mAddressOutput.replace("\r\n", ", ").replace("\n", ", ");
+//            // edit address string so that it is just one line
+//            mAddressOutput = mAddressOutput.replace("\r\n", ", ").replace("\n", ", ");
+            // edit address string so that it is just two lines
+            String edited_adr = "";
+            int cnt = 0;
+            for (int k1 = 0; k1 < mAddressOutput.length(); k1++) {
+                if (mAddressOutput.charAt(k1) == 10) {
+                    cnt++;
+                    if (cnt > 1) {
+                        edited_adr += ", ";
+                    } else {
+                        edited_adr += (char) 10;
+                    }
+                } else {
+                    edited_adr += mAddressOutput.charAt(k1);
+                }
+            }
+
+            mAddressOutput = edited_adr;
             displayAddressOutput();
 
             Log.d(TAG, "address found");
@@ -444,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         mRatingMsg.setText("Average Happiness: " + avg_rating_str);
         String plural = "";
         if (mTotalNumRatings > 1) plural = "s";
-        mNumRatingMsg.setText("Based on " + mTotalNumRatings + " rating" + plural);
+        mNumRatingMsg.setText(mTotalNumRatings + " rating" + plural);
 
         // set rating image
         double rounded_rating = Double.parseDouble(avg_rating_str);

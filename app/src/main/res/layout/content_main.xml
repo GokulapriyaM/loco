@@ -50,7 +50,7 @@
                     android:clickable="true"
                     android:text="Getting address..."
                     android:textColor="@color/gray"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/map"
@@ -58,7 +58,7 @@
                     android:layout_height="36dp"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/address_msg"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="-24dp"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:onClick="onMapClick"
@@ -69,17 +69,6 @@
 
             </RelativeLayout>
         </android.support.v7.widget.CardView>
-
-        <!--&lt;!&ndash; HAPPINESS &ndash;&gt;-->
-        <!--<TextView-->
-        <!--android:id="@+id/happiness_header"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/locationcv"-->
-        <!--android:padding="16dp"-->
-        <!--android:text="@string/location"-->
-        <!--android:textColor="@color/gray"-->
-        <!--android:textSize="20sp" />-->
 
         <!-- Happiness CardView -->
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -100,13 +89,6 @@
                 android:paddingStart="16dp"
                 android:paddingTop="16dp">
 
-                <!--<TextView-->
-                    <!--android:id="@+id/happiness_header"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="@string/location"-->
-                    <!--android:textColor="@color/gray"-->
-                    <!--android:textSize="20sp" />-->
                 <TextView
                     android:id="@+id/rating_msg"
                     android:layout_width="wrap_content"
@@ -132,16 +114,6 @@
                         android:scaleType="fitXY"
                         android:src="@drawable/rate_face_50"
                         android:layout_gravity="center_vertical"/>
-
-                    <!--<TextView-->
-                    <!--android:id="@+id/rating_msg"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/rating_faces"-->
-                    <!--android:layout_marginBottom="2dp"-->
-                    <!--android:clickable="true"-->
-                    <!--android:text="No rating yet :("-->
-                    <!--android:textSize="16sp" />-->
 
                     <TextView
                         android:id="@+id/num_ratings"

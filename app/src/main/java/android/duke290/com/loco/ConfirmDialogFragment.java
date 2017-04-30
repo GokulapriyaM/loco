@@ -22,7 +22,7 @@ public class ConfirmDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         mRating = getArguments().getInt("rating");
 
-        builder.setMessage("Confirm your rating: " + mRating)
+        builder.setMessage("Confirm your happiness rating: " + mRating +"/5")
                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent homeintent = new Intent(getActivity(), MainActivity.class);

@@ -2,6 +2,9 @@ package android.duke290.com.loco.location;
 
 /**
  * Created by kevinkuo on 4/9/17.
+ *
+ * Set of constants used for ResultReceivers.
+ *
  */
 
 public final class Constants {

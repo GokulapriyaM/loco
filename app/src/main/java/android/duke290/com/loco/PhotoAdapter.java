@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * Created by kevinkuo on 4/27/17.
+ *
+ * Adapter used for photo
  */
 
 public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -62,7 +64,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case VIEW_TYPE_EMPTY_LIST_PLACEHOLDER:
                 Log.d(TAG, "recycler view empty, posting empty message");
                 v = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.item_photo_empty, parent, false);
+                        R.layout.item_empty, parent, false);
                 break;
             case VIEW_TYPE_OBJECT_VIEW:
                 v = LayoutInflater.from(parent.getContext()).inflate(
