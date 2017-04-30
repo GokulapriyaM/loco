@@ -34,6 +34,7 @@ public class DatabaseFetch {
 
     private DatabaseFetchCallback mActivityClass;
 
+
     public DatabaseFetch(DatabaseFetchCallback activityClass) {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseuser = mAuth.getCurrentUser();
@@ -42,6 +43,9 @@ public class DatabaseFetch {
         mActivityClass = activityClass;
     }
 
+    /**
+     * return currently logged in user object
+     */
     public void getCurrentUser(){
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference(USERS).child(uid).child(USERINFO);
@@ -63,23 +67,38 @@ public class DatabaseFetch {
         });
     }
 
+    /**
+     * fetch content shared by the logged in user;
+     */
     public void fetchByUser() {
         Query ref = mDatabase.getReference(USERS).child(uid).child(CONTENT).orderByKey();
         fetch(ref);
     }
 
+    /**
+     * fetch content shared by the logged in user with a limit
+     * @param limit
+     */
     public void fetchByUser(int limit) {
         Query ref = mDatabase.getReference(USERS).child(uid).child(CONTENT)
                 .orderByKey().limitToLast(limit);
         fetch(ref);
     }
 
-
+    /**
+     * fetch content by coordinates
+     * @param coordNameLookup
+     */
     public void fetchByCoordinate(String coordNameLookup){
         Query ref = mDatabase.getReference(CREATIONS).child(coordNameLookup).orderByKey();
         fetch(ref);
     }
 
+    /**
+     * fetch content by coordinates with a limit
+     * @param coordNameLookup
+     * @param limit
+     */
     public void fetchByCoordinate(String coordNameLookup, int limit) {
         Query ref = mDatabase.getReference(CREATIONS).child(coordNameLookup)
                 .orderByKey().limitToLast(limit);
@@ -87,7 +106,7 @@ public class DatabaseFetch {
     }
 
     private void fetch(Query ref) {
-        Log.d(TAG, "fetch by coordinates");
+        Log.d(TAG, "fetching query");
         ref.addValueEventListener(
                 new ValueEventListener() {
                     @Override

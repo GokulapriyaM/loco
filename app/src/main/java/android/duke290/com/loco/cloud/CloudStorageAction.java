@@ -23,10 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by kevinkuo on 4/22/17.
- */
-
 public class CloudStorageAction {
 
     protected Context mContext;

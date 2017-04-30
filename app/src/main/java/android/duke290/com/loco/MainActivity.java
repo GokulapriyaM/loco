@@ -520,11 +520,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         // creating creation
         String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
 
-//        Random r = new Random();
-//        final int min = 1;
-//        final int max = 5;
-//        final int random_rating = r.nextInt((max - min) + 1) + min;
-
         Log.d(TAG, "Posted rating: " + rating);
 
         mCreation = new Creation(mCurrentLocation.getLatitude(),
@@ -604,32 +599,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         return image;
     }
 
-//    //When clicking share
-//    public void shareClick(View view){
-//        // Show a pop-up dialog
-//        final Dialog mBottomSheetDialog = new Dialog(this, R.style.MaterialDialogSheet);
-//        mBottomSheetDialog.setContentView(R.layout.item_share); // your custom view.
-//        mBottomSheetDialog.setCancelable(true);
-//        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
-//        mBottomSheetDialog.show();
-//    }
 
     public void onRatingClick(View button) {
         Log.d(TAG, "here about to open dialog");
         String button_id = getResources().getResourceName(button.getId());
         mRating = button_id.charAt(button_id.length() - 1) - '0';
         openDialog();
-        /*while (confirmed==2){
-            continue;
-        }
-        if (confirmed == 1){
-            postRating(rating);
-            mBottomSheetDialog.dismiss();
-        }*/
-
-        //postRating(rating);
-        //mBottomSheetDialog.dismiss();
     }
 
     public void confirmReceived(){
@@ -729,24 +704,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         populateView(messagecreations, storagerefs);
     }
 
-//    public void clearUI() {
-//        post1.setText("");
-//        post2.setText("");
-//        post3.setText("");
-//    }
 
     private void populateView(ArrayList<Creation> messagecreations, ArrayList<StorageReference> storagerefs){
-//        int messages_size = messages.size();
-//
-//        if(messages_size>=1){
-//            post1.setText(messages.get(0));
-//        }
-//        if(messages_size>=2){
-//            post2.setText(messages.get(1));
-//        }
-//        if(messages_size>=3){
-//            post3.setText(messages.get(2));
-//        }
+
 
         ArrayList<Post> posts_list = new ArrayList<Post>();
         for (Creation c : messagecreations) {
