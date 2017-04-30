@@ -41,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     private String mEmail;
     private String mPassword;
     private String mOldEmail;
+    private String mNewPassword;
     private User currentUser;
 
     private FirebaseAuth.AuthStateListener authListener;
@@ -73,9 +74,12 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         mEmail = getIntent().getStringExtra("email");
         mPassword = getIntent().getStringExtra("oldpassword");
         mOldEmail = getIntent().getStringExtra("oldemail");
+        mNewPassword = getIntent().getStringExtra("email");
+        String change = getIntent().getStringExtra("change");
 
         mUsernameView.setText(mUsername);
-        mEmailView.setText(mEmail);
+        if (change == null || change != null && change.equals("email"))mEmailView.setText(mEmail);
+        else mEmailView.setText(mOldEmail);
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -111,7 +115,9 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
             @Override
             public void onClick(View v) {
                 Intent passwordchange = new Intent(ProfileActivity.this, ChangeProfileActivity.class);
+                passwordchange.putExtra("oldemail", mEmail);
                 passwordchange.putExtra("change", "password");
+                passwordchange.putExtra("username", mUsername);
                 startActivity(passwordchange);
             }
         });
@@ -122,19 +128,13 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
                 signOut();
             }
         });
-        
-        String change = getIntent().getStringExtra("change");
-        if (change==null) change = "";
-        if (change.equals("email")) {
-            //String newemail = getIntent().getStringExtra("new");
-            reauthenticateUser(mEmail);
-            //updateEmailInfo(newemail);
-        }
+
+        if (change !=null) reauthenticateUser(change);
 
 
     }
 
-    public void reauthenticateUser(final String newemail){
+    public void reauthenticateUser(final String change){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     // Get auth credentials from the user for re-authentication. The example below shows
@@ -147,15 +147,39 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("", "User re-authenticated.");
-                        updateEmailInfo(newemail);
+                        if (change != null && change.equals("password")) {
+                            updatePasswordInfo();
+                        }
+                        if (change != null && change.equals("email")) {
+                            updateEmailInfo();
+                        }
+
                     }
                 });
     }
 
-    private void updateEmailInfo(String newEmail) {
+    private void updatePasswordInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null && !newEmail.equals("")) {
-            user.updateEmail(newEmail)
+        if (user != null && !mNewPassword.equals("")) {
+                user.updatePassword(mNewPassword)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ProfileActivity.this, "Password is updated", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(ProfileActivity.this, "Failed to update password!", Toast.LENGTH_LONG).show();
+                                    Log.w("Except", task.getException());
+                                }
+                            }
+                        });
+            }
+        }
+
+    private void updateEmailInfo() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && !mEmail.equals("")) {
+            user.updateEmail(mEmail)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

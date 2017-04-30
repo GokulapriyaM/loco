@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class ChangeProfileActivity extends AppCompatActivity {
 
@@ -32,17 +33,19 @@ public class ChangeProfileActivity extends AppCompatActivity {
 
         //get what's changing
         change = getIntent().getStringExtra("change");
+        String oldemail = getIntent().getStringExtra("oldemail");
+        mOldEmail.setText(oldemail);
+        mPassword.setHint("Current Password");
+        mPassword.setTypeface(Typeface.DEFAULT);
+        mPassword.setTransformationMethod(new PasswordTransformationMethod());
         if (change.equals("email")){
             toolbar.setTitle("E-mail");
-            String oldemail = getIntent().getStringExtra("oldemail");
-            mOldEmail.setText(oldemail);
             mChangetext.setHint("New e-mail");
-            mPassword.setHint("Current Password");
-            mPassword.setTypeface(Typeface.DEFAULT);
-            mPassword.setTransformationMethod(new PasswordTransformationMethod());
         }
         if (change.equals("password")){
             toolbar.setTitle("Password");
+            mChangetext.setHint("New Password");
+            mChangetext.setTransformationMethod(new PasswordTransformationMethod());
         }
 
         setSupportActionBar(toolbar);
@@ -62,9 +65,12 @@ public class ChangeProfileActivity extends AppCompatActivity {
 
     public void onConfirmClick(View view) {
         String newinfo = mChangetext.getText().toString().trim();
-        while (newinfo.equals("")) {
-            mChangetext.setError("Enter new e-mail");
-            newinfo = mChangetext.getText().toString().trim();
+        if (newinfo.equals("")) {
+            mChangetext.setError("Invalid");
+        }
+        if (change.equals("password") && newinfo.length() < 6) {
+            Toast.makeText(ChangeProfileActivity.this, "Password too short, enter minimum 6 characters", Toast.LENGTH_LONG).show();
+            mChangetext.setError("Invalid");
         }
         Intent changed = new Intent(ChangeProfileActivity.this, ProfileActivity.class);
         changed.putExtra("change", change);
