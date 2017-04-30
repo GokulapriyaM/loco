@@ -3,6 +3,7 @@ package android.duke290.com.loco.posts;
 import android.duke290.com.loco.R;
 import android.duke290.com.loco.posts.Post;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;

@@ -8,6 +8,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * List of methods for interacting with Firebase Database.
+ */
 public class DatabaseAction {
 
     final static String USERS = "users";
@@ -23,6 +26,12 @@ public class DatabaseAction {
 
     final static String TAG = "DatabaseAction";
 
+    /**
+     * Places a Creation object into Firebase Database.
+     *
+     * @param reference - Creation object being put into the database
+     * @param location - Location that the Creation was created in
+     */
     public static void putCreationInFirebaseDatabase(Creation reference, Location location) {
         final FirebaseUser this_user = mAuth.getCurrentUser();
         uid = this_user.getUid();
@@ -33,6 +42,13 @@ public class DatabaseAction {
         refCreationList.child("cre" + "" + System.currentTimeMillis() + uid).setValue(reference);
     }
 
+    /**
+     * Places a Creation object into Firebase Database.
+     *
+     * @param reference - Creation object being put into the database
+     * @param latitude - Latitude that the Creation was created in
+     * @param longitude - Longitude that the Creation was created in
+     */
     public static void putCreationInFirebaseDatabase(Creation reference, double latitude, double longitude) {
         final FirebaseUser this_user = mAuth.getCurrentUser();
         uid = this_user.getUid();
@@ -43,13 +59,23 @@ public class DatabaseAction {
         refCreationList.child("cre" + "" + System.currentTimeMillis() + uid).setValue(reference);
     }
 
-
+    /**
+     * Creates an path that indicates where to find the image in Firebase Storage.
+     *
+     * @return - a path that indicates where the image is stored in Firebase Storage.
+     */
     public static String createImageStoragePath() {
         final FirebaseUser this_user = mAuth.getCurrentUser();
         uid = this_user.getUid();
         return "images/" + "img" + uid + System.currentTimeMillis();
     }
 
+    /**
+     * Creates a key based on location coordinates.
+     *
+     * @param location - Location object
+     * @return - Key based on location.
+     */
     public static String createCoordName(Location location) {
         String latitudeStr = String.format("%."+ decimalRoundTo + "f", location.getLatitude());
         latitudeStr = latitudeStr.replace(".", ",");
@@ -61,6 +87,13 @@ public class DatabaseAction {
         return coordName;
     }
 
+    /**
+     * Creates a key based on location coordinates.
+     *
+     * @param latitute - Latitude that the device is located in
+     * @param longitude - Longitude that the device is located in
+     * @return - Key based on location.
+     */
     public static String createCoordName(double latitute, double longitude) {
         String latitudeStr = String.format("%." + decimalRoundTo + "f", latitute);
         latitudeStr = latitudeStr.replace(".", ",");
@@ -70,11 +103,6 @@ public class DatabaseAction {
                 longitudeStr;
 
         return coordName;
-    }
-
-    public static DatabaseReference getDatabaseReferenceForGet(Location location) {
-        String coordNameLookup = createCoordName(location);
-        return mDatabase.getReference(CREATIONS).child(coordNameLookup);
     }
 
 }

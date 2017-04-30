@@ -16,6 +16,10 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+/**
+ * Service that gets the location of the device in coordinates.
+ */
+
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -61,12 +65,24 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         return START_STICKY;
     }
 
+    /**
+     * Delivers location result to receiver.
+     *
+     * @param resultCode - code indicating success or failure
+     * @param location - Location object
+     *
+     */
     public void deliverResultToReceiver(int resultCode, Location location) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("LOCATION_KEY", location);
         mReceiver.send(resultCode, bundle);
     }
 
+    /**
+     * Called when location of the device changes.
+     *
+     * @param location - Location object indicating the current location of the device.
+     */
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged called");
         Log.d(TAG, "location accuracy: " + location.getAccuracy());
@@ -83,6 +99,14 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
     }
 
+    /**
+     * Indicates whether or not two locations are close based on
+     * the CLOSE_DISTANCE global variable.
+     *
+     * @param loc1 - Location object
+     * @param loc2 - Location object
+     * @return True if the locations are close, false otherwise.
+     */
     public boolean isClose(Location loc1 , Location loc2) {
         double latitude_diff = Math.abs(loc1.getLatitude() - loc2.getLatitude());
         double longitude_diff = Math.abs(loc1.getLongitude() - loc2.getLongitude());
@@ -115,6 +139,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     }
 
+    /**
+     * Makes the service start checking for the device's location.
+     */
     protected void startLocationUpdates() {
         System.out.println("startLocationUpdates called");
         if (ContextCompat.checkSelfPermission(this,
