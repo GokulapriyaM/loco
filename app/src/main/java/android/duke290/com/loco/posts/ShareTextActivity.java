@@ -40,6 +40,10 @@ public class ShareTextActivity extends AppCompatActivity {
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
+        // back button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         mEditText = (EditText) findViewById(R.id.edittext);
 
         Intent intent = getIntent();
