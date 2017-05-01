@@ -16,7 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
+/**
+ * Allows user to type out and share a post.
+ */
 public class ShareTextActivity extends AppCompatActivity {
 
     private EditText mEditText;
@@ -53,6 +55,11 @@ public class ShareTextActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Creates a creation containing the user's message, puts it in Firebase Database, and
+     * redirects the user back to MainActivity.
+     * @param view - button that activates this method
+     */
     protected void onShareClick(View view) {
         String message = mEditText.getText().toString();
         String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());

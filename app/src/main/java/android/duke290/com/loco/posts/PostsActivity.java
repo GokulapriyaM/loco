@@ -17,6 +17,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays all the posts created at a certain location.
+ */
 public class PostsActivity extends AppCompatActivity implements DatabaseFetchCallback{
 
     private RecyclerView mRecyclerView;
@@ -28,8 +31,6 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
     private String FETCHTYPE = "fetchtype";
     private String INDIVIDUAL = "individual";
     private String SHARED = "shared";
-
-    private TextView titletext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,6 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-//        titletext = (TextView) findViewById(R.id.posts_title);
-
         Intent intent = getIntent();
         fetchtype = intent.getStringExtra(FETCHTYPE);
 
@@ -59,12 +58,10 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
 
 
         if(fetchtype.equals(SHARED)){
-//            titletext.setText(getString(R.string.poststitle));
             setDataset(SharedLists.getInstance().getMessageCreations());
             populateView();
         }
         if(fetchtype.equals(INDIVIDUAL)){
-//            titletext.setText(getString(R.string.poststitle_ind));
             DatabaseFetch databasefetch = new DatabaseFetch(this);
             databasefetch.fetchByUser();
         }
@@ -76,6 +73,10 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
         return true;
     }
 
+    /**
+     * Creates mDataset (the set of posts) from a list of Creation objects.
+     * @param creations - ArrayList of Creation objects
+     */
     private void setDataset(ArrayList<Creation> creations) {
         for (Creation c : creations) {
             Post post = new Post(c.message, c.timestamp);
@@ -83,6 +84,9 @@ public class PostsActivity extends AppCompatActivity implements DatabaseFetchCal
         }
     }
 
+    /**
+     * Sets the adapter that displays the posts.
+     */
     private void populateView() {
         mAdapter = new PostAdapter(mDataset, false);
         mRecyclerView.setAdapter(mAdapter);
