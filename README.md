@@ -34,6 +34,7 @@ The app is fully functional.
 During the early stage of development, we mainly used testing activities along with local assets to test functionalities of our app.
 * [LocationActivity](https://github.com/fairbet/loco/blob/94d1bb364601c0fa5d556486ca1ab23018d2ab6a/app/src/main/java/android/duke290/com/loco/LocationService.java)
 * [DatabaseTestingActivity](https://github.com/fairbet/loco/blob/bc24957b3f9b5c7faf7d4ec7a37e688a16f55458/app/src/main/java/android/duke290/com/loco/DatabaseTestingActivity.java)
+
 After beta version, we tested the following features to ensure standard applicaiton operation.
 * changing orientation - slight lag, but no crashes (indicating mCurrentLocation was restored correctly)
 
