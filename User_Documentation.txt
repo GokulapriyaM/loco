@@ -1,0 +1,46 @@
+Functionality:
+
+1. Posting content:
+	a. Photos
+	b. Posts
+	c. Happiness Rating
+
+2. Seeing content for your location:
+	a. Photos
+	b. Posts
+	c. Happiness Rating
+
+3. Profile
+	a. Account details
+	b. Accessing your own content
+
+
+1. Posting Content:
+
+	a. Photos - You can post a photo simply by hitting the green plus-sign circle at the bottom-right corner of the Discover screen, and selecting "Share photo." This will redirect you to your phone's camera application, where you can take a picture. Once confirming the picture by pressing "OK," it will be saved to your current location.
+
+	b. Posts - You can create a post simply by hitting the green plus-sign circle at the bottom-right corner of the Discover screen, and selecting "Share post." This will redirect you to a separate screen where you can type up a post. As soon as you hit "Share," it will be saved to your current location.
+
+	c. Happiness Rating - You can rate your own happiness level at the moment by hitting the green plus-sign circle at the bottom-right corner of the Discover screen, and selecting "Rate happiness." A small dialog box will appear at the bottom, and you can hit the happiness rating that you feel on a scale from 1-5 (from left to right smiley face). Once you do so, a confirmation window will appear asking you whether you want to confirm your rating. Once you confirm, it will be added to the list of ratings made at your current location.
+
+2. Seeing content for your location:
+
+	a. Photos - The discover screen gives you a 5-image preview of the photos users have taken at your location. Pressing "VIEW ALL" will redirect you to a screen that displays all the photos taken at that location.
+
+	b. Posts - The discover screen gives you a 5-post preview of the posts users have made at your location. Pressing "VIEW ALL" will redirect you to a screen that displays all the posts taken at that location. All posts include a timestamp of when each was created. 
+
+	c. Happiness Rating - The discover screen gives you the average happiness level out of all the happiness ratings taken at your location. It also tells you the number of ratings made at your location.
+
+3. Profile:
+	a. Account details - Once you open the app for the first time, you are prompted to make an account, which involves just an email, a username, and a password (Passwords are not accessible to the developers of this app). 
+
+	b. Accessing your own content - Once you have created an account, you can make use of the navigation drawer on the left of the Discover screen, which includes:
+
+		- "My Profile" - where you can see you account details, with options to change your email/password, as well as the option to sign out.
+
+		- "My Photos" - where you can see all the photos that you have taken with the account, complete with a description on each photo indicating where it was taken. 
+
+		- "My Posts" - where you can see all the posts that you have made with the account. 
+
+		- "Sign-Out" - where you can sign out of your account. It will redirect you back to the login screen.
+
