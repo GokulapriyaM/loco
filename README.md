@@ -23,12 +23,12 @@ The app is fully functional.
   * ChangeProfileActivity
 		
 ## Optional Features
-    * Firebase Authentication
-    * Firebase Realtime Database for storing user info and location info
-    * Firebase Storage for storing large user-generated content
-    * Location service and geocoding through Google Maps API
-    * External camera for taking pictures
-	* Glide API for loading pictures from Firebase storage
+* Firebase Authentication
+* Firebase Realtime Database for storing user info and location info
+* Firebase Storage for storing large user-generated content
+* Location service and geocoding through Google Maps API
+* External camera for taking picture
+* Glide API for loading pictures from Firebase storage
 	
 ## Past versions
 ##### Functional as of 4/25 (beta)
