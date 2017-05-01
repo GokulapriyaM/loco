@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:background="#000000"
-    tools:context="android.duke290.com.loco.MainActivity">
+    tools:context="android.duke290.com.loco.discover.MainActivity">
 
     <android.duke290.com.loco.photos.TouchImageView
         android:id="@+id/imagefull"

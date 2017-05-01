@@ -1,10 +1,7 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.location;
 
 import android.content.Context;
 import android.content.Intent;
-import android.duke290.com.loco.location.Constants;
-import android.duke290.com.loco.location.FetchAddressIntentService;
-import android.duke290.com.loco.location.LocationService;
 import android.location.Location;
 import android.os.ResultReceiver;
 
@@ -26,7 +23,7 @@ public class ServiceStarter {
      * @param current_location - Location object that indicates the device's current location.
      */
 
-    protected static void startAddressIntentService(Context context, ResultReceiver receiver, Location current_location) {
+    public static void startAddressIntentService(Context context, ResultReceiver receiver, Location current_location) {
         Intent intent = new Intent(context, FetchAddressIntentService.class);
         intent.putExtra(Constants.RECEIVER, receiver);
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, current_location);
@@ -39,7 +36,7 @@ public class ServiceStarter {
      * @param context - Context object used to pass Intent to service
      * @param receiver - ResultReceiver that is passed to the service
      */
-    protected static void startLocationService(Context context, ResultReceiver receiver) {
+    public static void startLocationService(Context context, ResultReceiver receiver) {
         Intent intent = new Intent(context, LocationService.class);
         intent.putExtra("LOCATION_RECEIVER", receiver);
         context.startService(intent);

@@ -6,8 +6,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.content.ContextCompat;
 import android.os.ResultReceiver;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -47,8 +47,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                    .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
         }
@@ -111,10 +111,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         double latitude_diff = Math.abs(loc1.getLatitude() - loc2.getLatitude());
         double longitude_diff = Math.abs(loc1.getLongitude() - loc2.getLongitude());
         Log.d(TAG, "latitude_diff = " + latitude_diff + ", longitude_diff = " + longitude_diff);
-        if (latitude_diff <= CLOSE_DISTANCE && longitude_diff <= CLOSE_DISTANCE) {
-            return true;
-        }
-        return false;
+        return latitude_diff <= CLOSE_DISTANCE && longitude_diff <= CLOSE_DISTANCE;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package android.duke290.com.loco.posts;
 
 import android.content.Intent;
-import android.duke290.com.loco.Creation;
-import android.duke290.com.loco.MainActivity;
 import android.duke290.com.loco.R;
+import android.duke290.com.loco.database.Creation;
 import android.duke290.com.loco.database.DatabaseAction;
+import android.duke290.com.loco.discover.MainActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;

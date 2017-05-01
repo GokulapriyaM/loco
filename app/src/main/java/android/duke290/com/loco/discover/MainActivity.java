@@ -1,4 +1,4 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.discover;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -6,17 +6,23 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.duke290.com.loco.R;
 import android.duke290.com.loco.cloud.CloudStorageAction;
+import android.duke290.com.loco.database.Creation;
 import android.duke290.com.loco.database.DatabaseAction;
 import android.duke290.com.loco.database.DatabaseFetch;
 import android.duke290.com.loco.database.DatabaseFetchCallback;
+import android.duke290.com.loco.database.SharedLists;
+import android.duke290.com.loco.database.User;
 import android.duke290.com.loco.location.Constants;
 import android.duke290.com.loco.location.LocationService;
+import android.duke290.com.loco.location.ServiceStarter;
 import android.duke290.com.loco.photos.PhotosActivity;
 import android.duke290.com.loco.posts.Post;
 import android.duke290.com.loco.posts.PostAdapter;
 import android.duke290.com.loco.posts.PostsActivity;
 import android.duke290.com.loco.posts.ShareTextActivity;
+import android.duke290.com.loco.profile.ProfileActivity;
 import android.duke290.com.loco.registration.LoginActivity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -491,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         // set rating image
         double rounded_rating = Double.parseDouble(avg_rating_str);
         // find biggest rating (factor of 0.5) below rounded_rating and multiply that by 10
-        int adj_rating = (int) ((((int) (rounded_rating * 10)) / 5) * 5);
+        int adj_rating = (((int) (rounded_rating * 10)) / 5) * 5;
 
         // set image
         Context context = mRatingImg.getContext();

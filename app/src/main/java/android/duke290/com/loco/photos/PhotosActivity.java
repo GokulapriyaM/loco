@@ -1,12 +1,12 @@
 package android.duke290.com.loco.photos;
 
 import android.content.Intent;
-import android.duke290.com.loco.Creation;
 import android.duke290.com.loco.R;
-import android.duke290.com.loco.SharedLists;
-import android.duke290.com.loco.User;
+import android.duke290.com.loco.database.Creation;
 import android.duke290.com.loco.database.DatabaseFetch;
 import android.duke290.com.loco.database.DatabaseFetchCallback;
+import android.duke290.com.loco.database.SharedLists;
+import android.duke290.com.loco.database.User;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;

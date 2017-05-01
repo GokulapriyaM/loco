@@ -1,7 +1,5 @@
 package android.duke290.com.loco.database;
 
-import android.duke290.com.loco.Creation;
-import android.duke290.com.loco.User;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;

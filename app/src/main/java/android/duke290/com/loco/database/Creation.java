@@ -1,4 +1,4 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.database;
 
 public class Creation {
     public double latitude;

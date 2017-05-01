@@ -26,15 +26,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".discover.MainActivity" />
         <activity android:name=".registration.SignupActivity" />
         <activity android:name=".registration.ResetPasswordActivity" />
         <activity
-            android:name=".ProfileActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".profile.ProfileActivity"
+            android:parentActivityName=".discover.MainActivity" />
         <activity
             android:name=".posts.ShareTextActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".discover.MainActivity" />
 
         <service
             android:name=".location.FetchAddressIntentService"
@@ -59,7 +59,7 @@
         </provider>
 
         <activity android:name=".photos.PhotoFullSizeActivity" />
-        <activity android:name=".ChangeProfileActivity"></activity>
+        <activity android:name=".profile.ChangeProfileActivity"></activity>
     </application>
 
 </manifest>

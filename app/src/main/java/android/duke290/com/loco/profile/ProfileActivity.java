@@ -1,8 +1,11 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.profile;
 
 import android.content.Intent;
+import android.duke290.com.loco.R;
+import android.duke290.com.loco.database.Creation;
 import android.duke290.com.loco.database.DatabaseFetch;
 import android.duke290.com.loco.database.DatabaseFetchCallback;
+import android.duke290.com.loco.database.User;
 import android.duke290.com.loco.registration.LoginActivity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;

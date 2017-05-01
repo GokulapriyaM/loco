@@ -1,8 +1,8 @@
 package android.duke290.com.loco.photos;
 
 import android.content.Context;
-import android.duke290.com.loco.Creation;
 import android.duke290.com.loco.R;
+import android.duke290.com.loco.database.Creation;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;

@@ -1,8 +1,8 @@
 package android.duke290.com.loco.registration;
 
 import android.content.Intent;
-import android.duke290.com.loco.MainActivity;
 import android.duke290.com.loco.R;
+import android.duke290.com.loco.discover.MainActivity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;

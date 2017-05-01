@@ -1,4 +1,4 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.database;
 
 import java.util.ArrayList;
 
@@ -48,6 +48,8 @@ public class SharedLists {
      *
      * @return - Instance of SharedLists
      */
-    public static SharedLists getInstance() { return list_holder; };
+    public static SharedLists getInstance() {
+        return list_holder;
+    }
 
 }

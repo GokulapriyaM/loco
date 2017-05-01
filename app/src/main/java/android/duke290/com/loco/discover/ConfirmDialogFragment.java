@@ -1,9 +1,10 @@
-package android.duke290.com.loco;
+package android.duke290.com.loco.discover;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.duke290.com.loco.R;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 

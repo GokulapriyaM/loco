@@ -2,15 +2,11 @@ package android.duke290.com.loco.photos;
 
 import android.app.Activity;
 import android.content.Context;
-import android.duke290.com.loco.Creation;
 import android.duke290.com.loco.R;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,8 +15,6 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Jihane on 4/28/17.
@@ -54,7 +48,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((RelativeLayout) object);
+        return view == object;
     }
 
     /**
@@ -80,13 +74,13 @@ public class FullScreenImageAdapter extends PagerAdapter {
                 .fitCenter()
                 .into(myimage);
 
-        ((ViewPager) container).addView(viewLayout);
+        container.addView(viewLayout);
         return viewLayout;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((RelativeLayout) object);
+        container.removeView((RelativeLayout) object);
 
     }
 }
