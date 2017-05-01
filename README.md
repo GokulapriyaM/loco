@@ -48,7 +48,7 @@ After beta version, we tested the following features to ensure standard applicai
 * Location accuracy:
 	* Using Google's Fused Api for finding location coordinates gives reasonable accuracy most times (< 50 meters), but sometimes gives bad accuracy (~500 meters sometimes), but this is less our app's fault and more the strength of the phone's wifi/cellular signal
 * Login/Sign-in:
-	* Firebase Authentication correctly contains all Loco users, and Firebase Database is correctly updated for all loco users
+	* Firebase Authentication correctly contains all Loco users, and Firebase Database is correctly updated for all Loco users
 * Posting content:
 	* Photos are correctly stored in Firebase Storage and posts are correctly stored in the Creations section of Firebase Database
 	* Ratings are correctly stored in Firebase Database as "rating" type Creations
@@ -56,7 +56,7 @@ After beta version, we tested the following features to ensure standard applicai
 	* UI correctly refreshes as soon as something is posted
 * Looking at user content:
 	* All RecyclerViews (for photos/posts) scroll properly and display content without weird scaling issues/deformations
-	* View all posts/photos correctly display all posts/photos made at the current location
+	* "VIEW ALL" option for posts/photos correctly displays all posts/photos made at the current location
 	
 ## Past versions
 ##### Functional as of 4/25 (beta)
