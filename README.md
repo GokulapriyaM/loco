@@ -9,18 +9,18 @@ The app is fully functional.
 
 ## User Interface (Activities)
     * User authentication (sign in/sign up/reset)
-	..* LoginActivity
-	..* SignupActivity
-	..* ResetPasswordActivity
+	  * LoginActivity
+	  * SignupActivity
+	  * ResetPasswordActivity
 	* Discover: displays things shared(pictures/posts/happiness rating) at a specific location
-	..* MainActivity
-	..* PostsActivity
-	..* PhotosActivity (PhotoFullSizeActivity)
+	  * MainActivity
+	  * PostsActivity
+	  * PhotosActivity (PhotoFullSizeActivity)
 	* Share: allows user to share pictures and posts about a specific location
-	..* ShareTextActivity
+	  * ShareTextActivity
     * Profile: displays user's info and options to change email/password
-	..* ProfileActivity
-	..* ChangeProfileActivity
+	  * ProfileActivity
+	  * ChangeProfileActivity
 		
 ## Optional Features
     * Firebase Authentication
