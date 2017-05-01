@@ -30,6 +30,9 @@ import java.util.ArrayList;
 
 import static android.duke290.com.loco.R.id.username;
 
+/**
+ * Displays the profile of the user (their username, email)
+ */
 public class ProfileActivity extends AppCompatActivity implements DatabaseFetchCallback {
 
     private TextView mUsernameView;
@@ -131,6 +134,11 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
 
     }
 
+    /**
+     * Re-authenticates the user when something is changed (email/password).
+     * @param change - indicates whether or not something was changed (and whether
+     *               it was email or password)
+     */
     public void reauthenticateUser(final String change){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -157,6 +165,9 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     }
 
 
+    /**
+     * Updates the old password of the user to their desired new password.
+     */
     private void updatePasswordInfo() {
         // update authentication
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -176,6 +187,9 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         }
     }
 
+    /**
+     * Updates the old email of the user to their desired new email.
+     */
     private void updateEmailInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null && !mNewEmail.equals("")) {
@@ -200,7 +214,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     }
 
 
-    //sign out method
+    /**sign out method*/
     public void signOut() {
         auth.signOut();
     }
@@ -233,6 +247,10 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         setUserView(currentUser);
     }
 
+    /**
+     * Sets the display of the user's username and email.
+     * @param user - User object representing the user
+     */
     private void setUserView(User user){
         mUsernameView.setText(user.name);
         mEmailView.setText(user.email);

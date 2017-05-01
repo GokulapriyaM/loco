@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-
+/**
+ * Allows the user to make a Loco account.
+ */
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity";
@@ -56,14 +58,6 @@ public class SignupActivity extends AppCompatActivity {
         inputName = (EditText) findViewById(R.id.name);
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//        resetButton = (Button) findViewById(R.id.btn_reset_password);
-//
-//        resetButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(SignupActivity.this, ResetPasswordActivity.class));
-//            }
-//        });
 
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +100,12 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Registers the user with Firebase Authentication.
+     * @param email - user's email
+     * @param username - user's username
+     * @param password - user's password
+     */
     private void createUser(String email, String username, String password){
         final String name = username;
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -127,6 +127,11 @@ public class SignupActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Called when user successfully authenticates with Firebase Authentication.
+     * @param user - user that Firebase Authentication sees
+     * @param name - user's username
+     */
     private void onAuthSuccess(FirebaseUser user, String name) {
         // Write new user
         writeNewUser(user.getUid(), name, user.getEmail());
@@ -136,7 +141,12 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-
+    /**
+     * Adds the user to Firebase Database.
+     * @param userId - ID of the user given by Firebase Authentication.
+     * @param name - user's username
+     * @param email - user's email
+     */
     // [START basic_write]
     private void writeNewUser(String userId, String name, String email) {
         User user = new User(name, email);

@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * Allows the user to change her email/password.
+ */
 public class ChangeProfileActivity extends AppCompatActivity {
 
     private EditText mChangetext;
@@ -59,6 +62,10 @@ public class ChangeProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Calls ProfileActivity to indicate the email/password change.
+     * @param view - button that activates the method
+     */
     public void onConfirmClick(View view) {
         String newinfo = mChangetext.getText().toString().trim();
         if (newinfo.equals("")) {

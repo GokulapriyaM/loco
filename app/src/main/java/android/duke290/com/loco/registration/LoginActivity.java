@@ -24,6 +24,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Allows the user to login using their existing Loco account.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
@@ -102,6 +105,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Signs in the user via Firebase Authentication.
+     * @param email - user's email
+     * @param passwd - user's password
+     */
     private void signIn(String email, String passwd){
         final String password = passwd;
         mAuth.signInWithEmailAndPassword(email, password)
@@ -126,7 +134,10 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-
+    /**
+     * Called when Firebase authentication successfully authenticates the user.
+     * @param user - the user that Firebase Authentication sees
+     */
     private void onAuthSuccess(FirebaseUser user) {
         Log.d(TAG, "user autheticated");
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
