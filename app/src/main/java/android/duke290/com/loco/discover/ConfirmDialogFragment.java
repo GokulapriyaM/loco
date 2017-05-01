@@ -10,6 +10,9 @@ import android.support.v7.app.AlertDialog;
 
 /**
  * Created by Jihane on 4/29/17.
+ *
+ * Fragment used to bring up a dialog that allows the user to confirm their
+ * happiness rating.
  */
 
 public class ConfirmDialogFragment extends DialogFragment {

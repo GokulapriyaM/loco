@@ -695,24 +695,39 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         databaseFetch.fetchByCoordinate(coordname);
     }
 
-    // on learn more click
+    /**
+     * Starts the PostActivity class to display all posts made at the current location.
+     * @param view - the button that activates this method
+     */
     public void onMorePostsClick(View view){
         Intent intent = new Intent(MainActivity.this, PostsActivity.class);
         intent.putExtra(FETCHTYPE,SHARED);
         startActivity(intent);
     }
 
+    /**
+     * Starts the PhotosActivity class to display all photos made at the current location.
+     * @param view - the button that activates this method
+     */
     public void onMorePhotosClick(View view){
         Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
         intent.putExtra(FETCHTYPE,SHARED);
         startActivity(intent);
     }
 
+    /**
+     * Calls showMap() to display the user's current location.
+     * @param view - the button that activates this method
+     */
     public void onMapClick(View view){
         Uri gmmIntentUri = Uri.parse("geo:" +latitude +","+longitude);
         showMap(gmmIntentUri);
     }
 
+    /**
+     * Calls the phone's default map application to display the user's current location.
+     * @param geoLocation - Uri that contains the user's current location.
+     */
     public void showMap(Uri geoLocation) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);
@@ -768,7 +783,12 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         populateView(messagecreations, storagerefs);
     }
 
-
+    /**
+     * Populates the views from the photos and posts on the main UI.
+     * @param messagecreations - Creation objects of the type "message"
+     * @param storagerefs - List of references to Firebase Storage where the photos of interest (to
+     *                    be displayed) are found.
+     */
     private void populateView(ArrayList<Creation> messagecreations, ArrayList<StorageReference> storagerefs){
 
 
@@ -815,6 +835,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         setUserText();
     }
 
+    /**
+     * Sets the user related info on the navigation drawer.
+     */
     private void setUserText(){
         View header = navigationView.getHeaderView(0);
         TextView user_name = (TextView)header.findViewById(R.id.user_name);
@@ -823,6 +846,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         user_email.setText(currentUser.email);
     }
 
+    /**
+     * Initializes the navigation drawer.
+     */
     public void initNavigationDrawer() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -875,6 +901,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         actionBarDrawerToggle.syncState();
     }
 
+    /**
+     * Calls the PhotosActivity class to display the user's own photos.
+     */
     private void onMyPhotosClick(){
         Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
         intent.putExtra(FETCHTYPE,INDIVIDUAL);
@@ -882,6 +911,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     }
 
+    /**
+     * Calls the PostsActivity class to display the user's own posts.
+     */
     private void onMyPostsClick(){
         Intent intent = new Intent(MainActivity.this, PostsActivity.class);
         intent.putExtra(FETCHTYPE,INDIVIDUAL);

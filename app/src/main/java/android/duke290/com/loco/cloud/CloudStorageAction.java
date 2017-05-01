@@ -23,6 +23,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Class containing methods to upload/download files from Firebase Storage.
+ */
 public class CloudStorageAction {
 
     protected Context mContext;
@@ -55,6 +58,9 @@ public class CloudStorageAction {
         mContentType = content_type;
     }
 
+    /**
+     * Starts the upload/download process to Firebase Storage.
+     */
     public void doCloudAction() {
 
         Log.d(TAG, "doCloudAction");
@@ -78,6 +84,9 @@ public class CloudStorageAction {
 
     }
 
+    /**
+     * Uploads mLocalStream to Firebase Storage.
+     */
     protected void uploadFile() {
 
         // add metadata (content type)
@@ -119,6 +128,10 @@ public class CloudStorageAction {
         });
     }
 
+    /**
+     * Downloads a file from Firebase Storage based on the destination storage reference,
+     * mDestinationRef.
+     */
     protected void downloadFile() {
         mDestinationRef.getStream().addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
             @Override @SuppressWarnings("VisibleForTests")
@@ -147,6 +160,9 @@ public class CloudStorageAction {
         });
     }
 
+    /**
+     * Finds the content type of the file being downloaded.
+     */
     protected void downloadFileContentType() {
         mDestinationRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
             @Override
@@ -173,6 +189,9 @@ public class CloudStorageAction {
         });
     }
 
+    /**
+     * Delivers the status of the upload/download via mReceiver.
+     */
     private void deliverResultToReceiver() {
         if (mDownloadedStream != null && mActionType.equals("download")) {
             stg_filename = "stg" + System.currentTimeMillis();
