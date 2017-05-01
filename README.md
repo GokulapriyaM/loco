@@ -36,7 +36,24 @@ During the early stage of development, we mainly used testing activities along w
 * [DatabaseTestingActivity](https://github.com/fairbet/loco/blob/bc24957b3f9b5c7faf7d4ec7a37e688a16f55458/app/src/main/java/android/duke290/com/loco/DatabaseTestingActivity.java)
 
 After beta version, we tested the following features to ensure standard applicaiton operation.
-* changing orientation - slight lag, but no crashes (indicating mCurrentLocation was restored correctly)
+* Changing Orientation:
+	* Main UI: 
+		* slight lag sometimes, but no crashes (indicating that the current location was restored correctly)
+		* if location is still being calculated, changing orientation doesn't crash the app (indicating that the current location isn't attempted to be accessed when it doesn't exist)
+	* Photos/Posts UI: no lag at all, no crashes (indciating Glide's caching works correctly)
+	* Profile: no lag at all, no crashes
+* Changing Location:
+	* Main UI refreshes without retaining any elements from the previous location (indicating that location, photos, posts, address, ratings are correctly refreshed)
+	* Main UI doesn't constantly refresh when location barely changes (indicating that the LocationService correctly ignores location changes if the location doesn't change much (as judged by the CLOSE_DISTANCE global var in LocationService))
+* Location accuracy:
+	* Using Google's Fused Api for finding location coordinates gives reasonable accuracy most times (< 50 meters), but sometimes gives bad accuracy (~500 meters sometimes), but this is less our app's fault and more the strength of the phone's wifi/cellular signal
+* Login/Sign-in:
+	* Firebase Authentication correctly contains all Loco users, and Firebase Database is correctly updated for all loco users
+* Posting content:
+	* Photos are correctly stored in Firebase Storage and posts are correctly stored in the Creations section of Firebase Database
+	* Ratings are correctly stored in Firebase Database as "rating" type Creations
+	* Rating calculations (average, total num) are correct
+	* UI correctly refreshes as soon as something is posted
 
 	
 ## Past versions
