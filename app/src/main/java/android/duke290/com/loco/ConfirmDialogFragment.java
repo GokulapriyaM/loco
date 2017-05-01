@@ -31,8 +31,6 @@ public class ConfirmDialogFragment extends DialogFragment {
                         homeintent.putExtra("rating", mRating);
                         homeintent.putExtra("LOCATION_KEY",
                                 getArguments().getParcelable("LOCATION_KEY"));
-                        homeintent.putStringArrayListExtra("PROCESS_MSGS",
-                                getArguments().getStringArrayList("PROCESS_MSGS"));
                         startActivity(homeintent);
 
                     }

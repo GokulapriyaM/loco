@@ -24,17 +24,14 @@ public class ChangeProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_change_profile);
 
         // initialize view elements
-        mChangetext = (EditText) findViewById(R.id.change_text);
-        mOldEmail = (EditText) findViewById(R.id.old_email);
         mPassword = (EditText) findViewById(R.id.password_profile);
+        mChangetext = (EditText) findViewById(R.id.change_text);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.changeprofile_toolbar);
         //toolbar.setTitle("My Profile");
 
         //get what's changing
         change = getIntent().getStringExtra("change");
-        String oldemail = getIntent().getStringExtra("oldemail");
-        mOldEmail.setText(oldemail);
         mPassword.setHint("Current Password");
         mPassword.setTypeface(Typeface.DEFAULT);
         mPassword.setTransformationMethod(new PasswordTransformationMethod());
@@ -71,10 +68,10 @@ public class ChangeProfileActivity extends AppCompatActivity {
             mChangetext.setError("Invalid");
         }
         Intent changed = new Intent(ChangeProfileActivity.this, ProfileActivity.class);
-        changed.putExtra("change", change);
-        changed.putExtra("oldemail", mOldEmail.getText().toString().trim());
-        changed.putExtra("newinfo", newinfo);
-        changed.putExtra("oldpassword", mPassword.getTexts().toString().trim());
+
+        changed.putExtra("oldpassword", mPassword.getText().toString().trim());
+        changed.putExtra("newdata", newinfo);
+        changed.putExtra("change",change);
         startActivity(changed);
     }
 }

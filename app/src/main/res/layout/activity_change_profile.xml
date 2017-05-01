@@ -15,24 +15,6 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <EditText
-        android:id="@+id/old_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:cursorVisible="true"
-        android:gravity="top|start"
-        android:inputType="textEmailAddress"
-        android:lines="5"
-        android:minLines="1"
-        android:scrollHorizontally="false"
-        android:scrollbars="vertical"
-        android:textCursorDrawable="@null"
-        android:layout_below="@+id/changeprofile_toolbar"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:theme="@style/MyEditTextTheme"/>
 
     <EditText
         android:id="@+id/password_profile"
@@ -46,7 +28,7 @@
         android:scrollHorizontally="false"
         android:scrollbars="vertical"
         android:textCursorDrawable="@null"
-        android:layout_below="@+id/old_email"
+        android:layout_below="@+id/changeprofile_toolbar"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"

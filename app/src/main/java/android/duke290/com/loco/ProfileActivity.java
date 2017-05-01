@@ -36,9 +36,9 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     private RelativeLayout mChangePassword;
 
     private String mUsername;
-    private String mEmail;
     private String mPassword;
     private String mOldEmail;
+    private String mNewEmail;
     private String mNewPassword;
     private User currentUser;
 
@@ -70,14 +70,14 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         mChangeEmail = (RelativeLayout) findViewById(R.id.email_view);
         mChangePassword = (RelativeLayout) findViewById(R.id.password_view);
 
-        // getting username and email
-        mPassword = getIntent().getStringExtra("oldpassword");
-        mOldEmail = getIntent().getStringExtra("oldemail");
-        mNewPassword = getIntent().getStringExtra("email");
-        String change = getIntent().getStringExtra("change");
-
         databaseFetch = new DatabaseFetch(this);
         databaseFetch.getCurrentUser();
+
+        String change = getIntent().getStringExtra("change");
+        mPassword = getIntent().getStringExtra("oldpassword");
+        mNewPassword = getIntent().getStringExtra("newdata");
+        mNewEmail = getIntent().getStringExtra("newdata");
+
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -103,8 +103,6 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
             public void onClick(View v) {
                 Intent emailchange = new Intent(ProfileActivity.this, ChangeProfileActivity.class);
                 emailchange.putExtra("change", "email");
-                emailchange.putExtra("oldemail", mEmail);
-                emailchange.putExtra("username", mUsername);
                 startActivity(emailchange);
             }
         });
@@ -113,9 +111,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
             @Override
             public void onClick(View v) {
                 Intent passwordchange = new Intent(ProfileActivity.this, ChangeProfileActivity.class);
-                passwordchange.putExtra("oldemail", mEmail);
                 passwordchange.putExtra("change", "password");
-                passwordchange.putExtra("username", mUsername);
                 startActivity(passwordchange);
             }
         });
@@ -136,8 +132,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     // Get auth credentials from the user for re-authentication. The example below shows
-        AuthCredential credential = EmailAuthProvider
-                .getCredential(mOldEmail, mPassword);
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), mPassword);
 
     // Prompt the user to re-provide their sign-in credentials
         user.reauthenticate(credential)
@@ -180,15 +175,16 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
 
     private void updateEmailInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null && !mEmail.equals("")) {
-            user.updateEmail(mEmail)
+        if (user != null && !mNewEmail.equals("")) {
+            user.updateEmail(mNewEmail)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(ProfileActivity.this, "Email address is updated", Toast.LENGTH_LONG).show();
+                                mEmailView.setText(mNewEmail);
+                                Toast.makeText(ProfileActivity.this, "Email address is updated", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(ProfileActivity.this, "Failed to update email!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProfileActivity.this, "Failed to update email!", Toast.LENGTH_SHORT).show();
                                 Log.w("Except", task.getException());
                             }
                         }
@@ -196,7 +192,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         }
 
         // update database
-        User new_user_entry = new User(mUsername, mEmail);
+        User new_user_entry = new User(mUsername, mNewEmail);
         mDatabase.child(USERS).child(user.getUid()).child(USERINFO).setValue(new_user_entry);
     }
 
@@ -229,7 +225,7 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     @Override
     public void onUserReceived(User user) {
         currentUser = user;
-        mEmail = currentUser.email;
+        mOldEmail = currentUser.email;
         mUsername = currentUser.name;
         setUserView(currentUser);
     }
