@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by kevinkuo on 4/27/17.
  *
- * Adapter used for photo
+ * Adapter used for displaying the photos on the main UI.
  */
 
 public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -30,7 +30,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private final static String TAG = "PhotoAdapter";
 
-    // Provide a reference to the views for each data item
+    /**
+     * Holder for each ImageView.
+     */
     public static class PhotoViewHolder extends RecyclerView.ViewHolder {
         ImageView mImageView;
 
@@ -40,7 +42,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
+    /**
+     * Constructor for PhotoAdapter.
+     * @param c - Context object
+     * @param myDataset - List of Firebase StorageReference objects
+     */
     public PhotoAdapter(Context c, List<StorageReference> myDataset) {
         mStorageRefs = myDataset;
         mContext = c;

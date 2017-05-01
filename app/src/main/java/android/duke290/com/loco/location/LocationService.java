@@ -148,10 +148,18 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
     }
 
+    /**
+     * Called when google api client connection fails.
+     * @param connectionResult
+     */
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
+    /**
+     * Called when google api client connection is suspended.
+     * @param cause
+     */
     public void onConnectionSuspended(int cause) {
 
     }
