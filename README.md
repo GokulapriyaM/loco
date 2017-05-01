@@ -54,7 +54,9 @@ After beta version, we tested the following features to ensure standard applicai
 	* Ratings are correctly stored in Firebase Database as "rating" type Creations
 	* Rating calculations (average, total num) are correct
 	* UI correctly refreshes as soon as something is posted
-
+* Looking at user content:
+	* All RecyclerViews (for photos/posts) scroll properly and display content without weird scaling issues/deformations
+	* View all posts/photos correctly display all posts/photos made at the current location
 	
 ## Past versions
 ##### Functional as of 4/25 (beta)
