@@ -836,8 +836,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                         break;
                     case R.id.profile:
                         Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
-                        profile_intent.putExtra("username", currentUser.name);
-                        profile_intent.putExtra("email", currentUser.email);
                         startActivity(profile_intent);
                         //startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                         break;

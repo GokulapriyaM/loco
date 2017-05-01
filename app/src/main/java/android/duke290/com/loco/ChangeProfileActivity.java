@@ -53,8 +53,6 @@ public class ChangeProfileActivity extends AppCompatActivity {
         // back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        mUsername = getIntent().getStringExtra("username");
     }
 
     @Override
@@ -75,9 +73,8 @@ public class ChangeProfileActivity extends AppCompatActivity {
         Intent changed = new Intent(ChangeProfileActivity.this, ProfileActivity.class);
         changed.putExtra("change", change);
         changed.putExtra("oldemail", mOldEmail.getText().toString().trim());
-        changed.putExtra("email", newinfo);
-        changed.putExtra("username", mUsername);
-        changed.putExtra("oldpassword", mPassword.getText().toString().trim());
+        changed.putExtra("newinfo", newinfo);
+        changed.putExtra("oldpassword", mPassword.getTexts().toString().trim());
         startActivity(changed);
     }
 }

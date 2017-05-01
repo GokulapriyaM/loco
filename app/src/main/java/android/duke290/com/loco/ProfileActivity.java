@@ -6,14 +6,10 @@ import android.duke290.com.loco.database.DatabaseFetchCallback;
 import android.duke290.com.loco.registration.LoginActivity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+
+import static android.duke290.com.loco.R.id.username;
 
 public class ProfileActivity extends AppCompatActivity implements DatabaseFetchCallback {
 
@@ -68,24 +64,20 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // initializing views on profile
-        mUsernameView = (TextView) findViewById(R.id.username);
+        mUsernameView = (TextView) findViewById(username);
         mEmailView = (TextView) findViewById(R.id.email_field);
         mSignout = (RelativeLayout) findViewById(R.id.signout_view);
         mChangeEmail = (RelativeLayout) findViewById(R.id.email_view);
         mChangePassword = (RelativeLayout) findViewById(R.id.password_view);
-        currentUser = new User();
 
         // getting username and email
-        mUsername = getIntent().getStringExtra("username");
-        mEmail = getIntent().getStringExtra("email");
         mPassword = getIntent().getStringExtra("oldpassword");
         mOldEmail = getIntent().getStringExtra("oldemail");
         mNewPassword = getIntent().getStringExtra("email");
         String change = getIntent().getStringExtra("change");
 
-        mUsernameView.setText(mUsername);
-        if (change == null || change != null && change.equals("email"))mEmailView.setText(mEmail);
-        else mEmailView.setText(mOldEmail);
+        databaseFetch = new DatabaseFetch(this);
+        databaseFetch.getCurrentUser();
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -152,18 +144,20 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("", "User re-authenticated.");
-                        mDatabase = FirebaseDatabase.getInstance().getReference();
-                        if (change != null && change.equals("password")) {
-                            updatePasswordInfo();
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(ProfileActivity.this, "Incorrect current credential!", Toast.LENGTH_LONG).show();
+                            } else {
+                            Log.d("", "User re-authenticated.");
+                            mDatabase = FirebaseDatabase.getInstance().getReference();
+                            if (change != null && change.equals("password"))
+                                updatePasswordInfo();
+                            if (change != null && change.equals("email"))
+                                updateEmailInfo();
                         }
-                        if (change != null && change.equals("email")) {
-                            updateEmailInfo();
-                        }
-
                     }
                 });
     }
+
 
     private void updatePasswordInfo() {
         // update authentication
@@ -235,6 +229,14 @@ public class ProfileActivity extends AppCompatActivity implements DatabaseFetchC
     @Override
     public void onUserReceived(User user) {
         currentUser = user;
+        mEmail = currentUser.email;
+        mUsername = currentUser.name;
+        setUserView(currentUser);
+    }
+
+    private void setUserView(User user){
+        mUsernameView.setText(user.name);
+        mEmailView.setText(user.email);
     }
 }
 
