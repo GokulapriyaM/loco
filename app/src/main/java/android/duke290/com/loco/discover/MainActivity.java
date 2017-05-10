@@ -77,6 +77,8 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class MainActivity extends AppCompatActivity implements DatabaseFetchCallback{
 
+    private DiscoverFragment mDiscoverFragment;
+
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
     private boolean mAddressRequested = true;
@@ -137,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         Log.d(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // get discover fragment
+        mDiscoverFragment =
+                (DiscoverFragment) getSupportFragmentManager().findFragmentById(R.id.discover_frag);
 
         mCloudProcessMsgs = new ArrayList<String>();
 
@@ -477,33 +483,33 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 Toast.LENGTH_LONG).show();
     }
 
-    /**
-     * Displays the rating message and rating image.
-     */
-    public void displayRatings() {
-        if (mTotalNumRatings == 0) {
-            Log.d(TAG, "no ratings found");
-            mRatingMsg.setText("No ratings yet :(");
-            mRatingImg.setImageResource(0);
-            return;
-        }
-        // set rating text msgs
-        String avg_rating_str = String.format("%.1f", mAverageRating);
-        mRatingMsg.setText("Average Happiness: " + avg_rating_str);
-        String plural = "";
-        if (mTotalNumRatings > 1) plural = "s";
-        mNumRatingMsg.setText(mTotalNumRatings + " rating" + plural);
-
-        // set rating image
-        double rounded_rating = Double.parseDouble(avg_rating_str);
-        // find biggest rating (factor of 0.5) below rounded_rating and multiply that by 10
-        int adj_rating = (((int) (rounded_rating * 10)) / 5) * 5;
-
-        // set image
-        Context context = mRatingImg.getContext();
-        int id = context.getResources().getIdentifier("rate_face_" + adj_rating, "drawable", context.getPackageName());
-        mRatingImg.setImageResource(id);
-    }
+//    /**
+//     * Displays the rating message and rating image.
+//     */
+//    public void displayRatings() {
+//        if (mTotalNumRatings == 0) {
+//            Log.d(TAG, "no ratings found");
+//            mRatingMsg.setText("No ratings yet :(");
+//            mRatingImg.setImageResource(0);
+//            return;
+//        }
+//        // set rating text msgs
+//        String avg_rating_str = String.format("%.1f", mAverageRating);
+//        mRatingMsg.setText("Average Happiness: " + avg_rating_str);
+//        String plural = "";
+//        if (mTotalNumRatings > 1) plural = "s";
+//        mNumRatingMsg.setText(mTotalNumRatings + " rating" + plural);
+//
+//        // set rating image
+//        double rounded_rating = Double.parseDouble(avg_rating_str);
+//        // find biggest rating (factor of 0.5) below rounded_rating and multiply that by 10
+//        int adj_rating = (((int) (rounded_rating * 10)) / 5) * 5;
+//
+//        // set image
+//        Context context = mRatingImg.getContext();
+//        int id = context.getResources().getIdentifier("rate_face_" + adj_rating, "drawable", context.getPackageName());
+//        mRatingImg.setImageResource(id);
+//    }
 
     /**
      * Calls the CloudStorageAction class to upload an InputStream to Firebase Storage.
@@ -742,45 +748,79 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         Log.d(TAG, "onDatabaseResultReceived called");
         Log.d(TAG, "creations.size() = " + creations.size());
 
+        // process creations
+        storeCreations(creations);
+
+        // fill up discover fragment with creations
+        mDiscoverFragment.processCreations();
+
+
+
+//        ArrayList<Creation> messagecreations = new ArrayList<>();
+//        ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
+//        double rating_sum = 0;
+//        int rating_cnt = 0;
+//
+//        ArrayList<String> messages = new ArrayList<>();
+//        ArrayList<StorageReference> storagerefs = new ArrayList<>();
+//        for (Creation c : creations) {
+//            if (c.type.equals("text")) {
+//                messages.add(c.message);
+//                messagecreations.add(c);
+//            }
+//            if (c.type.equals("image")) {
+//                image_creation_list.add(c);
+//                String storage_path = c.extra_storage_path;
+//                StorageReference storageRef = mStorage.getReference().child(storage_path);
+//                storagerefs.add(storageRef);
+//            }
+//            if (c.type.equals("rating")) {
+//                rating_cnt++;
+//                rating_sum += c.rating;
+//                Log.d(TAG, "received rating: " + c.rating);
+//            }
+//        }
+
+//        if (rating_cnt > 0) {
+//            Log.d(TAG, "rating_sum = " + rating_sum);
+//            Log.d(TAG, "rating_cnt = " + rating_cnt);
+//            mAverageRating = rating_sum / rating_cnt;
+//            mTotalNumRatings = rating_cnt;
+//            Log.d(TAG, "mAverageRating = " + mAverageRating
+//                    + ", mTotalNumRatings = " + mTotalNumRatings);
+//        }
+//        displayRatings();
+
+//        // set shared lists for photos and posts activities
+//        SharedLists.getInstance().setMessageCreations(messagecreations);
+//        SharedLists.getInstance().setImageCreations(image_creation_list);
+
+//        populateView(messagecreations, storagerefs);
+    }
+
+    private void storeCreations(ArrayList<Creation> creations) {
         ArrayList<Creation> messagecreations = new ArrayList<>();
         ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
-        double rating_sum = 0;
-        int rating_cnt = 0;
+        ArrayList<Creation> rating_creation_list = new ArrayList<Creation>();
 
-        ArrayList<String> messages = new ArrayList<>();
-        ArrayList<StorageReference> storagerefs = new ArrayList<>();
         for (Creation c : creations) {
             if (c.type.equals("text")) {
-                messages.add(c.message);
                 messagecreations.add(c);
             }
             if (c.type.equals("image")) {
                 image_creation_list.add(c);
-                String storage_path = c.extra_storage_path;
-                StorageReference storageRef = mStorage.getReference().child(storage_path);
-                storagerefs.add(storageRef);
             }
             if (c.type.equals("rating")) {
-                rating_cnt++;
-                rating_sum += c.rating;
                 Log.d(TAG, "received rating: " + c.rating);
+                rating_creation_list.add(c);
             }
         }
 
-        if (rating_cnt > 0) {
-            Log.d(TAG, "rating_sum = " + rating_sum);
-            Log.d(TAG, "rating_cnt = " + rating_cnt);
-            mAverageRating = rating_sum / rating_cnt;
-            mTotalNumRatings = rating_cnt;
-            Log.d(TAG, "mAverageRating = " + mAverageRating
-                    + ", mTotalNumRatings = " + mTotalNumRatings);
-        }
-        displayRatings();
-
+        // set shared lists for other activities/fragments
         SharedLists.getInstance().setMessageCreations(messagecreations);
         SharedLists.getInstance().setImageCreations(image_creation_list);
+        SharedLists.getInstance().setRatingCreations(rating_creation_list);
 
-        populateView(messagecreations, storagerefs);
     }
 
     /**

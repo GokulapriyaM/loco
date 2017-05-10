@@ -9,8 +9,9 @@ import java.util.ArrayList;
 public class SharedLists {
     private static final SharedLists list_holder = new SharedLists();
 
-    private ArrayList<Creation> image_creation_list;
-    private ArrayList<Creation> message_creation_list;
+    private ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
+    private ArrayList<Creation> message_creation_list = new ArrayList<Creation>();
+    private ArrayList<Creation> rating_creation_list = new ArrayList<Creation>();
 
     public ArrayList<Creation> getImageCreations() {
         return image_creation_list;
@@ -41,6 +42,12 @@ public class SharedLists {
      */
     public void setMessageCreations(ArrayList<Creation> messageCreations) {
         message_creation_list = messageCreations;
+    }
+
+    public ArrayList<Creation> getRatingCreations() { return rating_creation_list; }
+
+    public void setRatingCreations(ArrayList<Creation> ratingCreations) {
+        rating_creation_list = ratingCreations;
     }
 
     /**
