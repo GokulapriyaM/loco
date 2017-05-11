@@ -2,8 +2,9 @@ package android.duke290.com.loco.discover;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.Context;
+import android.duke290.com.loco.RatingDialogFragment;
+import android.duke290.com.loco.posts.PostDialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.duke290.com.loco.R;
@@ -18,9 +19,9 @@ import android.duke290.com.loco.location.Constants;
 import android.duke290.com.loco.location.LocationService;
 import android.duke290.com.loco.location.ServiceStarter;
 import android.duke290.com.loco.photos.PhotosActivity;
-import android.duke290.com.loco.posts.Post;
-import android.duke290.com.loco.posts.PostAdapter;
+import android.duke290.com.loco.photos.PhotosFragment;
 import android.duke290.com.loco.posts.PostsActivity;
+import android.duke290.com.loco.posts.PostsFragment;
 import android.duke290.com.loco.posts.ShareTextActivity;
 import android.duke290.com.loco.profile.ProfileActivity;
 import android.duke290.com.loco.registration.LoginActivity;
@@ -37,25 +38,20 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,9 +71,18 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
  * Connect to internet -> Gets coordinates -> Gets address -> Displays coordinates/address
  */
 
-public class MainActivity extends AppCompatActivity implements DatabaseFetchCallback{
+public class MainActivity extends AppCompatActivity
+        implements DatabaseFetchCallback,
+        RatingDialogFragment.RatingDialogListener,
+        PostDialogFragment.PostDialogListener {
 
     private DiscoverFragment mDiscoverFragment;
+    private PhotosFragment mPhotosFragment;
+    private PostsFragment mPostsFragment;
+
+    private String DISCOVER_FRAG_TAG = "DISCOVER_FRAG_TAG";
+    private String PHOTOS_FRAG_TAG = "PHOTOS_FRAG_TAG";
+    private String POSTS_FRAG_TAG = "PHOTOS_FRAG_TAG";
 
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 0;
 
@@ -89,13 +94,10 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private String mAddressOutput;
     private double latitude;
     private double longitude;
-    private double mAverageRating;
-    private int mTotalNumRatings;
 
     private Creation mCreation;
 
     private DatabaseFetch databaseFetch;
-    private FirebaseStorage mStorage;
 
     private ArrayList<String> mCloudProcessMsgs;
 
@@ -127,9 +129,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     private String INDIVIDUAL = "individual";
     private String SHARED = "shared";
 
-    private RecyclerView mPhotosRecyclerView;
-    private RecyclerView mPostsRecyclerView;
-
     private int mRating;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -140,13 +139,56 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // get discover fragment
-        mDiscoverFragment =
-                (DiscoverFragment) getSupportFragmentManager().findFragmentById(R.id.discover_frag);
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.fragment_container) != null) {
+            Log.d(TAG, "inserting discover fragment");
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                // restore saved fragment's instance
+                if (getSupportFragmentManager().getFragment(
+                        savedInstanceState, "DISCOVER_FRAG") != null) {
+                    Log.d(TAG, "restoring mDiscoverFragment");
+                    mDiscoverFragment =
+                            (DiscoverFragment) getSupportFragmentManager().getFragment(
+                                    savedInstanceState, "DISCOVER_FRAG");
+                }
+
+                if (getSupportFragmentManager().getFragment(
+                        savedInstanceState, "PHOTOS_FRAG") != null) {
+                    Log.d(TAG, "restoring mPhotosFragment");
+                    // restore saved fragment's instance
+                    mPhotosFragment =
+                            (PhotosFragment) getSupportFragmentManager().getFragment(
+                                    savedInstanceState, "PHOTOS_FRAG");
+                }
+
+                if (getSupportFragmentManager().getFragment(
+                        savedInstanceState, "POSTS_FRAG") != null) {
+                    Log.d(TAG, "restoring mPostsFragment");
+                    // restore saved fragment's instance
+                    mPostsFragment =
+                            (PostsFragment) getSupportFragmentManager().getFragment(
+                                    savedInstanceState, "POSTS_FRAG");
+                }
+
+            } else {
+                // load discover fragment
+                // Create a new Fragment to be placed in the activity layout
+                mDiscoverFragment = new DiscoverFragment();
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container,
+                                mDiscoverFragment,
+                                DISCOVER_FRAG_TAG).commit();
+            }
+        }
 
         mCloudProcessMsgs = new ArrayList<String>();
-
-        mStorage = FirebaseStorage.getInstance();
 
         //get firebase mAuth instance
         mAuth = FirebaseAuth.getInstance();
@@ -157,9 +199,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         setSupportActionBar(toolbar);
 
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
-
-        mPhotosRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
-        mPostsRecyclerView = (RecyclerView) findViewById(R.id.posts_recycler_view);
 
         // get layout variables
         mAddressMsg = (TextView) findViewById(R.id.address_msg);
@@ -199,21 +238,77 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
             }
         }
 
-        // restore state after coming from dialog (rating confirmation) fragment
-        if (getIntent() != null) {
-            if (getIntent().getStringExtra("TYPE") != null &&
-                    getIntent().getStringExtra("TYPE").equals("dialog")) {
-                Log.d(TAG, "coming back from dialog fragment");
-                int confirmed = getIntent().getIntExtra("confirmed", 2);
-                mRating = getIntent().getIntExtra("rating", 0);
-                mCurrentLocation = getIntent().getParcelableExtra("LOCATION_KEY");
+//        // restore state after coming from dialog (rating confirmation) fragment
+//        if (getIntent() != null) {
+//            if (getIntent().getStringExtra("TYPE") != null &&
+//                    getIntent().getStringExtra("TYPE").equals("dialog")) {
+//                Log.d(TAG, "coming back from dialog fragment");
+//                int confirmed = getIntent().getIntExtra("confirmed", 2);
+//                mRating = getIntent().getIntExtra("rating", 0);
+//                mCurrentLocation = getIntent().getParcelableExtra("LOCATION_KEY");
+//
+//                if (confirmed == 1) {
+//                    confirmReceived();
+//                }
+//
+//                // clear dialog intent variables
+//                getIntent().removeExtra("TYPE");
+//                getIntent().removeExtra("confirmed");
+//                getIntent().removeExtra("rating");
+//                getIntent().removeExtra("LOCATION_KEY");
+//            }
+//        }
 
-                if (confirmed == 1) {
-                    confirmReceived();
-                }
-            }
-        }
+    }
 
+
+    public void showRatingDialog() {
+        // Create an instance of the dialog fragment and show it
+        RatingDialogFragment dialog = new RatingDialogFragment();
+        dialog.show(getSupportFragmentManager(), "RatingDialogFragment");
+    }
+
+    public void showPostDialog() {
+        // Create an instance of the dialog fragment and show it
+        PostDialogFragment dialog = new PostDialogFragment();
+        dialog.show(getSupportFragmentManager(), "PostDialogFragment");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onRatingDialogPositiveClick(DialogFragment dialog, double rating) {
+        // User confirmed; post rating
+        postRating(rating);
+
+    }
+
+    @Override
+    public void onRatingDialogNegativeClick(DialogFragment dialog) {
+        // User cancelled; do nothing
+
+    }
+
+    @Override
+    public void onPostDialogPositiveClick(DialogFragment dialog, String post) {
+        // User confirmed; post user's post
+        sharePost(post);
+
+    }
+
+    @Override
+    public void onPostDialogNegativeClick(DialogFragment dialog) {
+        // User cancelled; do nothing
+
+    }
+
+    protected void sharePost(String post) {
+        String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
+        Creation creation = new Creation(latitude, longitude, mAddressOutput,
+                "text", post, "", 0, timestamp);
+        DatabaseAction.putCreationInFirebaseDatabase(creation, latitude, longitude);
+        Toast.makeText(getApplicationContext(), "Shared successfully!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -231,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 Log.d(TAG, "menu item id: " + menuItem.getItemId());
                 if (menuItem.getItemId() == R.id.fab_share_text) {
                     Log.d(TAG, "share text button pressed");
-                    shareText();
+                    showPostDialog();
                 } else if (menuItem.getItemId() == R.id.fab_share_photo) {
                     Log.d(TAG, "share photo button pressed");
                     try {
@@ -242,12 +337,14 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 } else if (menuItem.getItemId() == R.id.fab_rate) {
                     Log.d(TAG, "rate button pressed");
                     // Show the rating pop-up dialog
-                    mBottomSheetDialog = new Dialog(MainActivity.this, R.style.MaterialDialogSheet);
-                    mBottomSheetDialog.setContentView(R.layout.rating_dialog); // your custom view.
-                    mBottomSheetDialog.setCancelable(true);
-                    mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
-                    mBottomSheetDialog.show();
+//                    mBottomSheetDialog = new Dialog(MainActivity.this, R.style.MaterialDialogSheet);
+//                    mBottomSheetDialog.setContentView(R.layout.rating_dialog); // your custom view.
+//                    mBottomSheetDialog.setCancelable(true);
+//                    mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                    mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+//                    mBottomSheetDialog.show();
+                    showRatingDialog();
+
                 }
                 return false;
             }
@@ -272,6 +369,29 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Log.d(TAG, "saving location values");
         savedInstanceState.putParcelable("LOCATION_KEY", mCurrentLocation);
+        if (mDiscoverFragment != null &&
+                getSupportFragmentManager().findFragmentByTag(DISCOVER_FRAG_TAG) != null) {
+            Log.d(TAG, "saving mDiscoverFragment");
+            // save fragment instance
+            getSupportFragmentManager().putFragment(
+                    savedInstanceState, "DISCOVER_FRAG", mDiscoverFragment);
+        }
+
+        if (mPhotosFragment != null &&
+                getSupportFragmentManager().findFragmentByTag(PHOTOS_FRAG_TAG) != null) {
+            Log.d(TAG, "saving mPhotosFragment");
+            // save fragment instance
+            getSupportFragmentManager().putFragment(
+                    savedInstanceState, "PHOTOS_FRAG", mPhotosFragment);
+        }
+
+        if (mPostsFragment != null &&
+                getSupportFragmentManager().findFragmentByTag(PHOTOS_FRAG_TAG) != null) {
+            Log.d(TAG, "saving mPostsFragment");
+            // save fragment instance
+            getSupportFragmentManager().putFragment(
+                    savedInstanceState, "POSTS_FRAG", mPostsFragment);
+        }
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -299,6 +419,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                     mLocationResultReceiver = new LocationResultReceiver(new Handler());
                     mCloudResultReceiver = new CloudResultReceiver(new Handler());
 
+                    Log.d(TAG, "starting location service");
                     ServiceStarter.startLocationService(getApplicationContext(),
                             mLocationResultReceiver);
 
@@ -340,7 +461,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
 
     @Override
     public void onResume() {
+        Log.d(TAG, "onResume called");
         super.onResume();
+        Log.d(TAG, "starting location service");
         ServiceStarter.startLocationService(getApplicationContext(),
                 mLocationResultReceiver);
 
@@ -483,34 +606,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
                 Toast.LENGTH_LONG).show();
     }
 
-//    /**
-//     * Displays the rating message and rating image.
-//     */
-//    public void displayRatings() {
-//        if (mTotalNumRatings == 0) {
-//            Log.d(TAG, "no ratings found");
-//            mRatingMsg.setText("No ratings yet :(");
-//            mRatingImg.setImageResource(0);
-//            return;
-//        }
-//        // set rating text msgs
-//        String avg_rating_str = String.format("%.1f", mAverageRating);
-//        mRatingMsg.setText("Average Happiness: " + avg_rating_str);
-//        String plural = "";
-//        if (mTotalNumRatings > 1) plural = "s";
-//        mNumRatingMsg.setText(mTotalNumRatings + " rating" + plural);
-//
-//        // set rating image
-//        double rounded_rating = Double.parseDouble(avg_rating_str);
-//        // find biggest rating (factor of 0.5) below rounded_rating and multiply that by 10
-//        int adj_rating = (((int) (rounded_rating * 10)) / 5) * 5;
-//
-//        // set image
-//        Context context = mRatingImg.getContext();
-//        int id = context.getResources().getIdentifier("rate_face_" + adj_rating, "drawable", context.getPackageName());
-//        mRatingImg.setImageResource(id);
-//    }
-
     /**
      * Calls the CloudStorageAction class to upload an InputStream to Firebase Storage.
      *
@@ -570,7 +665,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
      *
      * @param rating - the user's posted rating.
      */
-    public void postRating(int rating) {
+    public void postRating(double rating) {
         // creating creation
         String timestamp = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).format(new Date());
 
@@ -657,17 +752,17 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         return image;
     }
 
-    /**
-     * Opens dialog (ConfirmDialogFragment) to confirm rating when user chooses a rating.
-     *
-     * @param button - Button that user clicked on to select rating.
-     */
-    public void onRatingClick(View button) {
-        Log.d(TAG, "here about to open dialog");
-        String button_id = getResources().getResourceName(button.getId());
-        mRating = button_id.charAt(button_id.length() - 1) - '0';
-        openDialog();
-    }
+//    /**
+//     * Opens dialog (ConfirmDialogFragment) to confirm rating when user chooses a rating.
+//     *
+//     * @param button - Button that user clicked on to select rating.
+//     */
+//    public void onRatingClick(View button) {
+//        Log.d(TAG, "here about to open dialog");
+//        String button_id = getResources().getResourceName(button.getId());
+//        mRating = button_id.charAt(button_id.length() - 1) - '0';
+////        openDialog();
+//    }
 
     /**
      * Called when ConfirmDialogFragment sends intent to MainActivity and MainActivity restores
@@ -678,27 +773,29 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         postRating(mRating);
     }
 
-    /**
-     * Calls ConfirmDialogFragment to open dialog to confirm rating.
-     */
-    public void openDialog() {
-        DialogFragment confirmation = new ConfirmDialogFragment();
-        Log.d(TAG, "opening dialog");
-        Bundle args = new Bundle();
-        args.putInt("rating", mRating);
-        if (mCurrentLocation != null) {
-            args.putParcelable("LOCATION_KEY", mCurrentLocation);
-            confirmation.setArguments(args);
-            confirmation.show(getFragmentManager(), "");
-        }
-    }
+//    /**
+//     * Calls ConfirmDialogFragment to open dialog to confirm rating.
+//     */
+//    public void openDialog() {
+//        DialogFragment confirmation = new ConfirmDialogFragment();
+//        Log.d(TAG, "opening dialog");
+//        Bundle args = new Bundle();
+//        args.putInt("rating", mRating);
+//        if (mCurrentLocation != null) {
+//            args.putParcelable("LOCATION_KEY", mCurrentLocation);
+//            confirmation.setArguments(args);
+//            confirmation.show(getFragmentManager(), "");
+//        }
+//    }
 
     /**
      * Calls fetchByCoordinate to get Creation objects for the current location.
      */
-    private void getCreations(){
-        String coordname = DatabaseAction.createCoordName(mCurrentLocation);
-        databaseFetch.fetchByCoordinate(coordname);
+    public void getCreations(){
+        if (mCurrentLocation != null) {
+            String coordname = DatabaseAction.createCoordName(mCurrentLocation);
+            databaseFetch.fetchByCoordinate(coordname);
+        }
     }
 
     /**
@@ -706,9 +803,28 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
      * @param view - the button that activates this method
      */
     public void onMorePostsClick(View view){
-        Intent intent = new Intent(MainActivity.this, PostsActivity.class);
-        intent.putExtra(FETCHTYPE,SHARED);
-        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, PostsActivity.class);
+//        intent.putExtra(FETCHTYPE,SHARED);
+//        startActivity(intent);
+        mPostsFragment = new PostsFragment();
+
+        // store values
+        Bundle args = new Bundle();
+        args.putString("fetchtype", SHARED);
+        mPostsFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        transaction.replace(R.id.fragment_container, mPostsFragment, POSTS_FRAG_TAG);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+
+        Log.d(TAG, "onMorePostsClick: mPostsFragment == null?: " + (mPostsFragment == null));
     }
 
     /**
@@ -716,9 +832,29 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
      * @param view - the button that activates this method
      */
     public void onMorePhotosClick(View view){
-        Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
-        intent.putExtra(FETCHTYPE,SHARED);
-        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, PhotosActivity.class);
+//        intent.putExtra(FETCHTYPE,SHARED);
+//        startActivity(intent);
+        mPhotosFragment = new PhotosFragment();
+
+        // store values
+        Bundle args = new Bundle();
+        args.putString("fetchtype", SHARED);
+        mPhotosFragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        transaction.replace(R.id.fragment_container, mPhotosFragment, PHOTOS_FRAG_TAG);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+
+        Log.d(TAG, "onMorePhotosClick: mDiscoverFragment == null?: " + (mDiscoverFragment == null));
+
     }
 
     /**
@@ -751,51 +887,27 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         // process creations
         storeCreations(creations);
 
-        // fill up discover fragment with creations
-        mDiscoverFragment.processCreations();
+        Log.d(TAG, "mDiscoverFragment == null?: " + (mDiscoverFragment == null));
+        if (mDiscoverFragment != null) {
+            Log.d(TAG, "mDiscoverFragment visible?: " + (mDiscoverFragment.isVisible()));
+        }
+        if (mDiscoverFragment != null && mDiscoverFragment.isVisible()) {
+            // fill up discover fragment with creations
+            Log.d(TAG, "database updated; updating discover fragment");
+            mDiscoverFragment.processCreations();
+        }
+
+        if (mPhotosFragment != null && mPhotosFragment.isVisible()) {
+            Log.d(TAG, "database updated; updating photos fragment");
+            mPhotosFragment.processCreations(SHARED);
+        }
+
+        if (mPostsFragment != null && mPostsFragment.isVisible()) {
+            Log.d(TAG, "database updated; updating posts fragment");
+            mPostsFragment.processCreations(SHARED);
+        }
 
 
-
-//        ArrayList<Creation> messagecreations = new ArrayList<>();
-//        ArrayList<Creation> image_creation_list = new ArrayList<Creation>();
-//        double rating_sum = 0;
-//        int rating_cnt = 0;
-//
-//        ArrayList<String> messages = new ArrayList<>();
-//        ArrayList<StorageReference> storagerefs = new ArrayList<>();
-//        for (Creation c : creations) {
-//            if (c.type.equals("text")) {
-//                messages.add(c.message);
-//                messagecreations.add(c);
-//            }
-//            if (c.type.equals("image")) {
-//                image_creation_list.add(c);
-//                String storage_path = c.extra_storage_path;
-//                StorageReference storageRef = mStorage.getReference().child(storage_path);
-//                storagerefs.add(storageRef);
-//            }
-//            if (c.type.equals("rating")) {
-//                rating_cnt++;
-//                rating_sum += c.rating;
-//                Log.d(TAG, "received rating: " + c.rating);
-//            }
-//        }
-
-//        if (rating_cnt > 0) {
-//            Log.d(TAG, "rating_sum = " + rating_sum);
-//            Log.d(TAG, "rating_cnt = " + rating_cnt);
-//            mAverageRating = rating_sum / rating_cnt;
-//            mTotalNumRatings = rating_cnt;
-//            Log.d(TAG, "mAverageRating = " + mAverageRating
-//                    + ", mTotalNumRatings = " + mTotalNumRatings);
-//        }
-//        displayRatings();
-
-//        // set shared lists for photos and posts activities
-//        SharedLists.getInstance().setMessageCreations(messagecreations);
-//        SharedLists.getInstance().setImageCreations(image_creation_list);
-
-//        populateView(messagecreations, storagerefs);
     }
 
     private void storeCreations(ArrayList<Creation> creations) {
@@ -821,53 +933,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseFetchCall
         SharedLists.getInstance().setImageCreations(image_creation_list);
         SharedLists.getInstance().setRatingCreations(rating_creation_list);
 
+        Log.d(TAG, "creations stored");
     }
-
-    /**
-     * Populates the views from the photos and posts on the main UI.
-     * @param messagecreations - Creation objects of the type "message"
-     * @param storagerefs - List of references to Firebase Storage where the photos of interest (to
-     *                    be displayed) are found.
-     */
-    private void populateView(ArrayList<Creation> messagecreations, ArrayList<StorageReference> storagerefs){
-
-
-        ArrayList<Post> posts_list = new ArrayList<Post>();
-        for (Creation c : messagecreations) {
-            posts_list.add(new Post(c.message, c.timestamp));
-            if (posts_list.size() >= 5) {
-                break;
-            }
-        }
-
-        LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
-
-        mPostsRecyclerView.setLayoutManager(linearLayoutManager);
-        mPostsRecyclerView.setAdapter(new PostAdapter(posts_list, true));
-
-        ArrayList<StorageReference> shorterStorageRefs = new ArrayList<StorageReference>();
-        if (storagerefs.size() <= 5) shorterStorageRefs = storagerefs;
-        else {
-            for (int k1 = 0; k1 < 5; k1++) {
-                shorterStorageRefs.add(storagerefs.get(k1));
-            }
-        }
-
-        if (shorterStorageRefs.size() == 0) {
-            Log.d(TAG, "shorterStorageRefs empty");
-        }
-
-        mPhotosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mPhotosRecyclerView.setAdapter(new PhotoAdapter(getApplicationContext(), shorterStorageRefs));
-
-    }
-
 
     @Override
     public void onUserReceived(User user){

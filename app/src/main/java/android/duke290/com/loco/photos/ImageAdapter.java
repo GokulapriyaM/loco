@@ -56,7 +56,7 @@ public class ImageAdapter extends BaseAdapter {
      *
      * @param position: position of image in Gridview
      * @param convertView: view at selected position
-     * @param parent: group of views in th gridview
+     * @param parent: group of views in the gridview
      * @return image to show in the gridview
      */
     @Override

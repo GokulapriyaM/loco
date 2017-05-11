@@ -79,7 +79,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
     }
 
     /**
-     * Fetches images from Databse to put in the Photos Activity
+     * Fetches images from Database to put in the Photos Activity
      * @param creations: arraylist of data stored in database
      */
 
@@ -110,7 +110,7 @@ public class PhotosActivity extends AppCompatActivity implements DatabaseFetchCa
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 // Show full-size image
-                Creation storageplace = (Creation) mImage_adp.getItem(position); // replace with full-size image indatabase
+                Creation storageplace = (Creation) mImage_adp.getItem(position); // replace with full-size image in database
                 String path = storageplace.extra_storage_path;
                 Intent fullsize = new Intent(PhotosActivity.this, PhotoFullSizeActivity.class);
                 fullsize.putExtra("path", path);

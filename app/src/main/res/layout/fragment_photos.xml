@@ -1,28 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_location"
+    android:id="@+id/frag_photo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="android.duke290.com.loco.photos.PhotosActivity">
+    tools:context="android.duke290.com.loco.photos.PhotosFragment">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/photos_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
         <!-- ImageGrid Screen Title -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/photos_toolbar"
             android:fillViewport="true" >
 
             <!-- Grid View showing image thumbnails -->
@@ -40,5 +30,6 @@
 
         </ScrollView>
 
-</RelativeLayout>
+    </RelativeLayout>
 
+</FrameLayout>

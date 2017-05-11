@@ -1,11 +1,14 @@
 package android.duke290.com.loco.discover;
 
 import android.content.Context;
+import android.content.Intent;
+import android.duke290.com.loco.RecyclerViewClickListener;
 import android.duke290.com.loco.database.Creation;
 import android.duke290.com.loco.database.SharedLists;
+import android.duke290.com.loco.photos.PhotoFullSizeActivity;
+import android.duke290.com.loco.photos.PhotosActivity;
 import android.duke290.com.loco.posts.Post;
 import android.duke290.com.loco.posts.PostAdapter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,11 +27,15 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class DiscoverFragment extends Fragment {
+public class DiscoverFragment extends Fragment implements RecyclerViewClickListener {
 
     final static String TAG = "DiscoverFragment";
 
     final static int VIEW_COUNT = 5;
+
+    private static String PHOTOS_VIEW = "PHOTOS_VIEW";
+    private static String POSTS_VIEW = "POSTS_VIEW";
+    private String SHARED = "shared";
 
     private View mView;
 
@@ -56,6 +63,8 @@ public class DiscoverFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "layout inflated");
         mView = inflater.inflate(R.layout.fragment_discover, container, false);
+        Log.d(TAG, "re-getting creations");
+        ((MainActivity) getActivity()).getCreations();
         return mView;
     }
 
@@ -100,6 +109,29 @@ public class DiscoverFragment extends Fragment {
 
     }
 
+    @Override
+    public void recyclerViewListClicked(View v, int position, String type) {
+        if (type.equals(PHOTOS_VIEW)) {
+            // Show full-size image
+            Creation storageplace = mImageCreations.get(position); // replace with full-size image in database
+            String path = storageplace.extra_storage_path;
+            Intent fullsize = new Intent(getActivity(), PhotoFullSizeActivity.class);
+            fullsize.putExtra("path", path);
+            fullsize.putExtra("position", position);
+
+            ArrayList<String> image_paths = new ArrayList<String>();
+            ArrayList<String> locations = new ArrayList<String>();
+            for (Creation c: mImageCreations){
+                image_paths.add(c.extra_storage_path);
+                locations.add(c.address.replace("\r\n", ", ").replace("\n", ", "));
+            }
+            fullsize.putStringArrayListExtra("imagepaths", image_paths);
+            fullsize.putStringArrayListExtra("locations", locations);
+            fullsize.putExtra("fetchtype", SHARED);
+            startActivity(fullsize);
+        }
+    }
+
     public void displayPhotos() {
         Log.d(TAG, "displaying photos");
         mPhotosRecyclerView = (RecyclerView) mView.findViewById(R.id.photos_recycler_view);
@@ -110,7 +142,7 @@ public class DiscoverFragment extends Fragment {
                         false));
         mPhotosRecyclerView.setAdapter(
                 new PhotoAdapter(getActivity().getApplicationContext(),
-                        mStorageRefs));
+                        mStorageRefs, this));
     }
 
     public void displayPosts() {

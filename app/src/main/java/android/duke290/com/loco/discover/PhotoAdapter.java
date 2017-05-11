@@ -2,6 +2,7 @@ package android.duke290.com.loco.discover;
 
 import android.content.Context;
 import android.duke290.com.loco.R;
+import android.duke290.com.loco.RecyclerViewClickListener;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,21 +25,30 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<StorageReference> mStorageRefs;
     private Context mContext;
+    private static RecyclerViewClickListener mItemListener;
 
     private static final int VIEW_TYPE_EMPTY_LIST_PLACEHOLDER = 0;
     private static final int VIEW_TYPE_OBJECT_VIEW = 1;
+    private static String PHOTOS_VIEW = "PHOTOS_VIEW";
 
     private final static String TAG = "PhotoAdapter";
 
     /**
      * Holder for each ImageView.
      */
-    public static class PhotoViewHolder extends RecyclerView.ViewHolder {
+    public static class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView mImageView;
 
         public PhotoViewHolder(View v) {
             super(v);
             mImageView = (ImageView) v.findViewById(R.id.photoitem);
+            v.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            mItemListener.recyclerViewListClicked(v, this.getLayoutPosition(), PHOTOS_VIEW);
         }
     }
 
@@ -47,9 +57,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @param c - Context object
      * @param myDataset - List of Firebase StorageReference objects
      */
-    public PhotoAdapter(Context c, List<StorageReference> myDataset) {
+    public PhotoAdapter(Context c, List<StorageReference> myDataset, RecyclerViewClickListener itemListener) {
         mStorageRefs = myDataset;
         mContext = c;
+        mItemListener = itemListener;
     }
 
     @Override
@@ -61,6 +72,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } else {
             return VIEW_TYPE_OBJECT_VIEW;
         }
+    }
+
+    public StorageReference getStorageRef(int position) {
+        return mStorageRefs.get(position);
     }
 
     @Override
